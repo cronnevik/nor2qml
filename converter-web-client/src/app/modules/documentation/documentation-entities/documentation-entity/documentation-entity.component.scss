@@ -1,0 +1,16 @@
+table {
+    width: 100%;
+    overflow-x: scroll;
+}
+
+th, td {
+    white-space: nowrap;
+}
+
+.divider-border {
+    border-left: 1px solid black;
+}
+
+.align-column-text {
+    text-align: center;
+}

@@ -1,0 +1,27 @@
+ 2018  923 0843  2.2 LQ 82.035  -5.008 10.0F BER  7 1.4****NBER         2.2LDNK1
+ GAP=219        2.69      18.8    55.9  0.0  0.3985E+03  0.0000E+00  0.0000E+00E
+ 2018  923  843  1.8GR  81.942  -4.795 9.50  DNK  5 .70 2.2LDNK                1
+ ARC _O5F            2018  923  842 32   600                                   6
+ ARC _SVB            2018  923  842 31   300                                   6
+ 2018-09-23-0841-31S.DIST__084                                                 6
+ Calculated depth is uncertain, depth set to 10km                             B3
+ OLDACT:UPD 19-02-21 15:24 OP:mls  STATUS:               ID:20180923084302 L   3
+ Picks on OBS stations (INTAROS-Knip.) are added to the S-file.               B3
+ ACTION:UP  20-04-23 21:07 OP:mls  STATUS:               ID:20180923084302 L   I
+ OLDACT:UP  19-06-07 12:51 OP:mls  STATUS:               ID:20180923084302 L   3
+ STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO AIN AR TRES W  DIS CAZ7
+ NOR  BZ IP        843 31.00                              50    0.6310  191 261 
+ NOR  BN ES        843 50.41                              50   -0.8310  191 261 
+ OBIN1HH E         847  8.09                                            348 157 
+ KBS  BZ EP        844  4.27                              49    0.0710  465 129 
+ KBS  B1 ES        844 47.46                              49   -2.6410  465 129 
+ KBS  BZ  IAML     844 48.02         4.5 0.80                           465 129 
+ SPA0 HZ EP        844 20.71                              49    1.5710  588 126 
+ SPA0 HZ  IAML     845 33.08         8.5 0.95                           588 126 
+ DAG  BZ IP        844 26.48                              49    0.1910  647 212 
+ HSPB HZ EP        844 32.97                              49    1.3010  692 133 
+ DBG  B2 IS        846 26.09                              47    0.7510  923 210 
+ NEEM BZ IP        845 11.78                              47   -1.00 9 1039 267 
+ NEEM B1 IS   3    846 45.61                              47   -3.83 2 1039 267 
+ NEEM BZ  IAML     848  7.30        11.7 2.98                          1039 267 
+                                                                                

@@ -1,0 +1,36 @@
+ 1996  6 7 1325 29.2 L  59.846   5.130 12.0F TES 12 .60 1.9LTES 2.2CTES 2.0LNAO1
+ GAP=177        2.78       4.5    12.80.000  0.2239E+02  0.6258E+03 -0.2817E+03E
+ 1996  6 7 1325 29.1 L                       BER        2.0WBER                1
+ 1996  6 7 1325 30.5 L  59.763   5.396 29.2  NAO  2 1.0                 2.0LNAO1
+       8.3      41.0      74.7     1                                           F
+ 1996-06-07-1324-51S.TEST__009                                                 6
+     535  SOUTHERN NORWAY                                                      3
+ depth fixed to 12 km, rms lowest with near station (less than 110 km) location3
+ fault plane solution ok within 10 deg                                         3
+ STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO AIN AR TRES W  DIS CAZ3
+ ACTION:SPL 14-12-11 12:04 OP:jh   STATUS:               ID:19960607132529 L   I
+ STAT COM NTLO IPHASE   W HHMM SS.SSS   PAR1  PAR2 AGA OPE  AIN  RES W  DIS CAZ7
+ EGD  S Z      IP       4 1325 35.950      C       BER jh 120.0-1.131047.70   6 
+ EGD  S Z       END       1325 35.950  111.0                    0.0   47.70   6 
+ EGD  S Z       AMP       1325 35.950   11.1  33.3 yyy xx             47.70   6 
+ EGD  S Z NY00 ES         1325 42.030                      70.0-.8901047.70   6 
+ BER  S Z      IP         1325 38.120      C  70.0 kkk AUT     -.9801061.00  11 
+ BER  S Z       END       1325 38.120   55.0                     4.8  61.00  11 
+ BER  S Z      ES         1325 45.440                      70.0-.9901061.00  11 
+ BER  S Z       IAML     A1325 46.710   31.7  0.20              0.4   61.00  11 
+ KMY  S Z NN   IP         1325 40.260      C       PPP Ajh 70.0 .3301070.90 175 
+ KMY  S Z       END       1325 40.260   62.0                          70.90 175 
+ KMY  S Z   01 ES         1325 48.740                       70.0.3001070.90 175 
+ KMY  S Z       IAML      1325 48.920   83.6  0.20                    70.90 175 
+ ASK  S Z      EP       2 1325 39.590      D                   -1.031071.10   3 
+ ASK  S Z       END       1325 39.590   68.0                          71.10   3 
+ ASK  S Z      ES         1325 48.070                          -1.021071.10   3 
+ ASK  S Z       AMP       1325 48.070  333.3  2.20                    71.10   3 
+ ASK  S Z       IAML      1325 50.900  111.0  0.30                    71.10   3 
+ NRA0 S Z       Pn       A1326 19.090                      50.0-.05010368.0  72 
+ NRA0 S Z       END       1326 19.090  333.0                          368.0  72 
+ NRA0 S Z       BAZ-P     1326 19.090  256.9   6.9                0.  368.0  72 
+ NRA0 S Z       Pg        1326 27.940                          -.64010368.0  72 
+ NRA0 S Z       BAZ       1326 27.940  253.0   7.3               -3.  368.0  72 
+ NRA0 S Z       Lg        1327 10.540                          -.89010368.0  72 
+ NRA0 S Z       BAZ       1327 10.540  266.6   4.1                9.  368.0  72 

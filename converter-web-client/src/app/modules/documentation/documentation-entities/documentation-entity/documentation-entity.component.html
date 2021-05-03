@@ -1,0 +1,68 @@
+<table class="table table-responsive table-striped">
+    <thead>
+        <th scope="col">QML Attribute</th>
+        <th scope="col">QML Type [Multiplicity]</th>
+        <th scope="col">QML Nested Objects</th>
+        <th scope="col">QML Format</th>
+        <th scope="col">QML Unit</th>
+        <th scope="col" class="divider-border">S Line</th>
+        <th scope="col">S Fields</th>
+        <th scope="col">S Columns</th>
+        <th scope="col">S Format</th>
+        <th scope="col">S Unit</th>
+        <th scope="col">Comments</th>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of entity">
+        <tr>
+          <td>{{ item.qmlAttribute }}</td>
+          <td>{{ item.qmlType }}</td>
+          <td>
+            <div *ngFor="let nested of item.qmlNested">
+              {{ nested }}
+            </div>
+          </td>
+          <td>
+              <div *ngFor="let format of item.qmlFormat">
+                  {{ format }}
+              </div>
+            </td>
+          <td>
+            <div *ngFor="let unit of item.qmlUnit">
+                {{ unit }}
+            </div>
+          </td>
+          <td class="divider-border align-column-text">
+            <div *ngFor="let line of item.seisanLines">
+              {{ line }}
+            </div>
+          </td>
+          <td>
+            <div *ngFor="let field of item.seisanFields; let i = index">
+              {{ field }}
+            </div>
+          </td>
+          <td>
+              <div *ngFor="let co of item.seisanColumns">
+                  {{ co }}
+                </div>
+          </td>
+          <td>
+              <div *ngFor="let format of item.seisanFormat">
+                {{ format }}
+              </div>
+            </td>
+          <td>
+            <div *ngFor="let unit of item.seisanUnit">
+              {{ unit }}
+            </div>
+          </td>
+          <td>
+            <div *ngFor="let comment of item.comments">
+                {{ comment }}
+              </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+</table>

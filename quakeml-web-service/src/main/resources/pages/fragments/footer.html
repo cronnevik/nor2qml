@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <footer th:fragment="default-footer">
+
+    </footer>
+    <footer th:fragment="nnsn-footer">
+        <p>For any questions contact <a href="mailto:seismo@geo.uib.no">seismo@geo.uib.no</a></p>
+        <p>
+            Example for extraction of event data from a geographic area:
+        </p>
+        <a
+                href="http://rick.geo.uib.no/nnsn_eqcat/fdsnws/event/1/query?starttime=2020-01-20T00:00:00&endtime=2020-01-25T00:00:00&minlatitude=60.0&maxlatitude=62.0&minlongitude=0.0&maxlongitude=10.0&&format=quakeml20&orderby=time&limit=1000"
+                target="_blank"
+        >
+            http://rick.geo.uib.no/nnsn_eqcat/fdsnws/event/1/query?starttime=2020-01-20T00:00:00&endtime=2020-01-25T00:00:00&minlatitude=60.0&maxlatitude=62.0&minlongitude=0.0&maxlongitude=10.0&&format=quakeml20&orderby=time&limit=1000
+        </a>
+        <br />
+        <br />
+        <p>Note:</p>
+        <ul>
+            <li>The query includes a maximum number of events, the search is stopped when this number of events is reached.</li>
+            <li>The response time varies between the formats, text is fastest and quakeml slowest. </li>
+            <li>The date and time selection varies in use on different browsers</li>
+        </ul>
+    </footer>
+    <footer th:fragment="intaros-footer">
+        <p>
+            The catalog is described in detail in:
+            Jeddi, Z., S&#248;rensen, M.B., Voss, P., Larsen, T.B. and Dahl-Jensen, T. (2018). Seismological monitoring in the Arctic, appendix 4 of Kohnert, K. et al., Catalogue of products and services based on land and terrestrial cryosphere data,
+            INTAROS project, Deliverable 2.9, 64 pp (available under <a href="https://intaros.nersc.no/sites/intaros.nersc.no/files/Deliverable_D2.9_final_sgn.pdf">https://intaros.nersc.no/sites/intaros.nersc.no/files/Deliverable_D2.9_final_sgn.pdf</a>).
+        </p>
+        <p>
+            Data reference:
+            International Seismological Centre, On-line Bulletin, <a href="http://www.isc.ac.uk">http://www.isc.ac.uk</a>, Internatl. Seismol. Cent., Thatcham, United Kingdom, 2016.
+            <a href="http://doi.org/10.31905/D808B830">http://doi.org/10.31905/D808B830</a> and agencies reporting to the ISC, see <a href="http://www.isc.ac.uk/iscbulletin/agencies/">http://www.isc.ac.uk/iscbulletin/agencies/</a>
+        </p>
+    </footer>
+</body>
+</html>

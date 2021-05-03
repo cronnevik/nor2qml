@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+	
+	<groupId>no.nnsn</groupId>
+    <artifactId>seisan-quakeml</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>seisan-quakeml</name>
+    <description>Package for seisan-quakeml tools</description>
+	
+	<parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>converter-core</module>
+				<module>converter-standalone</module>
+				<module>quakeml-web-service</module>
+				<module>quakeml-web-service-ingestor-executable</module>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>seisan-quakeml-commons-web</module>
+				<module>seisan-quakeml-commons-file</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>standalone</id>
+			<modules>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
+				<module>seisan-quakeml-commons-web</module>
+				<module>seisan-quakeml-commons-file</module>
+				<module>converter-standalone</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>ingestor</id>
+			<modules>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
+				<module>seisan-quakeml-commons-file</module>
+				<module>quakeml-web-service-ingestor-executable</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>ws-prod</id>
+			<properties>
+				<active.profile>prod</active.profile>
+			</properties>
+			<modules>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
+				<module>seisan-quakeml-commons-web</module>
+				<module>quakeml-web-service</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>ws-container</id>
+			<properties>
+				<active.profile>container</active.profile>
+			</properties>
+			<modules>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
+				<module>seisan-quakeml-commons-web</module>
+				<module>quakeml-web-service</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>web</id>
+			<modules>
+				<module>converter-core</module>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>seisan-quakeml-commons-web</module>
+				<module>seisan-quakeml-commons-file</module>
+				<module>converter-web-client</module>
+				<module>converter-web-server</module>
+			</modules>
+		</profile>
+	</profiles>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.16</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<failOnError>false</failOnError>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

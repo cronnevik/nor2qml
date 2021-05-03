@@ -1,0 +1,60 @@
+.error-sfile-message {
+    color: red;
+}
+
+.num-bold {
+    font-weight: 200;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.type-num-link:hover,
+.type-num-link:focus {
+    color:grey;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.header-margin-top {
+    margin-top: 50px;
+}
+
+.modal-dialog,
+.modal-content {
+    /* 80% of window height */
+    height: 80%;
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.modal-body {
+    /* 100% = dialog height, 120px = header + footer */
+    max-height: calc(100% - 120px);
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+td, th {
+    text-align: center;
+}
+
+.fa-info-circle {
+    color: mediumblue;
+}
+
+.fa-trash {
+    color: tomato;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.td-text {
+    min-width: 75px;
+}

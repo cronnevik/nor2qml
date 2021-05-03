@@ -1,0 +1,146 @@
+<p>
+  Provide a web-service link to an event query.
+  <span class="help-button" data-toggle="modal" data-target="#wsHelpModal">
+    <span>Click here for an example.</span>
+  </span>
+</p>
+<form>
+  <div class="form-group">
+    <span>Select output of nordic format version:</span>
+    <div *ngFor="let opt of qmlVersions">
+      <div class="custom-control custom-radio">
+        <input
+          class="custom-control-input"
+          type="radio"
+          id="{{ opt.value }}"
+          [(ngModel)]="options.version"
+          name="qml_name"
+          value="{{ opt.value }}"
+          (change)="onVerOptionChange(opt)"
+        />
+        <label class="custom-control-label" for="{{ opt.value }}">{{
+          opt.name
+        }}</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <span>Input as web-service url:</span>
+    <input
+      type="text"
+      name="link"
+      class="form-control"
+      [(ngModel)]="options.data.url"
+      placeholder="Type in the web-service url"
+    />
+  </div>
+  <div class="error-message" *ngIf="error != null">{{ error.message }}</div>
+  <button class="btn btn-primary" (click)="readWebService()">Generate</button>
+</form>
+
+<!-- Modal Help information -->
+<div
+  class="modal fade"
+  id="wsHelpModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="wsHelpModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="wsHelpModalTitle">
+          Web-service example from ISC Bulletin
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <p>
+            Visit the
+            <a href="http://www.isc.ac.uk" target="_blank"
+              >http://www.isc.ac.uk</a
+            >
+          </p>
+          <p>
+            Navigate to Bulletin search as illustrated by the picture below:
+          </p>
+          <img
+            src="assets/bulletin-search/ws_1.png"
+            width="100%"
+            alt=""
+            class="margin-bottom-20"
+          />
+        </div>
+        <div>
+          Configure the search (see red squares in picture below):
+          <ul>
+            <li>Specify output format: QuakeML</li>
+            <li>Select time period - in this case 10 min window</li>
+            <li>Check the phases option - if you wish to include phases</li>
+          </ul>
+          <img
+            src="assets/bulletin-search/ws_2.png"
+            width="100%"
+            alt=""
+            class="margin-bottom-20"
+          />
+        </div>
+        <div>
+          <p>
+            By clicking "Serch bulletin", a new page will appear with the
+            QuakeML output (see picture below). Select and copy the entire URL
+            given in the address bar.
+          </p>
+          <img
+            src="assets/bulletin-search/ws_3.png"
+            width="100%"
+            alt=""
+            class="margin-bottom-20"
+          />
+        </div>
+        <div>
+          <p>
+            Paste the URL into the input box displayed on the converter
+            "web-service link" page as illustrated by the picture below and
+            click generate
+          </p>
+          <img
+            src="assets/bulletin-search/ws_4.png"
+            width="100%"
+            alt=""
+            class="margin-bottom-20"
+          />
+        </div>
+        <div>
+          <p>
+            The result of converted QuakeML to the Nordic format will be printed
+            to the screen as seen below. The user have the option of saving the
+            content into a file. In that case, the wished filename can be typed
+            in the input box (default name, if not specified, will be
+            "sfiles.out").
+          </p>
+          <img src="assets/bulletin-search/ws_5.png" width="100%" alt="" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>

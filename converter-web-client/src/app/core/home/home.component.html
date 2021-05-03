@@ -1,0 +1,17 @@
+<h2>Seisan to QuakeML converter</h2>
+<p>
+    The SEISAN seismic analysis system contains a set of programs for analyzing earthquakes from analog and digital data 
+    (<a href="http://seis.geus.net/software/seisan/seisan.pdf" target="_blank">See official SEISAN documentation</a>).
+    The data is organized in catalogue structure using the file system. The smallest basic unit is a file
+    (the S-file) containing original phase readings (arrival times, amplitude, period, azimuth, and apparent
+    velocity) for one event. These s-files are expressed through the Nordic format, which since 1985 has been the common exchange format in
+    the Nordic countries. The standard format for provision of earthquake parametric data within various European infrastructures is 
+    QuakeML (<a href="https://quake.ethz.ch/quakeml/docs/latest?action=AttachFile&do=get&target=QuakeML-BED.pdf" target="_blank">See official QuakeML documentation</a>).
+</p>
+<p>
+    This application is a convertion tool between the Nordic format and QuakeML. The tool is currently reading (s-files) and producing earthquake event data (event parameters) in QuakeML.
+    After upload of a single or multiple s-file(s), an interface is provided configuration of 
+    public identifiers within QuakeML (required) and  list for management (edit content and/or remove certain events) of the uploaded s-files. 
+    The user can chose between QuakeML version 1.2 and 2.0 as the output. Conversions from QuakeML to the Nordic format is also supported, and QuakeML input can be provided from 
+    multiple sources (web-service url, raw data pasted in or provision of a XML file).
+</p>

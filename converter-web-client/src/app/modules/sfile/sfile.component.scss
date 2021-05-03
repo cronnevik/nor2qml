@@ -1,0 +1,20 @@
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    color: #fff;
+    text-shadow: -1px 1px #346392;
+    background-color: #6496c8;
+    background-image: linear-gradient(to bottom, #6496c8, #346392);
+    box-shadow: inset 0 0 0 1px #498bd1;
+    border: none;
+    border-radius: 5px;
+
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.error-message {
+    color: red;
+}

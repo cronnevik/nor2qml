@@ -1,0 +1,29 @@
+<mdb-navbar SideClass="navbar fixed-top navbar-expand-lg navbar-dark red lighten-1 scrolling-navbar ie-nav" [containerInside]="false">
+    <mdb-navbar-brand>
+        <a class="navbar-brand" href="#">
+            <img src="assets/nnsn-red-trans-en.png" height="75" class="d-inline-block" alt="">
+            NOR2QML
+        </a>
+    </mdb-navbar-brand>
+  <links>
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item waves-light" mdbWavesEffect>
+              <a routerLink="/" routerLinkActive="active" class="nav-link">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item waves-light" mdbWavesEffect>
+            <a routerLink="/documentation" routerLinkActive="active" class="nav-link">Documentation</a>
+        </li>
+          <li class="nav-item waves-light" mdbWavesEffect >
+              <a routerLink="/sfile-to-quakeml" routerLinkActive="active" class="nav-link">Nordic <i class="fa fa-arrow-right"></i> QuakeML</a>
+          </li>
+          <li class="nav-item waves-light" mdbWavesEffect >
+              <a routerLink="/quakeml-to-sfile" routerLinkActive="active" class="nav-link">QuakeML <i class="fa fa-arrow-right"></i> Nordic</a>
+          </li>
+      </ul>
+      <ul class="navbar-nav nav-flex-icons">
+          <li class="nav-item waves-light" mdbWavesEffect>
+              <a class="nav-link"><i class="fa fa-user"></i></a>
+          </li>
+      </ul>
+  </links>
+</mdb-navbar>

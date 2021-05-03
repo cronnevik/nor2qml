@@ -1,0 +1,23 @@
+ 2018 12 5 1413 45.2 LE 58.299   6.391  0.0F BER  5 0.3 1.5LBER                1
+ GAP=237        0.77       6.0     7.0  0.0  0.3684E+02  0.0000E+00  0.0000E+00E
+ 2018 12 5 1413      LE                 0.0   TI                               1
+ 2018 12 5 1413      LE                 0.0   TI                             E13
+ CHARGE(T):          Titania A/S, Tellnes                                    EC3
+ ACTION:UP  19-06-07 12:51 OP:mls  STATUS:               ID:20181205141345 L   I
+ OLDACT:REE 18-12-06 11:26 OP:mls  STATUS:               ID:20181205141336 L   3
+ 2018-12-05-1413-36S.N_SEA_084                                                 6
+ STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO AIN AR TRES W  DIS CAZ7
+ SNARTEZ EP       1413 52.76                              90   -0.1710 48.2  84 
+ SNARTEN ES       1413 58.76                              90    0.0810 48.2  84 
+ SNARTEZ  IAML    1414  1.98        45.2 0.68                          48.2  84 
+ KMY  HZ EP       1414  5.12                              90    0.4010  121 327 
+ KMY  HE ES       1414 18.64                              90   -0.5510  121 327 
+ KMY  HZ  IAML    1414 22.94        14.3 0.58                           121 327 
+ HOMB HZ EP       1414  5.23                              90    0.0610  124  91 
+ HOMB HN ES       1414 19.76                              90   -0.2210  124  91 
+ HOMB HZ  IAML    1414 22.96        12.5 0.20                           124  91 
+ BLS5 HZ EP       1414  4.97                              90   -0.3910  125   2 
+ ODD1 HZ EP       1414 13.38                              50    0.3510  180   4 
+ ODD1 HE ES       1414 34.11                              50    0.4510  180   4 
+ ODD1 HZ  IAML    1414 37.43         8.7 0.22                           180   4 
+                                                                                

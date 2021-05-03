@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <div th:replace="${profile == 'nnsn'} ? ~{fragments/title :: nnsn-title} : ~{}" />
+    <div th:replace="${profile == 'default'} ? ~{fragments/title :: default-title} : ~{}" />
+    <div th:replace="${profile == 'intaros'} ? ~{fragments/title :: intaros-title} : ~{}" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+
+    <style>
+        .btn-light {
+            background: #ffffff;
+            border: 1px solid #ced4da
+        }
+        .actions-btn {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div th:replace="${profile == 'default'} ? ~{fragments/header :: default-header} : ~{}" />
+    <div th:replace="${profile == 'nnsn'} ? ~{fragments/header :: nnsn-header} : ~{}" />
+    <div th:replace="${profile == 'intaros'} ? ~{fragments/header :: intaros-header} : ~{}" />
+
+    <form action="#" th:action="@{/dataform}" th:object="${form}" method="post">
+
+        <h4>Select catalog</h4>
+
+        <!-- Catalog -->
+        <div class="form-group row">
+            <label for="catalogSelect" class="col-2 col-form-label">Catalog</label>
+            <div class="col-2">
+                <select class="form-control" id="catalogSelect" th:field="*{catalogName}">
+                    <option th:each="catalog : ${catalogs}"
+                            th:value="${catalog.getCatalogName()}"
+                            th:text="${catalog.getCatalogName()}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <hr />
+
+        <h4>Select time period</h4>
+
+        <!-- Start Time -->
+        <div class="form-group row">
+            <label for="starttime-input" class="col-2 col-form-label">*Start Time</label>
+            <div class="col-5">
+                <input class="form-control" type="datetime-local" step="1" id="starttime-input" th:field="*{startTime}" />
+            </div>
+        </div>
+
+        <!-- End Time -->
+        <div class="form-group row">
+            <label for="endtime-input" class="col-2 col-form-label">*End Time</label>
+            <div class="col-5">
+                <input class="form-control" type="datetime-local" step="1" id="endtime-input" th:field="*{endTime}" />
+            </div>
+        </div>
+
+        <hr />
+
+        <h4>Choose region</h4>
+
+        <!-- Latitude -->
+        <div class="form-group row">
+            <label for="minlat-input" class="col-2 col-form-label">Min Latitude (deg)</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{minLatitude}" id="minlat-input" min="-90" max="90" />
+            </div>
+            <label for="maxlat-input" class="col-2 col-form-label">Max Latitude (deg)</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{maxLatitude}" id="maxlat-input" min="-90" max="90" />
+            </div>
+        </div>
+
+        <!-- Longitude -->
+        <div class="form-group row">
+            <label for="minlon-input" class="col-2 col-form-label">Min Longitude (deg)</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{minLongitude}" id="minlon-input" min="-180" max="180" />
+            </div>
+            <label for="maxlon-input" class="col-2 col-form-label">Max Longitude (deg)</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{maxLongitude}" id="maxlon-input" min="-180" max="180" />
+            </div>
+        </div>
+
+        <hr />
+
+        <h4>Other parameters</h4>
+
+        <!-- Event type -->
+        <div class="form-group row">
+            <label for="eventTypeSelect" class="col-2 col-form-label">Event types</label>
+            <div class="col-6">
+                <select multiple data-actions-box="true" class="selectpicker w-100 form-control" id="eventTypeSelect" th:field="*{eventTypes}">
+                    <option th:each="type : ${types}"
+                            th:value="${type}"
+                            th:text="${type}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Depth -->
+        <div class="form-group row">
+            <label for="mindepth-input" class="col-2 col-form-label">Min Depth (km)</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{minDepth}" id="mindepth-input" />
+            </div>
+            <label for="maxdepth-input" class="col-2 col-form-label">Max Depth (km)</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{maxDepth}" id="maxdepth-input" />
+            </div>
+        </div>
+
+        <!-- Magnitude -->
+        <div class="form-group row">
+            <label for="minMag-input" class="col-2 col-form-label">Min Magnitude</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{minMagnitude}" id="minMag-input" />
+            </div>
+            <label for="maxMag-input" class="col-2 col-form-label">Max Magnitude</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="0.1" th:field="*{maxMagnitude}" id="maxMag-input" />
+            </div>
+        </div>
+
+        <!-- Format -->
+        <div class="form-group row">
+            <label for="formatSelect" class="col-2 col-form-label">*Format</label>
+            <div class="col-2">
+                <select class="form-control" id="formatSelect" th:field="*{format}">
+                    <option th:each="fmt : ${T(no.nnsn.quakemlwebservice.dao.FormatType).values()}"
+                            th:value="${fmt}"
+                            th:text="${fmt}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- OrderBy -->
+        <div class="form-group row">
+            <label for="orderBySelect" class="col-2 col-form-label">*OrderBy</label>
+            <div class="col-2">
+                <select class="form-control" id="orderBySelect" th:field="*{orderBy}">
+                    <option th:each="oby : ${T(no.nnsn.quakemlwebservice.dao.OrderByType).values()}"
+                            th:value="${oby}"
+                            th:text="${oby}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- NoData -->
+        <div class="form-group row">
+            <label for="noDataSelect" class="col-2 col-form-label">NoData</label>
+            <div class="col-2">
+                <select class="form-control" id="noDataSelect" th:field="*{noData}">
+                    <option th:each="noda : ${T(no.nnsn.quakemlwebservice.dao.NoDataType).values()}"
+                            th:value="${noda.getName()}"
+                            th:text="${noda.getName()}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Limit -->
+        <div class="form-group row">
+            <label for="limitNum" class="col-2 col-form-label">Limit</label>
+            <div class="col-2">
+                <input class="form-control" type="number" step="1" th:field="*{limit}" id="limitNum" />
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-group row">
+            <button class="btn btn-info">Search catalogue</button>
+        </div>
+    </form>
+
+    <div th:replace="${profile == 'default'} ? ~{fragments/footer :: default-footer} : ~{}" />
+    <div th:replace="${profile == 'nnsn'} ? ~{fragments/footer :: nnsn-footer} : ~{}" />
+    <div th:replace="${profile == 'intaros'} ? ~{fragments/footer :: intaros-footer} : ~{}" />
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.selectpicker').selectpicker();
+    });
+</script>
+
+</body>

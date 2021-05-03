@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <header th:fragment="default-header">
+        <h2>Default</h2>
+        <hr />
+    </header>
+
+    <header th:fragment="nnsn-header">
+        <h2>NNSN</h2>
+        <p>
+            This page is for extraction of event data from the seismic catalogue that is maintained by the NNSN.
+            The catalogue is the result of data processing at the University of Bergen with contributions from NORSAR.
+            Additional contributions are made by the USGS, EMSC, ISC, GEUS, SNSN, BGS, HEL.
+            The catalogue available here goes back to historic times (1060-1970),
+            but mostly contains events from instrumental times (1970-now).
+            Note that completeness has changed over time and the catalogue includes earthquakes, explosions and other events.
+
+            Please use the query builder
+            <a href="http://www.fdsn.org/webservices/FDSN-WS-Specifications-1.0.pdf" target="_blank">
+                    (following the FDSN Event Web Service Specification)
+            </a>
+            below to get data:
+
+        </p>
+        <hr />
+    </header>
+
+    <header th:fragment="intaros-header">
+        <h2>INTAROS data search</h2>
+        <p>
+            An earthquake catalog is developed for the Arctic region based on all available earthquake catalogs covering at least parts of the Arctic. The catalog accommodates around 121000 events of mostly earthquake and explosion origin. Other event types, such as landslides and volcanic events, are also reported in the database. The catalog includes information on event time, location, depth, magnitude and seismic phase arrivals at different seismic stations. Focal mechanism solutions is also available for the larger earthquakes (~630 in total).
+        </p>
+        <figure>
+            <img class="mx-auto d-block" width="450px" th:src="@{images/intaros-arctic.png}" alt="Arctic image" />
+            <figcaption>
+                The figure shows the geographical region of interest in the database with all the recorded events in the catalog as blue dots, large events with focal mechanism as red dots and monitoring stations as orange triangles.
+            </figcaption>
+        </figure>
+        <hr />
+    </header>
+</body>
+</html>

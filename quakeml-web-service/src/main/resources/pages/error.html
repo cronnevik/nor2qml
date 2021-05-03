@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - resource not found</title>
+</head>
+<body>
+    <p>
+        Error <span th:text="${status}"></span>: no result found
+    </p>
+    <p>
+        Request:  <span th:text="${path}"></span>
+    </p>
+    <p>
+        Request Submitted: <span th:text="${timestamp}"></span>
+    </p>
+    <p>
+        Service version: fdsnws-event v1.2
+    </p>
+</body>
+</html>

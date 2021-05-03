@@ -1,0 +1,38 @@
+<form>
+  <div class="form-group">
+    <span>Select output of nordic format version:</span>
+    <div *ngFor="let opt of qmlVersions">
+      <div class="custom-control custom-radio">
+        <input
+          class="custom-control-input"
+          type="radio"
+          id="{{ opt.value }}"
+          [(ngModel)]="options.version"
+          name="qml_name"
+          value="{{ opt.value }}"
+          (change)="onVerOptionChange(opt)"
+        />
+        <label class="custom-control-label" for="{{ opt.value }}">{{
+          opt.name
+        }}</label>
+      </div>
+    </div>
+  </div>
+  <p>Provide QuakeML as plain text:</p>
+  <div class="form-group">
+    <textarea
+      class="form-control"
+      id="xmltextarea"
+      name="xmlText"
+      rows="10"
+      [(ngModel)]="options.data.text"
+      placeholder="Paste xml"
+    ></textarea>
+  </div>
+  <button class="btn btn-primary" (click)="readXmlText()">Generate</button>
+</form>
+
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>

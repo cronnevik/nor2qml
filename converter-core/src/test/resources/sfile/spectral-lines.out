@@ -1,0 +1,29 @@
+ 1996  6 6  648 29.5 L  62.748   4.984  0.0  BER  8 3.8 2.7LBER 2.7WBER 3.0LNAO1
+ GAP=287       10.69     311.3   488.2460.6                                    E
+        22        22        22                                     xx xx       F
+ 1996-06-06-0647-46S.TEST__011                                                 6
+  AV-SD MO 13.9 0.5 ST 34.7 2.0 F0 5.64 5.0 RA 0.53 0.5 Al  3.3 2.2 MW3.22 1.5 S
+ STA  COM NTLO  OM  F0 AL     T  WI   GD  MO ST   R   K   VX  DE  Q0  QA Q1  MWS
+ ASKA SHZ ntlo 3.1 22. .7211111 20.  9.122.1 11 .12 .01 6.5P 2.8 50.  .71.0 3.1S
+ ACTION:UP  20-12-14 09:40 OP:y    STATUS:               ID:19960606064831dL   I
+ OLDACT:UP  20-11-10 09:13 OP:ee   STATUS:               ID:19960606064831dL   3
+ STAT COM NTLO IPHASE   W HHMM SS.SSS   PAR1  PAR2 AGA OPE  AIN  RES W  DIS CAZ7
+ ASK  S Z      IP          649  9.880              BER  ff 50.03.480  254.0 177 
+ ASK  S Z      ES          649 34.450                      50.0 .720  254.0 177 
+ BER  B Z      IP       0  648 59.130                      50.0-8.57  264.0 176 
+ BER  BHZ      ES          649 38.020                      50.02.020  264.0 176 
+ EGD  S Z      IP          649 11.070              BER  ff 50.01.840  276.0 177 
+ EGD  S Z      ES          649 39.210              EGD   s 50.0 .540  276.0 177 
+ FOO  S Z      ES          649  1.950              BER  ff 90.0-3.52  128.0 179 
+ FOO  SHZ      IP       0  648 48.860              FOO  bb 90.0-1.29  128.0 179 
+ FOO  SHZ xxyy  AML        649  6.860  192.1  0.36 FOO  ee            128.0 179 
+ FOO  S Z      IP          648 46.890              BER  ff 90.0-3.26  128.0 179 
+ HYA  BHZ aabb  IAML       649 19.160  466.3  0.12 HYA  ee      .500  188.0 160 
+ HYA  S Z aabb ES          649 18.200              HYA  ss 50.0-1.26  188.0 160 
+ HYA  S Z      IP          648 54.810              BER  ff 50.0-3.38  188.0 160 
+ HYA  S Z      ES          649 17.810              BER  ff 50.0-1.65  188.0 160 
+ MOL  S Z      IP       0  648 50.940                      90.0 .050  133.0  97 
+ ODD1 S Z      ES          649 57.440                      50.07.470  328.0 164 
+ SUE  S Z      IP          649  5.120                      50.06.770  189.0 184 
+ SUE  S Z      ES          649 19.790                      50.0 .050  189.0 184 
+

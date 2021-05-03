@@ -1,0 +1,30 @@
+<div class="form-group">
+  <span>Select output of nordic format version:</span>
+  <div *ngFor="let opt of qmlVersions">
+    <div class="custom-control custom-radio">
+      <input
+        class="custom-control-input"
+        type="radio"
+        id="{{ opt.value }}"
+        [(ngModel)]="options.version"
+        name="qml_name"
+        value="{{ opt.value }}"
+        (change)="onVerOptionChange(opt)"
+      />
+      <label class="custom-control-label" for="{{ opt.value }}">{{
+        opt.name
+      }}</label>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <angular-file-uploader
+    [config]="uploadConfig"
+    (ApiResponse)="fileReadResponse($event)"
+  ></angular-file-uploader>
+</div>
+
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>

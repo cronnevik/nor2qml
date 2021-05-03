@@ -1,0 +1,72 @@
+<ul>
+  <li><span class="cursor-link" (click)="scrollToElement(eventEntity)">Event</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(originEntity)">Origin</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(originUncertaintyEntity)">OriginUncertainty</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(magnitudeEntity)">Magnitude</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(focalMechanismEntity)">FocalMechanism</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(momentTensorEntity)">MomentTensor</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(stationMagnitudeEntity)">StationMagnitude</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(stationMagnitudeContributionEntity)">StationMagnitudeContribution</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(arrivalEntity)">Arrival</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(pickEntity)">Pick</span></li>
+  <li><span class="cursor-link" (click)="scrollToElement(amplitudeEntity)">Amplitude</span></li>
+</ul>
+<h4 #eventEntity>Event entity (From Seisan line type 1, 3, 6 and I)</h4>
+<app-documentation-entity [entity]="eventMapping"></app-documentation-entity>
+
+<div class="header-margin-top-50" #originEntity>
+    <h4>Origin entity (From Seisan line type 1 and E)</h4>
+    Multiplicity entity/line:
+    <ul>
+        <li>QML Origin: [0..*]</li>
+        <li>Seisan Line 1 [1..*]</li>
+        <li>Seisan Line E [0..1]</li>
+    </ul>
+    <app-documentation-entity [entity]="originMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #originUncertaintyEntity>
+  <h4>OriginUncertainty entity (Currently no mapping)</h4>
+  <app-documentation-entity [entity]="originUncMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #magnitudeEntity>
+  <h4>Magnitude entity (From Seisan line type 1)</h4>
+  <app-documentation-entity [entity]="magnitudeMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #focalMechanismEntity>
+  <h4>FocalMechanism entity (From Seisan line type F)</h4>
+  <app-documentation-entity [entity]="focalMechanismMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #momentTensorEntity>
+  <h4>MomentTensor entity (From Seisan line type M)</h4>
+  <p>This entity is related to the Focalmechanism entity and is only applied from the nordic format if agency and methods are equal in the line F and line M.</p>
+  <app-documentation-entity [entity]="momentTensorMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #stationMagnitudeEntity>
+  <h4>StationMagnitude entity (Currently no mapping)</h4>
+  <app-documentation-entity [entity]="stationMagnitudeMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #stationMagnitudeContributionEntity>
+  <h4>StationMagnitudeContribution entity (Currently no mapping)</h4>
+  <app-documentation-entity [entity]="stationMagnitudeContributionMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #arrivalEntity>
+  <h4>Arrival entity (From Seisan line type 1 and 4)</h4>
+  <app-documentation-entity [entity]="arrivalMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #pickEntity>
+  <h4>Pick entity (From Seisan line type 1 and 4)</h4>
+  <app-documentation-entity [entity]="pickMapping"></app-documentation-entity>
+</div>
+
+<div class="header-margin-top-50" #amplitudeEntity>
+  <h4>Amplitude entity (From Seisan line type 1 and 4)</h4>
+  <app-documentation-entity [entity]="amplitudeMapping"></app-documentation-entity>
+</div>

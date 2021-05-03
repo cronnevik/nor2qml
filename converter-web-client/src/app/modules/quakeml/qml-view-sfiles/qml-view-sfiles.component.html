@@ -1,0 +1,7 @@
+<input class="form-control" placeholder="Choose a filename" [(ngModel)]="filename" >
+<button class="btn btn-block btn-success" (click)="saveFile()">Save file</button>
+<ngx-prism
+[language]="language"
+[code] = "sfileText"
+[interpolation] = "interpolate"
+></ngx-prism>

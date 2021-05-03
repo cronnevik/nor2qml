@@ -1,0 +1,37 @@
+version: '3.7'
+
+# Services
+services:
+  # Service 1 - Database (Mysql)
+  db:
+    image: mysql:5.7
+    container_name: mysql-db
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_DATABASE: intaros
+      MYSQL_USER: epos
+      MYSQL_PASSWORD: epos
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - db-data:/var/lib/mysql
+  # Service 2 - Spring boot applciation
+  tomcat-server:
+    container_name: spring-boot-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8080
+    #restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/intaros?autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: epos
+      SPRING_DATASOURCE_PASSWORD: epos
+#Volumes
+volumes:
+  db-data:

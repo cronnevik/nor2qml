@@ -1,0 +1,47 @@
+<ng-container *ngIf="fileReceived; else elseTemplate">
+    <h3>QuakeML file is produced</h3>
+    <div *ngIf="eventErrors.length > 0">
+        The list below shows the errors were found. If the event number is marked with "(r)" it means that the whole event (s-file) was removed. <br />
+        In other cases, the only the particular lines listed was was ignored from the conversion.
+
+        <h5 class="margin-top-10">Total numbers of errors found: {{ eventErrors.length }}</h5>
+
+        <div class="table table-striped table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Event</th>
+                      <th scope="col">Error Message</th>
+                      <th scope="col">Line(s)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let err of eventErrors; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ err.eventNumber }} <span *ngIf="err.eventRemoved">(r)</span></td>
+                        <td><code>{{ err.message }}</code></td>
+                        <td>
+                            <code class="code-color-black">
+                                <div *ngFor="let line of err.lines">
+                                    {{ line }}
+                                </div>
+                            </code>
+                        </td>
+                    </tr>
+                  </tbody>
+            </table>
+          </div>
+    </div>
+    <div>
+        <h3 *ngIf="eventErrors.length > 0">Save the QuakeML file</h3>
+        <p>To save the produced QuakeML file, please choose a filename (default: "quakeml") and click "SAVE FILE".</p>
+    </div>
+    <input class="form-control" placeholder="Choose a filename" [(ngModel)]="filename" >
+    <button class="btn btn-block btn-success" (click)="saveXmlFile()">Save file</button>
+</ng-container>
+<ng-template #elseTemplate>
+    <h4>File is currently being produced. Please wait..</h4>
+</ng-template>
+
+
