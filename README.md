@@ -3,6 +3,9 @@
 ## How to install
 To download, build and run the various modules (see list below) within this package, you first need to have installed Git on you computer. See the official documentation for Git on: https://git-scm.com/
 
+Clone the project from this GitHub repository into your desired folder by entering the command:\
+``` git clone https://github.com/cronnevik/nor2qml.git ```
+
 The nor2qml package is build upon Java (Spring boot) with Apache Maven as the build tool. In order to build the individual modules, both java and maven (https://maven.apache.org/) needs to be installed.
 
 To simplify the build of the applications and the modules they depend on, maven profiles have been applied. See the list of applications and modules. 
