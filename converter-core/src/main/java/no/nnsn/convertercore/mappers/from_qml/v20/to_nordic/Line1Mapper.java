@@ -139,16 +139,22 @@ public abstract class Line1Mapper {
         if (eventType != null)
         switch (eventType) {
             case EARTHQUAKE:
-                line1.setEventID("Q");
+                if (typeCertainty != null) {
+                    if (typeCertainty.equals(EventTypeCertainty.KNOWN)) {
+                        line1.setEventID("Q");
+                    } else { // known
+                        line1.setEventID("");
+                    }
+                }
                 break;
             case EXPLOSION:
                 if (typeCertainty != null) {
-                    if (typeCertainty.equals(EventTypeCertainty.SUSPECTED)) {
-                        line1.setEventID("P");
+                    if (typeCertainty.equals(EventTypeCertainty.KNOWN)) {
+                        line1.setEventID("E");
                     }
                 }
-                else { // Known
-                    line1.setEventID("E");
+                else { // Suspected
+                    line1.setEventID("P");
                 }
                 break;
             case INDUCED_OR_TRIGGERED_EVENT:

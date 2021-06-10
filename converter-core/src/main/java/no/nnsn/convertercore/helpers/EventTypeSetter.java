@@ -33,27 +33,34 @@ public class EventTypeSetter {
                 break;
             case "I":
                 event.setType(EventType.INDUCED_OR_TRIGGERED_EVENT);
+                event.setTypeCertainty(EventTypeCertainty.KNOWN);
                 break;
             case "O":
                 event.setType(EventType.OTHER_EVENT);
+                event.setTypeCertainty(EventTypeCertainty.KNOWN);
                 break;
             case "S":
                 event.setType(EventType.SONIC_BOOM);
+                event.setTypeCertainty(EventTypeCertainty.KNOWN);
                 break;
             case "C":
-                event.setType(EventType.ICE_QUAKE);
-                break;
             case "G":
                 event.setType(EventType.ICE_QUAKE);
+                event.setTypeCertainty(EventTypeCertainty.KNOWN);
                 break;
             case "L":
+            case "X": // deprecated Nordic code
                 event.setType(EventType.LANDSLIDE);
-                break;
-            case "X":
-                event.setType(EventType.LANDSLIDE);
+                event.setTypeCertainty(EventTypeCertainty.KNOWN);
                 break;
             case "V":
                 event.setType(EventType.VOLCANIC_ERUPTION);
+                event.setTypeCertainty(EventTypeCertainty.KNOWN);
+                break;
+            case "":
+            case " ":
+                event.setType(EventType.EARTHQUAKE);
+                event.setTypeCertainty(EventTypeCertainty.SUSPECTED);
                 break;
             default:
                 // All other nordic codes become not_reported

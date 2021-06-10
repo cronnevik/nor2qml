@@ -30,7 +30,7 @@
     <div th:replace="${profile == 'nnsn'} ? ~{fragments/header :: nnsn-header} : ~{}" />
     <div th:replace="${profile == 'intaros'} ? ~{fragments/header :: intaros-header} : ~{}" />
 
-    <form action="#" th:action="@{/dataform}" th:object="${form}" method="post">
+    <form action="#" th:action="@{/dataform}" th:object="${form}" method="post" th:target="_blank">
 
         <h4>Select catalog</h4>
 
