@@ -22,6 +22,7 @@ public class Line5 extends Line {
     public Line5(String lineText, int rowNum) {
         this.initFields();
         this.setLineInfo(lineText, rowNum);
+        this.setValues();
     }
 
     private void initFields() {

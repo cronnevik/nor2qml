@@ -220,6 +220,27 @@ public class NordicMapperImpl implements NordicMapper {
     }
 
     @Override
+    public List<Object> mapLine5s(Event event) {
+        List<Object> line5s = new ArrayList<>();
+
+        if (event.getComment() != null ) {
+            for (Comment comment: event.getComment()) {
+                if (comment.getId() != null) {
+                    if (LineType.LINETYPE_5.equalValue(comment.getId())) {
+                        try {
+                            line5s.add(Line5Mapper.INSTANCE.mapLine5(comment));
+                        } catch (Exception ex) {
+                            IgnoredQmlError errObj = new IgnoredQmlError(ex.getMessage(), "line6");
+                            line5s.add(errObj);
+                        }
+                    }
+                }
+            }
+        }
+        return line5s;
+    }
+
+    @Override
     public List<Object> mapLine6s(Event event) {
         List<Object> line6s = new ArrayList<>();
 

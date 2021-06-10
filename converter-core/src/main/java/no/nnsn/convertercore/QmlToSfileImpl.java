@@ -40,6 +40,11 @@ public class QmlToSfileImpl implements QmlToSfile {
         int eventCount = 0;
         List<IgnoredQmlError> errors = new ArrayList<>();
 
+        StringBuilder emptyLine = new StringBuilder();
+        for (int i = 0; i < 80; i++) {
+            emptyLine.append(" ");
+        }
+
         for (Event ev: events) {
             eventCount++;
             Sfile sfile = new Sfile();
@@ -150,6 +155,19 @@ public class QmlToSfileImpl implements QmlToSfile {
                 }
             }
 
+            // Map Line 5s
+            final List<Object> l5Objects = mapper.mapLine5s(ev);
+            if (l5Objects != null && l5Objects.size() > 0) {
+                l5Objects.forEach(o -> {
+                    if (o instanceof Line5) {
+                        sfileData.addLine5(o);
+                    } else if (o instanceof IgnoredQmlError) {
+                        IgnoredQmlError err = (IgnoredQmlError) o;
+                        err.setEventPublicID(ev.getPublicID());
+                        errors.add(err);
+                    }
+                });
+            }
 
             // Map Line 6s
             final List<Object> l6Objects = mapper.mapLine6s(ev);
@@ -297,6 +315,13 @@ public class QmlToSfileImpl implements QmlToSfile {
                 }
             }
 
+            // loop through each line 5 and join to a string value
+            if (sfileData.getLine5s() != null) {
+                for (Line5 line5: (List<Line5>) sfileData.getLine5s()) {
+                    sfileText += line5.createLine() + System.lineSeparator();
+                }
+            }
+
             // loop through each line 6 and join to a string value
             if (sfileData.getLine6s() != null) {
                 for (Line6 line6: (List<Line6>) sfileData.getLine6s()) {
@@ -345,8 +370,8 @@ public class QmlToSfileImpl implements QmlToSfile {
                 }
             }
 
-            // New line (Separator) for each event
-            sfileText += System.lineSeparator();
+            // New empty line for each event
+            sfileText += emptyLine.toString() + System.lineSeparator();
 
         }
 
