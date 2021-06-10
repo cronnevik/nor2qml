@@ -9,6 +9,7 @@ public interface NordicMapper {
     List<Object> mapLine1s(Event event);
     List<Object> mapLine3s(Event event);
     List<Object> mapLine4s(NordicFormatVersion format, List<Pick> picks, List<Amplitude> amplitudes, List<Origin> origins);
+    List<Object> mapLine5s(Event event);
     List<Object> mapLine6s(Event event);
     List<Object> mapLineEs(List<Origin> origins);
     List<Object> mapLineFs(List<FocalMechanism> focalMechanisms);
