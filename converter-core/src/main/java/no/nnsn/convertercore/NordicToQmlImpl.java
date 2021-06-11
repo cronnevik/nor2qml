@@ -477,8 +477,11 @@ public class NordicToQmlImpl implements NordicToQml {
                     }
 
                     String eventID = "";
-                    if (caller.equals(CallerType.INGESTOR)) {
-                        eventID = sYear + sMonth + sDay + "_" + idSuffix;
+                    if (caller.equals(CallerType.INGESTOR) || caller.equals(CallerType.WEBSERVICE)) {
+                        String[] split = idSuffix.split("\\."); // First part of filename string
+                        String suffix = split[0];
+                        String prefix = split[1];
+                        eventID = prefix.substring(1) + "_" + suffix;
                     } else {
                         eventID= IdGenerator.getInstance().genRandomEventID(
                                 sYear, sMonth, sDay, sHour, sMinutes

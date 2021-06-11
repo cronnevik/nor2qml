@@ -27,7 +27,7 @@ import java.util.Properties;
 )
 @PropertySources({
         @PropertySource({"classpath:jpa.properties" }),
-        @PropertySource(value = "classpath:database.yml", factory = YamlPropertySourceFactory.class)
+        @PropertySource(value = "classpath:application.yml", factory = YamlPropertySourceFactory.class)
 })
 @EnableTransactionManagement
 public class JpaConfig {

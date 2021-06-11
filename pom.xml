@@ -60,7 +60,7 @@
 		<profile>
 			<id>ws-prod</id>
 			<properties>
-				<active.profile>prod</active.profile>
+				<spring.profiles.active>prod</spring.profiles.active>
 			</properties>
 			<modules>
 				<module>seisan-quakeml-commons-jpa</module>
@@ -72,7 +72,7 @@
 		<profile>
 			<id>ws-container</id>
 			<properties>
-				<active.profile>container</active.profile>
+				<spring.profiles.active>container</spring.profiles.active>
 			</properties>
 			<modules>
 				<module>seisan-quakeml-commons-jpa</module>
