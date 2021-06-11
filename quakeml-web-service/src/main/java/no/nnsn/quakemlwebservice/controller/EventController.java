@@ -163,7 +163,7 @@ public class EventController {
                     byte[] sfile = sf.getFile();
                     InputStream input = new ByteArrayInputStream(sfile);
                     List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
-                    EventOverview eventOverview = nordicToQml.getEvents(sfiles, "error", CallerType.WEBSERVICE, null, eventid);
+                    EventOverview eventOverview = nordicToQml.getEvents(sfiles, "error", CallerType.WEBSERVICE, null, sf.getSfileID());
                     events.addAll(eventOverview.getEvents());
                 }
                 return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events, cat))
@@ -176,7 +176,7 @@ public class EventController {
                     byte[] sfile = sf.getFile();
                     InputStream input = new ByteArrayInputStream(sfile);
                     List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
-                    EventOverview eventOverview = nordicToQml.getEvents(sfiles, "error", CallerType.WEBSERVICE, null, eventid);
+                    EventOverview eventOverview = nordicToQml.getEvents(sfiles, "error", CallerType.WEBSERVICE, null, sf.getSfileID());
                     events.addAll(eventOverview.getEvents());
                 }
                 return Response.ok(QuakemlUtils.getQuakeml20DocFromEvents(events, cat))

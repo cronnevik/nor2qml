@@ -1,0 +1,26 @@
+spring:jpa.open-in-view: false
+server.error.whitelabel.enabled: false
+page.profile: ${profile:nnsn}
+
+spring:
+  profiles:
+    active: '@spring.profiles.active@'
+---
+spring.config.activate.on-profile: prod
+database:
+  address: localhost
+  port: 3306
+  name: nnsn
+  username: epos
+  password: epos
+---
+spring.config.activate.on-profile: container
+database:
+  address: mysql-db
+  port: 3306
+  name: nnsn
+  username: epos
+  password: epos
+
+
+

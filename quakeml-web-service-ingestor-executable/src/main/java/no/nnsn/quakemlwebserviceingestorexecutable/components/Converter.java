@@ -30,25 +30,16 @@ public class Converter {
         EventOverview eventOverview = null;
 
         // Get filename to provide id string
-        String fileName = "";
         String id = "";
         try {
             Path p = Paths.get(path);
             Path fileNamePath = p.getFileName();
-            fileName = fileNamePath.toString();
+            id = fileNamePath.toString();
         } catch (Exception ex) {
             System.out.println("Error in reading path: " + ex.getLocalizedMessage());
         }
 
         try {
-            String[] split = fileName.split("\\."); // First part of filename string
-            id = split[0];
-        } catch (Exception ex) {
-            System.out.println("Error in split of filename: " + fileName + " .Error message: " + ex.getLocalizedMessage());
-        }
-
-        try {
-
             eventOverview = nordicToQml.getEvents(sFileEvents, null, CallerType.INGESTOR, arguments.getProfile(), id);
             eventOverview.setFilename(path);
         } catch (Exception ex) {
