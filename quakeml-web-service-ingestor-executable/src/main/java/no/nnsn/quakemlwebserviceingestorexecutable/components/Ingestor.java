@@ -23,7 +23,10 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
+import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
+import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -244,6 +247,27 @@ public class Ingestor {
                             Double magnitude = null;
                             String magAuthor = null;
 
+                            String eventLocation = null;
+                            List<EventDescription> descriptions = e.getDescription();
+                            if (descriptions != null) {
+                                if (descriptions.size() > 0) {
+                                    for (EventDescription ed: descriptions) {
+                                        EventDescriptionType evType = ed.getType();
+                                        if (evType != null) {
+                                            switch (evType) {
+                                                case NEAREST_CITIES:
+                                                case FLINN_ENGDAHL_REGION:
+                                                case REGION_NAME:
+                                                    eventLocation = ed.getText();
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             EventType type = (e.getType() != null) ? e.getType() : null;
 
                             // Fill attributes from Origin entity
@@ -293,6 +317,7 @@ public class Ingestor {
                             sfileEvent.setMagType(magType);
                             sfileEvent.setMagnitude(magnitude);
                             sfileEvent.setMagAuthor(magAuthor);
+                            sfileEvent.setLocationName(eventLocation);
                             sfileEvent.setType(type);
 
                             ingestLog.increaseEvents(1);
