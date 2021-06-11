@@ -60,22 +60,28 @@ public class Converter {
 
         if (data != null) {
             System.out.println("creating file...");
-            try {
-                Path filePath = new File(path).toPath();
-                int num = 0;
-                while(true) {
-                    if (Files.exists(filePath)) {
-                        filePath = new File(path + "(" + num + ")").toPath();
-                        num++;
-                    } else {
-                        break;
+            if (path != null) {
+                try {
+                    Path filePath = new File(path).toPath();
+                    int num = 0;
+                    while(true) {
+                        if (Files.exists(filePath)) {
+                            filePath = new File(path + "(" + num + ")").toPath();
+                            num++;
+                        } else {
+                            break;
+                        }
                     }
+                    FileUtils.writeStringToFile(new File(path), data, StandardCharsets.UTF_8);
+                    System.out.println("file created at path: " + path);
+                } catch (IOException e) {
+                    System.out.println("Something went wrong in creating the file:");
+                    e.getMessage();
                 }
-                FileUtils.writeStringToFile(new File(path), data, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                System.out.println("## Invalid output path. Please try another output. ##");
             }
-            System.out.println("file created at path: " + path);
+
         }
 
     }
@@ -87,10 +93,12 @@ public class Converter {
             return output + File.separator + genFilename;
         } else if (output.equals(genFilename)) {
             return arguments.getCurrentPath() + File.separator + output;
-        } else if (!Files.exists(filenamePath)) {
+        } else if (Files.exists(filenamePath)) {
+            System.out.println("Filename specified already exists and will be overwritten");
+            return output;
+        }else if (!Files.exists(filenamePath)) {
             return output;
         } else {
-            System.out.println("Something went wrong with reading the output path");
             return null;
         }
     }
@@ -172,6 +180,16 @@ public class Converter {
 
         List<IgnoredQmlError> errors = new ArrayList<>();
 
+        NordicFormatVersion nordicFormatVersion = null;
+        if (arguments.isNordic1()) {
+            nordicFormatVersion = NordicFormatVersion.VERSION1;
+        } else if (arguments.isNordic2()) {
+            nordicFormatVersion = NordicFormatVersion.VERSION2;
+        } else {
+            // Default value
+            nordicFormatVersion = NordicFormatVersion.VERSION1;
+        }
+
         if (arguments.isQuakemlSourceFile()) {
             String path = null;
             path = arguments.hasInput() ? arguments.getInput() : arguments.getCurrentPath();
@@ -183,6 +201,8 @@ public class Converter {
                 e.printStackTrace();
             }
 
+            // create nordic format version as final due to arrow function for filePaths
+            final NordicFormatVersion nordicFormVersion = nordicFormatVersion;
             final List<String> sFiles = new ArrayList<>(); // List of converted events
             Set<Path> filePaths = fileInfo.getFilePaths();
             filePaths.forEach(p -> {
@@ -193,19 +213,9 @@ public class Converter {
                     e.printStackTrace();
                 }
 
-                NordicFormatVersion nordicFormatVersion = null;
-                if (arguments.isNordic1()) {
-                    nordicFormatVersion = NordicFormatVersion.VERSION1;
-                } else if (arguments.isNordic2()) {
-                    nordicFormatVersion = NordicFormatVersion.VERSION2;
-                } else {
-                    // Default value
-                    nordicFormatVersion = NordicFormatVersion.VERSION1;
-                }
-
                 QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
                 SfileOverview sfileOverview =
-                        qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormatVersion);
+                        qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormVersion);
                 this.printQmlErrors(sfileOverview.getErrors());
                 sFiles.add(sfileOverview.getSfiletext());
 
@@ -221,13 +231,6 @@ public class Converter {
             try {
                 InputStream stream = QuakemlUtils.getQuakemlStreamFromWebService(webServiceUrl);
                 QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
-
-                NordicFormatVersion nordicFormatVersion = null;
-                if (arguments.isNordic1()) {
-                    nordicFormatVersion = NordicFormatVersion.VERSION1;
-                } else if (arguments.isNordic2()) {
-                    nordicFormatVersion = NordicFormatVersion.VERSION2;
-                }
 
                 SfileOverview sfileOverview =
                         qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormatVersion);
