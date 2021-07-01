@@ -194,7 +194,7 @@ public abstract class NordicToMomentTensorMapper {
             // String (ResourceReference) - ID generated in AfterMapping
             @Mapping(target = "publicID", ignore = true),
             // String (ResourceReference) - Pointer to Origin publicID
-            @Mapping(target = "derivedOriginID", source = "origin.publicID"),
+            @Mapping(target = "derivedOriginID", source = "line1.orgID"),
             // Comment (List) - NO MAPPING DETERMINED
             @Mapping(target = "comment", ignore = true),
             // DataUsed (List) - NO MAPPING DETERMINED
@@ -235,7 +235,7 @@ public abstract class NordicToMomentTensorMapper {
             // CreationInfo (Object) - Set in AfterMapping
             @Mapping(target = "creationInfo", ignore = true)
     })
-    public abstract MomentTensor mapLineM2(LineM2 lineM2, Line1 line1, Origin origin);
+    public abstract MomentTensor mapLineM2(LineM2 lineM2, Line1 line1);
 
     /*
      * AfterMappings - Handle conversion of properties that cannot be mapped directly or need modifications.

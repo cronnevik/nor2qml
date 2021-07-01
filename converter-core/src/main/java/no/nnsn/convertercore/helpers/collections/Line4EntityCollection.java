@@ -1,4 +1,4 @@
-package no.nnsn.convertercore.helpers;
+package no.nnsn.convertercore.helpers.collections;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,7 @@
 package no.nnsn.quakemlwebserviceingestorexecutable.components;
 
 import no.nnsn.convertercore.helpers.CallerType;
+import no.nnsn.convertercore.helpers.ConverterOptions;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
@@ -40,7 +41,8 @@ public class Converter {
         }
 
         try {
-            eventOverview = nordicToQml.getEvents(sFileEvents, null, CallerType.INGESTOR, arguments.getProfile(), id);
+            ConverterOptions options = new ConverterOptions(null, CallerType.INGESTOR, arguments.getProfile(), id);
+            eventOverview = nordicToQml.getEvents(sFileEvents, options);
             eventOverview.setFilename(path);
         } catch (Exception ex) {
             //throw new CustomException(ex.getMessage());

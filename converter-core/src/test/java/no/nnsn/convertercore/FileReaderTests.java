@@ -6,12 +6,11 @@ import no.nnsn.convertercore.mappers.interfaces.NordicMapper;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
 import no.nnsn.seisanquakemljpa.models.sfile.SfileData;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.SfileDataImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,9 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ConverterCoreConfiguration.class)
 public class FileReaderTests {
     @Autowired

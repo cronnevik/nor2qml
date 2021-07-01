@@ -2,6 +2,7 @@ package no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.Waveform.WaveformStreamID;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.NodalPlanes;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.PrincipalAxes;

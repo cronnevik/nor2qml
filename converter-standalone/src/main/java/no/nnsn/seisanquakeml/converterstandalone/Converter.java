@@ -3,10 +3,7 @@ package no.nnsn.seisanquakeml.converterstandalone;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.errors.IgnoredQmlError;
-import no.nnsn.convertercore.helpers.CallerType;
-import no.nnsn.convertercore.helpers.EventOverview;
-import no.nnsn.convertercore.helpers.NordicFormatVersion;
-import no.nnsn.convertercore.helpers.SfileOverview;
+import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
@@ -143,7 +140,8 @@ public class Converter {
 
         EventOverview eventOverview = null;
         try {
-            eventOverview = nordicToQml.getEvents(sFileEvents, null, CallerType.STANDALONE, null, "");
+            ConverterOptions options = new ConverterOptions(null, CallerType.STANDALONE, null, "");
+            eventOverview = nordicToQml.getEvents(sFileEvents, options);
             System.out.println("Number of events: " + eventOverview.getEventSize());
         } catch (Exception ex) {
             throw new CustomException(ex.getMessage());

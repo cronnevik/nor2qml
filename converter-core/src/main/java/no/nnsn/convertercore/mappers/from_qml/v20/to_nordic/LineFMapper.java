@@ -28,6 +28,10 @@ public abstract class LineFMapper {
             @Mapping(target = "strike", source = "focalMechanism.nodalPlanes.nodalPlane1.strike.value", qualifiedBy = DoubleToString.class),
             @Mapping(target = "dip", source = "focalMechanism.nodalPlanes.nodalPlane1.dip.value", qualifiedBy = DoubleToString.class),
             @Mapping(target = "rake", source = "focalMechanism.nodalPlanes.nodalPlane1.rake.value", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorStrike", source = "focalMechanism.nodalPlanes.nodalPlane1.strike.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorDip", source = "focalMechanism.nodalPlanes.nodalPlane1.dip.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorRake", source = "focalMechanism.nodalPlanes.nodalPlane1.rake.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "stationDistRatio", source = "focalMechanism.stationDistributionRatio", qualifiedBy = DoubleToString.class),
             @Mapping(target = "programUsed", source = "focalMechanism.methodID"),
             @Mapping(target = "agencyCode", ignore = true),
     })
@@ -39,6 +43,10 @@ public abstract class LineFMapper {
             @Mapping(target = "strike", source = "focalMechanism.nodalPlanes.nodalPlane1.strike.value", qualifiedBy = DoubleToString.class),
             @Mapping(target = "dip", source = "focalMechanism.nodalPlanes.nodalPlane1.dip.value", qualifiedBy = DoubleToString.class),
             @Mapping(target = "rake", source = "focalMechanism.nodalPlanes.nodalPlane1.rake.value", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorStrike", source = "focalMechanism.nodalPlanes.nodalPlane1.strike.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorDip", source = "focalMechanism.nodalPlanes.nodalPlane1.dip.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorRake", source = "focalMechanism.nodalPlanes.nodalPlane1.rake.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "stationDistRatio", source = "focalMechanism.stationDistributionRatio", qualifiedBy = DoubleToString.class),
             @Mapping(target = "programUsed", source = "focalMechanism.methodID"),
             @Mapping(target = "agencyCode", source = "focalMechanism.creationInfo.agencyID"),
             @Mapping(target = "blankField", ignore = true)
@@ -51,6 +59,10 @@ public abstract class LineFMapper {
             @Mapping(target = "strike", source = "focalMechanism.nodalPlanes.nodalPlane2.strike.value", qualifiedBy = DoubleToString.class),
             @Mapping(target = "dip", source = "focalMechanism.nodalPlanes.nodalPlane2.dip.value", qualifiedBy = DoubleToString.class),
             @Mapping(target = "rake", source = "focalMechanism.nodalPlanes.nodalPlane2.rake.value", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorStrike", source = "focalMechanism.nodalPlanes.nodalPlane1.strike.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorDip", source = "focalMechanism.nodalPlanes.nodalPlane1.dip.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "errorRake", source = "focalMechanism.nodalPlanes.nodalPlane1.rake.uncertainty", qualifiedBy = DoubleToString.class),
+            @Mapping(target = "stationDistRatio", source = "focalMechanism.stationDistributionRatio", qualifiedBy = DoubleToString.class),
             @Mapping(target = "programUsed", source = "focalMechanism.methodID"),
             @Mapping(target = "agencyCode", source = "focalMechanism.creationInfo.agencyID"),
             @Mapping(target = "blankField", ignore = true)

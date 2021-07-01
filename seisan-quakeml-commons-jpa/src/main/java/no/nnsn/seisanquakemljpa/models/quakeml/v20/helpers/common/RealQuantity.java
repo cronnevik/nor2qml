@@ -22,4 +22,9 @@ public class RealQuantity {
     public RealQuantity(Double value) {
         this.value = value;
     }
+
+    public RealQuantity(Double value, Double uncertainty) {
+        this.value = value;
+        this.uncertainty = uncertainty;
+    }
 }

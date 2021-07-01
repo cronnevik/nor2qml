@@ -1,11 +1,11 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20;
 
+import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.annotations.GeneralQualifiers;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.helpers.GeneralHelper;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.ChildChecker;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.NodalPlaneSetter;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.FocalMechanism;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.NodalPlanes;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineF;
@@ -32,7 +32,6 @@ public abstract class NordicToFocalMechMapper {
      *
      * @param lineF LineF object
      * @param line1 Line1 object
-     * @param org Origin object
      * @return FocalMechanism
      */
     @Mappings({
@@ -43,7 +42,7 @@ public abstract class NordicToFocalMechMapper {
             // WaveformStreamID (Object) - NO MAPPING DETERMINED
             @Mapping(target = "waveformID", ignore = true),
             // String - Pointer to Origin publicID
-            @Mapping(target = "triggeringOriginID", source = "org.publicID"),
+            @Mapping(target = "triggeringOriginID", source = "line1.orgID"),
             // NodalPlanes (Object) - set in AfterMapping
             @Mapping(target = "nodalPlanes", ignore = true),
             // PrincipalAxes (Object) - NO MAPPING DETERMINED
@@ -54,8 +53,8 @@ public abstract class NordicToFocalMechMapper {
             @Mapping(target = "azimuthalGap", ignore = true),
             // Double - NO MAPPING DETERMINED
             @Mapping(target = "misfit", ignore = true),
-            // Double - NO MAPPING DETERMINED
-            @Mapping(target = "stationDistributionRatio", ignore = true),
+            // Double - Set in AfterMapping
+            @Mapping(target = "stationDistributionRatio",source = "lineF.stationDistRatio", qualifiedBy = GeneralQualifiers.StringToDouble.class),
             // Integer - NO MAPPING DETERMINED
             @Mapping(target = "stationPolarityCount", ignore = true),
             // EvaluationMode (Enum) - NO MAPPING DETERMINED
@@ -65,7 +64,7 @@ public abstract class NordicToFocalMechMapper {
             // CreationInfo (Object)
             @Mapping(target = "creationInfo.agencyID", source="lineF.agencyCode")
     })
-    public abstract FocalMechanism mapFocalMech(LineF lineF, Line1 line1, Origin org);
+    public abstract FocalMechanism mapFocalMech(LineF lineF, Line1 line1);
 
     /*
      * AfterMappings - Handle conversion of properties that cannot be mapped directly or need modifications.

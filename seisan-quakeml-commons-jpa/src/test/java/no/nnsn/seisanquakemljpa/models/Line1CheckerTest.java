@@ -2,12 +2,12 @@ package no.nnsn.seisanquakemljpa.models;
 
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.utils.checkers.Line1Checker;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { ModelsAutoConfigure.class })
 public class Line1CheckerTest {
     @Test

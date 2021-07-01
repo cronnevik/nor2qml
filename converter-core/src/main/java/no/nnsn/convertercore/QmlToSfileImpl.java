@@ -39,6 +39,7 @@ public class QmlToSfileImpl implements QmlToSfile {
         String sfileText = new String();
         int eventCount = 0;
         List<IgnoredQmlError> errors = new ArrayList<>();
+        List<Sfile> sfiles = new ArrayList<>();
 
         StringBuilder emptyLine = new StringBuilder();
         for (int i = 0; i < 80; i++) {
@@ -268,7 +269,9 @@ public class QmlToSfileImpl implements QmlToSfile {
             }
 
             sfile.setData(sfileData);
+            sfiles.add(sfile);
 
+            // Create lines for print
 
             if (caller.equals(CallerType.STANDALONE)) {
                 Line1 line1 = (Line1) sfileData.getLine1s().get(0);
@@ -373,6 +376,10 @@ public class QmlToSfileImpl implements QmlToSfile {
             // New empty line for each event
             sfileText += emptyLine.toString() + System.lineSeparator();
 
+        }
+
+        if (caller.equals(CallerType.CONVERTER)) {
+            return new SfileOverview(sfileText, errors, sfiles);
         }
 
         return new SfileOverview(sfileText, errors);

@@ -1,20 +1,17 @@
 package no.nnsn.convertercore;
 
 import no.nnsn.convertercore.errors.IgnoredLineError;
-import no.nnsn.convertercore.helpers.CallerType;
-import no.nnsn.convertercore.helpers.EventOverview;
-import no.nnsn.convertercore.helpers.NordicFormatVersion;
-import no.nnsn.convertercore.helpers.SfileOverview;
+import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
 import no.nnsn.convertercore.mappers.interfaces.NordicMapper;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ConverterCoreConfiguration.class)
 public class ConvFromFiles {
     @Autowired
@@ -47,7 +44,8 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            EventOverview events = nordicToQml.getEvents(sfiles, "report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            EventOverview events = nordicToQml.getEvents(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of Picks: " + events.getEvents().get(0).getPick().size());
@@ -71,7 +69,8 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            EventOverview events = nordicToQml.getEvents(sfiles, "report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            EventOverview events = nordicToQml.getEvents(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of Picks: " + events.getEvents().get(0).getPick().size());
@@ -104,7 +103,8 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            EventOverview events = nordicToQml.getEvents(sfiles, "report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            EventOverview events = nordicToQml.getEvents(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of errors: " + events.getErrors().size());
@@ -123,7 +123,8 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            EventOverview events = nordicToQml.getEvents(sfiles, "report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            EventOverview events = nordicToQml.getEvents(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of errors: " + events.getErrors().size());

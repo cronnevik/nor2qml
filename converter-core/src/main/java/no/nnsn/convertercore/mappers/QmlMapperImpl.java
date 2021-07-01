@@ -99,10 +99,10 @@ public class QmlMapperImpl implements QmlMapper {
     }
 
     @Override
-    public Object mapLine1FocalMechanisms(LineF lineF, Origin origin) {
+    public Object mapLine1FocalMechanisms(LineF lineF) {
         FocalMechanism fmech;
         try {
-            fmech = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, lineF.getRelatedLine1(), origin);
+            fmech = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, lineF.getRelatedLine1());
         } catch (Exception ex) {
             IgnoredLineError errObj = new IgnoredLineError(ex.getMessage());
             errObj.setLine(lineF);
@@ -148,7 +148,8 @@ public class QmlMapperImpl implements QmlMapper {
                 // Check if LineF has any markers - INTAROS spesifications
                 if (StringUtils.isNotBlank(lineF.getBlankField())) {
                     if (lineF.getBlankField().equals("O")) {
-                        FocalMechanism currentFm = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i), org);
+                        Line1 line1 = l1s.get(i);
+                        FocalMechanism currentFm = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, line1);
                         String currentAgency = currentFm.getCreationInfo().getAgencyID();
 
                         // Check if the reporting agency is previously listed
@@ -172,7 +173,7 @@ public class QmlMapperImpl implements QmlMapper {
                         if (lineM2s != null) {
                             if (lineM2s.size() > 0) {
                                 LineM2 lineM2 = lineM2s.get(0);
-                                MomentTensor momentTensor = NordicToMomentTensorMapper.INSTANCE.mapLineM2(lineM2, l1s.get(i), org);
+                                MomentTensor momentTensor = NordicToMomentTensorMapper.INSTANCE.mapLineM2(lineM2, l1s.get(i));
                                 lastFocalMech.setMomentTensor(momentTensor);
                                 usedLineM2s.add(lineM2);
                             }
@@ -182,7 +183,7 @@ public class QmlMapperImpl implements QmlMapper {
                 }
 
                 // TODO - Implement Generic LineF mapping
-                FocalMechanism focalMechanism = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i), org);
+                FocalMechanism focalMechanism = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i));
 
             }
 
@@ -210,10 +211,10 @@ public class QmlMapperImpl implements QmlMapper {
     }
 
     @Override
-    public Object mapMomentTensor(LineM2 lineM2, Line1 line1, Origin org) {
+    public Object mapMomentTensor(LineM2 lineM2, Line1 line1) {
         MomentTensor mT;
         try {
-            mT = NordicToMomentTensorMapper.INSTANCE.mapLineM2(lineM2, line1, org);
+            mT = NordicToMomentTensorMapper.INSTANCE.mapLineM2(lineM2, line1);
         } catch (Exception ex) {
             IgnoredLineError errObj = new IgnoredLineError(ex.getMessage());
             errObj.setLine(lineM2);

@@ -11,7 +11,7 @@ import java.util.List;
 public interface QmlMapper {
     Object mapOrigin(Line1 line1, List<LineE> lEs, String errorHandling);
     List<Object> mapLine1Magnitudes(Line1 line1, Origin org);
-    Object mapLine1FocalMechanisms(LineF lineF, Origin origin);
+    Object mapLine1FocalMechanisms(LineF lineF);
     List<FocalMechanism> mapLine1FocalMechanismsOld(
             int iterator,
             List<LineF> lFs,
@@ -21,7 +21,7 @@ public interface QmlMapper {
             List<Line1> l1s,
             Origin org
     );
-    Object mapMomentTensor(LineM2 lineM2, Line1 line1, Origin org);
+    Object mapMomentTensor(LineM2 lineM2, Line1 line1);
     Object mapMomentTensorOrigin(LineM1 lineM1);
     Object mapMomentTensorMagnitude(LineM1 lineM1);
     Comment mapL3Comment(Line3 line3);

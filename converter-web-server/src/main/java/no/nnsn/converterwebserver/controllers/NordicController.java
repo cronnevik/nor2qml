@@ -5,6 +5,7 @@ import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.errors.SfileErrorResponse;
 import no.nnsn.convertercore.errors.SimpleErrorResponse;
 import no.nnsn.convertercore.helpers.CallerType;
+import no.nnsn.convertercore.helpers.ConverterOptions;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.mappers.utils.RandomString;
@@ -79,7 +80,8 @@ public class NordicController {
             prefix = "quakeml";
         }
         RandomString genString = new RandomString(12, new SecureRandom());
-        EventOverview eventOverview = nordicToQml.getEvents(sfiles, sfileOptions.getErrorHandling(), CallerType.WEBSERVER, null, genString.nextString());
+        ConverterOptions options = new ConverterOptions(sfileOptions.getErrorHandling(), CallerType.WEBSERVER, null, genString.nextString());
+        EventOverview eventOverview = nordicToQml.getEvents(sfiles, options);
 
         String errorHandling = sfileOptions.getErrorHandling();
         if (!errorHandling.equals("ignore")) {
