@@ -238,7 +238,7 @@ public class NordicToQmlImpl implements NordicToQml {
                 e.printStackTrace();
             }
 
-            // Attach linked onjects to event
+            // Attach linked objects to event
             try {
                 ev.setOrigin(origins);
                 ev.setMagnitude(magnitudes);
