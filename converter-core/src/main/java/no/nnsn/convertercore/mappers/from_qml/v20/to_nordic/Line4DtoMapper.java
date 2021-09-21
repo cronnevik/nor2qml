@@ -14,13 +14,17 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.Amplit
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickOnset;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.enums.PropertyIdType;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
 import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
@@ -74,9 +78,8 @@ public abstract class Line4DtoMapper {
 
         WaveformStreamID waveformID = null;
 
-        Pick pick = l4Entities.getPick();
-        if (pick != null) {
-            waveformID = pick.getWaveformID();
+        if (hasPick(l4Entities)) {
+            waveformID = l4Entities.getPick().getWaveformID();
         } else if (l4Entities.getAmplitude() != null) {
             Amplitude amp = l4Entities.getAmplitude();
             if (amp.getWaveformID() != null) {
@@ -109,7 +112,7 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setQualityIndicator(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        if (l4Entities.getPick() != null) {
+        if (hasPick(l4Entities)) {
             Pick pick = l4Entities.getPick();
             if (pick.getOnset() != null) {
                 PickOnset onset = pick.getOnset();
@@ -131,8 +134,8 @@ public abstract class Line4DtoMapper {
     @AfterMapping
     protected void setPhaseID(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
         String phase = null;
-        Pick pick = l4Entities.getPick();
-        if (pick != null) {
+        if (hasPick(l4Entities)) {
+            Pick pick = l4Entities.getPick();
             if (pick.getPhaseHint() != null) {
                 phase = pick.getPhaseHint();
             } else {
@@ -152,7 +155,7 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setHourMinSec(@MappingTarget Line4Dto line4Dto, Line4Entities line4Entities) {
-        if (line4Entities.getPick() != null) {
+        if (hasPick(line4Entities)) {
             Pick pick = line4Entities.getPick();
             if (pick.getTime() != null) {
                 String timeString = line4Entities.getPick().getTime().getValue();
@@ -197,7 +200,7 @@ public abstract class Line4DtoMapper {
     @AfterMapping
     protected void setParameterOne(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
         boolean pOneIsSet = false;
-        if (l4Entities.getPick() != null) {
+        if (hasPick(l4Entities)) {
             Pick pick = l4Entities.getPick();
             if (pick.getBackazimuth() != null) {
                 RealQuantity backazimuth = pick.getBackazimuth();
@@ -222,7 +225,7 @@ public abstract class Line4DtoMapper {
             }
         }
 
-        if (l4Entities.getAmplitude() != null) {
+        if (hasAmplitude(l4Entities)) {
             Amplitude amplitude = l4Entities.getAmplitude();
             if (amplitude.getGenericAmplitude() != null) {
                 RealQuantity genericAmplitude = amplitude.getGenericAmplitude();
@@ -272,11 +275,11 @@ public abstract class Line4DtoMapper {
     @AfterMapping
     protected void setParameterTwo(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
 
-        Boolean hasAmplitude = false;
-        Boolean hasBackAzimuth = false;
+        Boolean hasParameterAmplitude = false;
+        Boolean hasParameterBackAzimuth = false;
 
         // Check for amplitude
-        if (l4Entities.getAmplitude() != null) {
+        if (hasAmplitude(l4Entities)) {
             Amplitude amplitude = l4Entities.getAmplitude();
             if (amplitude.getGenericAmplitude() != null) {
                 RealQuantity genericAmplitude = amplitude.getGenericAmplitude();
@@ -298,26 +301,26 @@ public abstract class Line4DtoMapper {
                     }
 
                     if (type == ParameterOneType.AMPLITUDE) {
-                        hasAmplitude = true;
+                        hasParameterAmplitude = true;
                     }
                 }
             }
         }
 
         // Check for backAzimuth
-        if (l4Entities.getPick() != null) {
+        if (hasPick(l4Entities)) {
             if (l4Entities.getPick().getPhaseHint() != null) {
                 String phaseHint = l4Entities.getPick().getPhaseHint();
                 ParameterOneType type = PhaseParameters.identifyParameterOneType(null, phaseHint);
                 if (type == ParameterOneType.BACK_AZIMUTH) {
-                    hasBackAzimuth = true;
+                    hasParameterBackAzimuth = true;
                 }
             }
         }
 
         // If Amplitude, paramTwo should be period
-        if (hasAmplitude) {
-            if (l4Entities.getAmplitude() != null) {
+        if (hasParameterAmplitude) {
+            if (hasAmplitude(l4Entities)) {
                 Amplitude amplitude = l4Entities.getAmplitude();
                 if (amplitude.getPeriod() != null) {
                     RealQuantity period = amplitude.getPeriod();
@@ -329,8 +332,8 @@ public abstract class Line4DtoMapper {
         }
 
         // If Backazimuth, paramTwo should be apparent velocity(km/s)
-        if (hasBackAzimuth) {
-            if (l4Entities.getPick() != null) {
+        if (hasParameterBackAzimuth) {
+            if (hasPick(l4Entities)) {
                 Pick pick = l4Entities.getPick();
                 if (pick.getHorizontalSlowness() != null) {
                     RealQuantity horizontalSlowness = pick.getHorizontalSlowness();
@@ -350,7 +353,7 @@ public abstract class Line4DtoMapper {
         String operator = null;
 
         // Check if values are found in Pick object
-        if (l4Entities.getPick() != null) {
+        if (hasPick(l4Entities)) {
             if (l4Entities.getPick().getCreationInfo() != null) {
                 CreationInfo creationInfo = l4Entities.getPick().getCreationInfo();
                 if (creationInfo.getAgencyID() != null) {
@@ -363,7 +366,7 @@ public abstract class Line4DtoMapper {
         }
 
         // If not in Pick, check if values are found in Amplitude object
-        if (l4Entities.getAmplitude() != null) {
+        if (hasAmplitude(l4Entities)) {
             if (l4Entities.getAmplitude().getCreationInfo() != null) {
                 CreationInfo creationInfo = l4Entities.getAmplitude().getCreationInfo();
                 if (agency == null && creationInfo.getAgencyID() != null) {
@@ -376,7 +379,7 @@ public abstract class Line4DtoMapper {
         }
 
         // If not in Pick and Amplitude, check if values are found in Arrival object
-        if (l4Entities.getArrival() != null) {
+        if (hasArrival(l4Entities)) {
             if (l4Entities.getArrival().getCreationInfo() != null) {
                 CreationInfo creationInfo = l4Entities.getArrival().getCreationInfo();
                 if (agency == null && creationInfo.getAgencyID() != null) {
@@ -403,11 +406,10 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setWeightingIndicator(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        if (l4Entities.getArrival() != null) {
-
-            Arrival arr = l4Entities.getArrival();
-            if (arr.getTimeWeight() != null) {
-                Double timeWeight = arr.getTimeWeight();
+        if (hasArrival(l4Entities)) {
+            Arrival arrival = l4Entities.getArrival();
+            if (arrival.getTimeWeight() != null) {
+                Double timeWeight = arrival.getTimeWeight();
                 // QuakeML (0.5) => Nordic (05)
                 Double nordicTimeWeight = timeWeight * 10;
                 line4Dto.setWeightingIndicator(nordicTimeWeight.toString());
@@ -417,9 +419,8 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setAngleOfIncidence(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        Arrival arr = l4Entities.getArrival();
-        if (arr != null) {
-            String value = LineHelper.getRealQuantityValue(arr.getTakeoffAngle());
+        if (hasArrival(l4Entities)) {
+            String value = LineHelper.getRealQuantityValue(l4Entities.getArrival().getTakeoffAngle());
             if (value != null) {
                 line4Dto.setAngleOfIncidence(value);
             }
@@ -428,8 +429,8 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setResidual(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        Arrival arr = l4Entities.getArrival();
-        if (arr != null) {
+        if (hasArrival(l4Entities)) {
+            Arrival arrival = l4Entities.getArrival();
 
             // Get phaseID to identify which residual that should be converted
             String phaseID = null;
@@ -443,8 +444,8 @@ public abstract class Line4DtoMapper {
             }
             // If not, check within Arrival entity
             if (phaseID == null) {
-                if (arr.getPhase() != null) {
-                    phaseID = arr.getPhase();
+                if (arrival.getPhase() != null) {
+                    phaseID = arrival.getPhase();
                 }
             }
 
@@ -452,7 +453,7 @@ public abstract class Line4DtoMapper {
             Double residualValue = null;
 
             if (pOneType == ParameterOneType.BACK_AZIMUTH) {
-                residualValue = arr.getBackazimuthResidual();
+                residualValue = arrival.getBackazimuthResidual();
             }
 
             // Magnitude - END phases might have a magnitude residual
@@ -462,7 +463,7 @@ public abstract class Line4DtoMapper {
 
             // Set travel time (Phases - not amplitude, BAZ or END)
             if (pOneType != ParameterOneType.AMPLITUDE || pOneType != ParameterOneType.BACK_AZIMUTH || pOneType != ParameterOneType.DURATION) {
-                residualValue = arr.getTimeResidual();
+                residualValue = arrival.getTimeResidual();
             }
 
             if (residualValue != null) {
@@ -473,8 +474,23 @@ public abstract class Line4DtoMapper {
     }
 
     @AfterMapping
+    protected void setWeight(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
+        if (hasArrival(l4Entities)) {
+            if (l4Entities.getArrival().getComment() != null) {
+                List<Comment> comments = l4Entities.getArrival().getComment();
+                comments.forEach(comment -> {
+                    if (PropertyIdType.PROPERTY_WEIGHT.equalValue(comment.getId())) {
+                        String[] weightSplit = comment.getText().split("\\.");
+                        line4Dto.setWeight(weightSplit[0] + weightSplit[1]);
+                    };
+                });
+            }
+        }
+    }
+
+    @AfterMapping
     protected void setEpicentralDistance(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        if (l4Entities.getArrival() != null) {
+        if (hasArrival(l4Entities)) {
             Arrival arrival = l4Entities.getArrival();
             if (arrival.getDistance() != null) {
                 Double epDist = arrival.getDistance();
@@ -487,11 +503,23 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setAzimuthAtSource(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        if (l4Entities.getArrival() != null) {
+        if (hasArrival(l4Entities)) {
             Arrival arrival = l4Entities.getArrival();
             Double value = arrival.getAzimuth();
             Integer intValue = (int) Math.round(value);
             line4Dto.setAzimuthAtSource(intValue != null && !value.isNaN() ? intValue.toString() : null);
         }
+    }
+
+    private Boolean hasPick(Line4Entities l4Entities) {
+        return l4Entities.getPick() != null ? true : false;
+    }
+
+    private Boolean hasAmplitude(Line4Entities l4Entities) {
+        return l4Entities.getAmplitude() != null ? true : false;
+    }
+
+    private Boolean hasArrival(Line4Entities l4Entities) {
+        return l4Entities.getArrival() != null ? true : false;
     }
 }

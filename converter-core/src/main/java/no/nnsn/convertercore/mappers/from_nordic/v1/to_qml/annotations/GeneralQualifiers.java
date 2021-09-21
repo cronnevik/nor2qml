@@ -15,17 +15,17 @@ public class GeneralQualifiers {
      */
     @Qualifier
     @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.CLASS)
     public @interface StringToInteger {}
 
     @Qualifier
     @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.CLASS)
     public @interface StringToDouble {}
 
     @Qualifier
     @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.CLASS)
     public @interface StringToBoolean {}
 
 }

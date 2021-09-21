@@ -60,8 +60,8 @@ public class Line4Dto extends Line {
 
     public Line4Dto(String lineText, int rowNum) {
         this.initFields();
-        //this.setLineInfo(lineText, rowNum);
-        //this.setValues();
+        this.setLineInfo(lineText, rowNum);
+        this.setValues();
     }
 
     private void initFields() {
