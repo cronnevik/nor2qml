@@ -7,11 +7,17 @@ import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.ParameterOn
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.PhaseParameters;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Arrival;
+import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.enums.PropertyIdType;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
 import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mapper(
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
@@ -100,6 +106,24 @@ public abstract class NordicDtoToArrivalMapper {
             if (residualValue != null) {
                 arrival.setTimeResidual(residualValue);
             }
+        }
+    }
+
+    @AfterMapping
+    protected void setWeight(@MappingTarget Arrival arrival, Line4Dto line4Dto) {
+        String[] weightSplit = line4Dto.getWeight().split("");
+        String weight = weightSplit[0] + "." + weightSplit[1];
+
+        Comment comment = new Comment();
+        comment.setId(PropertyIdType.PROPERTY_WEIGHT.getPropertyIdtype());
+        comment.setText(weight);
+
+        if (arrival.getComment() != null) {
+            arrival.getComment().add(comment);
+        } else {
+            List<Comment> commentList = new ArrayList<>();
+            commentList.add(comment);
+            arrival.setComment(commentList);
         }
     }
 

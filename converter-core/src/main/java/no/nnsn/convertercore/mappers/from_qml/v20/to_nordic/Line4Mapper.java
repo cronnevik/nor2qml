@@ -12,6 +12,8 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.Waveform.WaveformStre
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeUnit;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickOnset;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
+import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.enums.PropertyIdType;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
@@ -19,6 +21,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * Mapper for QuakeML {@literal=>} Seisan Line type 4
@@ -56,7 +59,7 @@ public abstract class Line4Mapper {
             @Mapping(target = "angleOfIncidence", ignore = true),
             @Mapping(target = "backAzimuthResidual", ignore = true), // AfterMapping
             @Mapping(target = "travelTimeResidual", ignore = true),
-
+            @Mapping(target = "weight", ignore = true), // AfterMapping
             @Mapping(target = "epicentralDistance", ignore = true),
             @Mapping(target = "azimuthAtSource", ignore = true),
 
@@ -69,9 +72,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setStationName(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Pick pick = l4Entities.getPick();
-        if (pick != null) {
-            WaveformStreamID waveformID = pick.getWaveformID();
+        if (hasPick(l4Entities)) {
+            WaveformStreamID waveformID = l4Entities.getPick().getWaveformID();
             if (waveformID != null) {
                 String stationCode = waveformID.getStationCode();
                 if (stationCode != null) {
@@ -83,26 +85,26 @@ public abstract class Line4Mapper {
 
     // Instrument and Component
     @AfterMapping
-    protected void setInstrumentAndComponent(@MappingTarget Line4 line4, Line4Entities line4Entities) {
+    protected void setInstrumentAndComponent(@MappingTarget Line4 line4, Line4Entities l4Entities) {
 
         WaveformStreamID waveformID = null;
 
         // Check if pick element contains the values
-        if (line4Entities.getPick() != null) {
-            Pick pick = line4Entities.getPick();
+        if (hasPick(l4Entities)) {
+            Pick pick = l4Entities.getPick();
             if (pick.getWaveformID() != null) {
                 waveformID = pick.getWaveformID();
             }
             // If not, then check if Amplitude Entity contains the values
-            else if (line4Entities.getAmplitude() != null) {
-                Amplitude amp = line4Entities.getAmplitude();
+            else if (hasAmplitude(l4Entities)) {
+                Amplitude amp = l4Entities.getAmplitude();
                 if (amp.getWaveformID() != null) {
                     waveformID = amp.getWaveformID();
                 }
             }
         } // If not, then check if Amplitude Entity contains the values
-        else if (line4Entities.getAmplitude() != null) {
-            Amplitude amp = line4Entities.getAmplitude();
+        else if (hasAmplitude(l4Entities)) {
+            Amplitude amp = l4Entities.getAmplitude();
             if (amp.getWaveformID() != null) {
                 waveformID = amp.getWaveformID();
             }
@@ -130,11 +132,11 @@ public abstract class Line4Mapper {
     }
 
     @AfterMapping
-    protected void setHourMinSec(@MappingTarget Line4 line4, Line4Entities line4Entities) {
-        if (line4Entities.getPick() != null) {
-            Pick pick = line4Entities.getPick();
+    protected void setHourMinSec(@MappingTarget Line4 line4, Line4Entities l4Entities) {
+        if (hasPick(l4Entities)) {
+            Pick pick = l4Entities.getPick();
             if (pick.getTime() != null) {
-                String timeString = line4Entities.getPick().getTime().getValue();
+                String timeString = pick.getTime().getValue();
                 // Zoned DateTime (e.g. 2015-11-30T00:00:15.50Z)
                 if(timeString.substring(timeString.length() -1 ).equals("Z")) {
                     ZonedDateTime timeZoned = ZonedDateTime.parse(timeString);
@@ -170,9 +172,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setDirectionDegrees(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Pick pick = l4Entities.getPick();
-        if (pick != null) {
-            String value = LineHelper.getRealQuantityValue(pick.getBackazimuth());
+        if (hasPick(l4Entities)) {
+            String value = LineHelper.getRealQuantityValue(l4Entities.getPick().getBackazimuth());
             if (value != null) {
                 line4.setDirectionDegrees(value);
             }
@@ -181,9 +182,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setPhaseVelocity(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Pick pick = l4Entities.getPick();
-        if (pick != null) {
-            String value = LineHelper.getRealQuantityValue(pick.getHorizontalSlowness());
+        if (hasPick(l4Entities)) {
+            String value = LineHelper.getRealQuantityValue(l4Entities.getPick().getHorizontalSlowness());
             if (value != null) {
                 line4.setPhaseVelocity(value);
             }
@@ -202,7 +202,7 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setQualityIndicator(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        if (l4Entities.getPick() != null) {
+        if (hasPick(l4Entities)) {
             Pick pick = l4Entities.getPick();
             if (pick.getOnset() != null) {
                 PickOnset onset = pick.getOnset();
@@ -223,9 +223,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setPhaseID(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Pick pick = l4Entities.getPick();
-        if (pick != null) {
-            String phaseHint = pick.getPhaseHint();
+        if (hasPick(l4Entities)) {
+            String phaseHint = l4Entities.getPick().getPhaseHint();
             if (phaseHint != null) {
                 line4.setPhaseID(phaseHint);
             }
@@ -234,7 +233,7 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setFirstMotion(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        if (l4Entities.getPick() != null) {
+        if (hasPick(l4Entities)) {
             Pick pick = l4Entities.getPick();
             if (pick.getPolarity() != null) {
                 PickPolarity polarity = pick.getPolarity();
@@ -260,9 +259,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setAmplitude(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Amplitude amp = l4Entities.getAmplitude();
-        if (amp != null) {
-            String value = LineHelper.getRealQuantityValue(amp.getGenericAmplitude());
+        if (hasAmplitude(l4Entities)) {
+            String value = LineHelper.getRealQuantityValue(l4Entities.getAmplitude().getGenericAmplitude());
             if (value != null) {
                 line4.setAmplitude(value);
             }
@@ -271,7 +269,7 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void convertAmpByUnit(@MappingTarget Line4 line4, Line4Entities l4Entities){
-        if (line4.getAmplitude() != null && l4Entities.getAmplitude() != null) {
+        if (line4.getAmplitude() != null && hasAmplitude(l4Entities)) {
             Amplitude amp = l4Entities.getAmplitude();
             String ampStringValue = line4.getAmplitude();
             AmplitudeUnit ampUnit = amp.getUnit();
@@ -296,9 +294,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setPeriodSeconds(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Amplitude amp = l4Entities.getAmplitude();
-        if (amp != null) {
-            String value = LineHelper.getRealQuantityValue(amp.getPeriod());
+        if (hasAmplitude(l4Entities)) {
+            String value = LineHelper.getRealQuantityValue(l4Entities.getAmplitude().getPeriod());
             if (value != null) {
                 line4.setPeriodSeconds(value);
             }
@@ -307,7 +304,7 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setAmpPhaseID(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        if (l4Entities.getAmplitude() != null) {
+        if (hasAmplitude(l4Entities)) {
             Amplitude amp = l4Entities.getAmplitude();
 
             // Set PhaseID if it is not already set by Pick entity
@@ -319,7 +316,7 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void SetAmpInstrumentAndComponent(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        if (l4Entities.getAmplitude() != null) {
+        if (hasAmplitude(l4Entities)) {
             Amplitude amp = l4Entities.getAmplitude();
 
             // Set Instrument and component if it is not already set by Pick entity
@@ -334,9 +331,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setAngleOfIncidence(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Arrival arr = l4Entities.getArrival();
-        if (arr != null) {
-            String value = LineHelper.getRealQuantityValue(arr.getTakeoffAngle());
+        if (hasArrival(l4Entities)) {
+            String value = LineHelper.getRealQuantityValue(l4Entities.getArrival().getTakeoffAngle());
             if (value != null) {
                 line4.setAngleOfIncidence(value);
             }
@@ -345,12 +341,11 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setWeightingIndicator(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        if (l4Entities.getArrival() != null) {
-
-            Arrival arr = l4Entities.getArrival();
-            if (arr.getTimeWeight() != null) {
+        if (hasArrival(l4Entities)) {
+            Arrival arrival = l4Entities.getArrival();
+            if (arrival.getTimeWeight() != null) {
                 // muliply by 100 for the convertion to int, as double cant be switched
-                Double timeWeight = arr.getTimeWeight() * 100;
+                Double timeWeight = arrival.getTimeWeight() * 100;
                 int switchNum = timeWeight.intValue();
                 switch (switchNum) {
                     case 0:
@@ -374,7 +369,7 @@ public abstract class Line4Mapper {
                 }
 
                 // Check for long phase name and set weight accordingly to column 9 of line4
-                String phaseID = arr.getPhase();
+                String phaseID = arrival.getPhase();
                 if (phaseID != null) {
                     if (phaseID.length() > 5) {
                         line4.setFreeOrWeight(line4.getWeightingIndicator());
@@ -387,7 +382,7 @@ public abstract class Line4Mapper {
     
     @AfterMapping
     protected void setBackAzimuthResidual(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        if (l4Entities.getArrival() != null) {
+        if (hasArrival(l4Entities)) {
             Arrival arrival = l4Entities.getArrival();
             if (arrival.getBackazimuthResidual() != null) {
                 Double bResDouble = arrival.getBackazimuthResidual();
@@ -399,9 +394,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setTravelTimeResidual(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Arrival arr = l4Entities.getArrival();
-        if (arr != null) {
-            Double value = arr.getTimeResidual();
+        if (hasArrival(l4Entities)) {
+            Double value = l4Entities.getArrival().getTimeResidual();
             if (value != null) {
                 if (!value.isNaN()) {
                     line4.setTravelTimeResidual(Double.toString(value));
@@ -410,11 +404,24 @@ public abstract class Line4Mapper {
         }
     }
 
+    @AfterMapping
+    protected void setWeight(@MappingTarget Line4 line4, Line4Entities l4Entities) {
+        if (hasArrival(l4Entities)) {
+            if (l4Entities.getArrival().getComment() != null) {
+                List<Comment> comments = l4Entities.getArrival().getComment();
+                comments.forEach(comment -> {
+                    if (PropertyIdType.PROPERTY_WEIGHT.equalValue(comment.getId())) {
+                        String[] weightSplit = comment.getText().split(".");
+                        line4.setWeight(weightSplit[0] + weightSplit[1]);
+                    };
+                });
+            }
+        }
+    }
 
     @AfterMapping
     protected void setEpicentralDistanceToKm(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-
-        if (l4Entities.getArrival() != null) {
+        if (hasArrival(l4Entities)) {
             Arrival arrival = l4Entities.getArrival();
             if (arrival.getDistance() != null) {
                 Double epDist = arrival.getDistance();
@@ -428,9 +435,8 @@ public abstract class Line4Mapper {
 
     @AfterMapping
     protected void setAzimuthAtSourceFromDoubleToInt(@MappingTarget Line4 line4, Line4Entities l4Entities) {
-        Arrival arrival = l4Entities.getArrival();
-        if (arrival != null) {
-            Double value = arrival.getAzimuth();
+        if (hasArrival(l4Entities)) {
+            Double value = l4Entities.getArrival().getAzimuth();
             line4.setAzimuthAtSource(value != null && !value.isNaN() ? Double.toString(value) : null);
 
             if (line4.getAzimuthAtSource().contains(".")) {
@@ -439,6 +445,18 @@ public abstract class Line4Mapper {
                 line4.setAzimuthAtSource(intValue.toString());
             }
         }
+    }
+
+    private Boolean hasPick(Line4Entities l4Entities) {
+        return l4Entities.getPick() != null ? true : false;
+    }
+
+    private Boolean hasAmplitude(Line4Entities l4Entities) {
+        return l4Entities.getAmplitude() != null ? true : false;
+    }
+
+    private Boolean hasArrival(Line4Entities l4Entities) {
+        return l4Entities.getArrival() != null ? true : false;
     }
 
 }
