@@ -61,7 +61,7 @@ public class Line4 extends Line {
     private PropertyObject backAzimuthResidual =
             new PropertyObject("Back azimuth residual", 61, 63, PropertyType.INTEGER);
     private PropertyObject travelTimeResidual =
-            new PropertyObject("Travel time residual", 64, 68, PropertyType.DOUBLE, 1);
+            new PropertyObject("Travel time residual", 64, 68, PropertyType.DOUBLE, 2);
     private PropertyObject weight =
             new PropertyObject("Weight", 69, 70, PropertyType.INTEGER);
     private PropertyObject epicentralDistance =

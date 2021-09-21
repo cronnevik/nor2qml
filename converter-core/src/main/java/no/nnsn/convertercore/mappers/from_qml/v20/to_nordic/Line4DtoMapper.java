@@ -480,7 +480,7 @@ public abstract class Line4DtoMapper {
                 List<Comment> comments = l4Entities.getArrival().getComment();
                 comments.forEach(comment -> {
                     if (PropertyIdType.PROPERTY_WEIGHT.equalValue(comment.getId())) {
-                        String[] weightSplit = comment.getText().split(".");
+                        String[] weightSplit = comment.getText().split("\\.");
                         line4Dto.setWeight(weightSplit[0] + weightSplit[1]);
                     };
                 });
