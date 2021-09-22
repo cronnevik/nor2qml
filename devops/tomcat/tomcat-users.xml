@@ -5,6 +5,6 @@
 	version="1.0">
 	<role rolename="manager-gui" />
 	<role rolename="manager-script" />
-	<user username="nnsn" password="nnsn"
-		roles="manager-gui,manager-script" />
+	<user username="epos" password="epos"
+		  roles="manager-gui,manager-script" />
 </tomcat-users>

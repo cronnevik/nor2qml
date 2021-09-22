@@ -10,7 +10,7 @@ services:
       - 3306:3306
     restart: always
     environment:
-      MYSQL_DATABASE: intaros
+      MYSQL_DATABASE: nnsn
       MYSQL_USER: epos
       MYSQL_PASSWORD: epos
       MYSQL_ROOT_PASSWORD: root
@@ -29,7 +29,7 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/intaros?autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/nnsn?autoReconnect=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: epos
       SPRING_DATASOURCE_PASSWORD: epos
 #Volumes

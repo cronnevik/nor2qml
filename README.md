@@ -13,37 +13,68 @@ To simplify the build of the applications and the modules they depend on, maven 
 To build an application, enter the command:\
 ``` mvn clean install -P  <maven profile name>```
 
-The maven build tool then produce a jar or a war file which is found in the *target* folder within the component/application folder.\
+The maven build tool then produce a jar or a war file which is found in the *target* folder within the component/application folder.
 
+## Applications
+* Standalone converter (*executable jar*) - file conversion locally on the computer
+* Ingestor (*executable jar*) - providing data to the web-service
+* Web-service (*war file*) for data exchange (QuakeML, Nordic and text format)
+* Web converter (*war file*) - web application for conversion in the browser - server and client
+
+##How to run the applications
+###Executable jars
 The jar files is executable by:\
 ``` java -jar <name of file.jar> ```
 
+Please be aware that the executable *quakeml-web-service-ingestor* application require a MySQL database running.
+Configurations for the MySQL connection can be altered by changing the values in the *database.yml* file located at
+the path: */quakeml-web-service-ingestor-executable/src/main/resources*
+
+###War files
 The war files produces are applications ment for servers. For deployment these could be uploaded and made runnable by a Tomcat server.\
 If you would like to run the server applications locally, an embedded tomcat server is applied and can be initiated by navigating into the application folder
 and execute the command: 
 
 ``` mvn spring-boot:run ```
 
-Please be aware that the *quakeml-web-service* and *quakeml-web-service-ingestor* applications require a MySQL database running.\
-Configurations for the MySQL connection can be altered by changing the values in the *database.yml* file located within the application folder
-following the path: *src/main/resources*
+Please be aware that the *quakeml-web-service*mapplication require a MySQL database running.
+Configurations for the MySQL connection can be altered by changing the values in the *application.yml* file located within the application folder
+following the path: */quakeml-web-service/src/main/resources*. Change the name (database name), username and password 
+under the profile section for *prod*.
 
-A docker configuration has also been implemented to bypass the requirement of installing MySQL and a possible tomcat server for the web-service.\ 
-By running the docker-compose file a virtual container spins up to initiate the database and host the web-service application. 
-The database setup like database name, user, password can be changed within the *docker-compose.yml* file directly, but please change the credentials
-in the *database.yml* file for the applications as well as described in the previous paragraph. 
+###Docker
+A docker configuration has also been implemented to bypass the requirement of installing 
+MySQL (ingestor, web-service) and a tomcat server for the web-service. Within docker, a virtual container spins up 
+to initiate the database and host the web-service application.The docker option is only for running the
+web-service application, but creates a MySQL instance that can be populated with data by executing the ingestor application
+separately as an executable jar.
 
-Run the docker by first installing Docker on your computer and then in the main folder, enter:\
+####Configure Database and Tomcat server
+The database setup for the MySQL instance (like database name, user, password) have some default test values. 
+These values can be altered directly within the*docker-compose.yml* file, 
+but a change in credentials is also needed for the application itself. Please see the description
+in the last paragraph under the *War files* section. In addition, the tomcat server have their own credentials for 
+installing and hosting the web-service application. These values are defined in the *tomcat-users.xml* found 
+at *./quakeml-web-service/src/main/resources/*. The same credentials 
+
+To summarise, the following files is where configurations can be applied:
+ - *docker-compose.yml* in main folder
+ - *tomcat-users.xml* under *./devops/tomcat/*
+ - *application.yml* under *./quakeml-web-service/src/main/resources/*
+
+####Running docker
+Make sure that you have docker installed on your computer and that it is running.
+Open a terminal, navigate to the main folder and enter:\
 ``` docker-compose up```
 
 To shutdown the docker instances, enter:\
 ``` docker-compose down ```
 
-## Applications
- * Standalone converter (executable jar file for conversion)
- * Web converter (web application for conversion in the browser - server and client)
- * Web-service for data exchange (QuakeML, Nordic and text format)
- * Ingestor (executable jar for providing data to the web-service)
+If you already did a run and want to change the database credentials,  add the flag '-v' like so:\
+``` docker-compose down -v ```
+
+Please be aware that the '-v' flag will permanently delete the database volume, and you will lose all the data stored
+within the database created within the MySQL instance.
 
 ## Modules
 Components | Maven profiles | Produces | Description
