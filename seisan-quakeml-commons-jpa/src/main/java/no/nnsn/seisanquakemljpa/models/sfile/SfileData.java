@@ -1,38 +1,197 @@
 package no.nnsn.seisanquakemljpa.models.sfile;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.SfileDataImpl;
+import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
+import no.nnsn.seisanquakemljpa.models.sfile.v2.SfileDataDtoImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SfileData {
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SfileDataImpl.class, name = "sfilenordic"),
+        @JsonSubTypes.Type(value = SfileDataDtoImpl.class, name = "sfilnordic2") })
+public abstract class SfileData {
+    private List<Line1> line1s;
+    private List<Line2> line2s;
+    private List<Line3> line3s;
+    private List<Line5> line5s;
+    private List<Line6> line6s;
+    private List<LineE> lineEs;
+    private List<LineF> lineFs;
+    private List<LineH> lineHs;
+    private List<LineI> lineIs;
+    private List<LineM1> lineM1s;
+    private List<LineM2> lineM2s;
+    private List<LineS> lineSs;
     private List<String> unmapped;
 
-    public abstract List getLine1s();
-    public abstract void addLine1(Object o);
-    public abstract List getLine2s();
-    public abstract void addLine2(Object o);
-    public abstract List getLine3s();
-    public abstract void addLine3(Object o);
     public abstract List getLine4s();
     public abstract void addLine4(Object o);
-    public abstract List getLine5s();
-    public abstract void addLine5(Object o);
-    public abstract List getLine6s();
-    public abstract void addLine6(Object o);
-    public abstract List getLineEs();
-    public abstract void addLineE(Object o);
-    public abstract List getLineFs();
-    public abstract void addLineF(Object o);
-    public abstract List getLineHs();
-    public abstract void addLineH(Object o);
-    public abstract List getLineIs();
-    public abstract void addLineI(Object o);
-    public abstract List getLineM1s();
-    public abstract void addLineM1(Object o);
-    public abstract List getLineM2s();
-    public abstract void addLineM2(Object o);
-    public abstract List getLineSs();
-    public abstract void addLineS(Object o);
+    public abstract void clearLine4Lists();
+
+    public List getLine1s() {
+        return this.line1s;
+    }
+    public void addLine1(Object o) {
+        if (o instanceof Line1) {
+            Line1 l1 = (Line1) o;
+            if (line1s == null) {
+                line1s = new ArrayList<>();
+            }
+            line1s.add(l1);
+        }
+    }
+
+    public List getLine2s() {
+        return this.line2s;
+    }
+    public void addLine2(Object o) {
+        if (o instanceof Line2) {
+            Line2 l2 = (Line2) o;
+            if (line2s == null) {
+                line2s = new ArrayList<>();
+            }
+            line2s.add(l2);
+        }
+    }
+
+
+    public List getLine3s() {
+        return this.line3s;
+    }
+    public void addLine3(Object o) {
+        if (o instanceof Line3) {
+            Line3 l3 = (Line3) o;
+            if (line3s == null) {
+                line3s = new ArrayList<>();
+            }
+            line3s.add(l3);
+        }
+    }
+
+    public List getLine5s() {
+        return this.line5s;
+    }
+    public void addLine5(Object o) {
+        if (o instanceof Line5) {
+            Line5 l5 = (Line5) o;
+            if (line5s == null) {
+                line5s = new ArrayList<>();
+            }
+            line5s.add(l5);
+        }
+    }
+
+    public List getLine6s() {
+        return this.line6s;
+    }
+    public void addLine6(Object o) {
+        if (o instanceof Line6) {
+            Line6 l6 = (Line6) o;
+            if (line6s == null) {
+                line6s = new ArrayList<>();
+            }
+            line6s.add(l6);
+        }
+    }
+
+    public List getLineEs() {
+        return this.lineEs;
+    }
+    public void addLineE(Object o) {
+        if (o instanceof LineE) {
+            LineE lE = (LineE) o;
+            if (lineEs == null) {
+                lineEs = new ArrayList<>();
+            }
+            lineEs.add(lE);
+        }
+    }
+
+    public List getLineFs() {
+        return this.lineFs;
+    }
+    public void addLineF(Object o) {
+        if (o instanceof LineF) {
+            LineF lF = (LineF) o;
+            if (lineFs == null) {
+                lineFs = new ArrayList<>();
+            }
+            lineFs.add(lF);
+        }
+    }
+
+    public List getLineHs() {
+        return this.lineHs;
+    }
+    public void addLineH(Object o) {
+        if (o instanceof LineH) {
+            LineH lH = (LineH) o;
+            if (lineHs == null) {
+                lineHs = new ArrayList<>();
+            }
+            lineHs.add(lH);
+        }
+    }
+
+    public List getLineIs() {
+        return this.lineIs;
+    }
+    public void addLineI(Object o) {
+        if (o instanceof LineI) {
+            LineI lI = (LineI) o;
+            if (lineIs == null) {
+                lineIs = new ArrayList<>();
+            }
+            lineIs.add(lI);
+        }
+    }
+
+    public List getLineM1s() {
+        return this.lineM1s;
+    }
+    public void addLineM1(Object o) {
+        if (o instanceof LineM1) {
+            LineM1 lM1 = (LineM1) o;
+            if (lineM1s == null) {
+                lineM1s = new ArrayList<>();
+            }
+            lineM1s.add(lM1);
+        }
+    }
+
+    public List getLineM2s() {
+        return this.lineM2s;
+    }
+    public void addLineM2(Object o) {
+        if (o instanceof LineM2) {
+            LineM2 lM2 = (LineM2) o;
+            if (lineM2s == null) {
+                lineM2s = new ArrayList<>();
+            }
+            lineM2s.add(lM2);
+        }
+    }
+
+    public List getLineSs() {
+        return this.lineSs;
+    }
+    public void addLineS(Object o) {
+        if (o instanceof LineS) {
+            LineS lS = (LineS) o;
+            if (lineSs == null) {
+                lineSs = new ArrayList<>();
+            }
+            lineSs.add(lS);
+        }
+    }
 
     public List<String> getUnmapped() {
         return this.unmapped;
@@ -45,5 +204,17 @@ public abstract class SfileData {
     }
 
     public void clearUnmappedList() {this.unmapped = new ArrayList<>();}
-    public abstract void clearLineLists();
+
+    public void clearLineLists() {
+        line1s = new ArrayList<>();
+        line2s = new ArrayList<>();
+        line3s = new ArrayList<>();
+        line5s = new ArrayList<>();
+        line6s = new ArrayList<>();
+        lineEs = new ArrayList<>();
+        lineFs = new ArrayList<>();
+        lineIs = new ArrayList<>();
+        lineM1s = new ArrayList<>();
+        lineM2s = new ArrayList<>();
+    }
 }

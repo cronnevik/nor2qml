@@ -1,9 +1,13 @@
 package no.nnsn.seisanquakeml.seisanquakemlcommonsweb.helpers;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
 
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class SfileContext {
     private SfileOptions options;
     private List<Sfile> sfiles;

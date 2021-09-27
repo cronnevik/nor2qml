@@ -85,17 +85,17 @@
     <tbody>
       <tr *ngFor="let ev of events; let i = index">
         <td class="num-bold">{{ i + 1 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line1')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.line1 ? ev.line1.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line2')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.line2 ? ev.line2.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line3')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.line3 ? ev.line3.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line4')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.line4 ? ev.line4.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line5')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.line5 ? ev.line5.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line6')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.line6 ? ev.line6.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineE')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.lineE ? ev.lineE.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineF')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.lineF ? ev.lineF.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineI')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.lineI ? ev.lineI.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineM1s')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.lineM1s ? ev.lineM1s.length : 0 }}</td>
-        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineM2s')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.lineM2s ? ev.lineM2s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line1')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.line1s ? ev.data.line1s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line2')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.line2s ? ev.data.line2s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line3')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.line3s ? ev.data.line3s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line4')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.line4s ? ev.data.line4s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line5')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.line5s ? ev.data.line5s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'line6')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.line6s ? ev.data.line6s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineE')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.lineEs ? ev.data.lineEs.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineF')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.lineFs ? ev.data.lineFs.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineI')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.lineIs ? ev.data.lineIs.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineM1s')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.lineM1s ? ev.data.lineM1s.length : 0 }}</td>
+        <td class="cursor-pointer type-num-link" (click)="userSelectLine(ev, 'lineM2s')" data-toggle="modal" data-target="#sfileModalLine">{{ ev.data.lineM2s ? ev.data.lineM2s.length : 0 }}</td>
         <td>
           <i class="fa fa-info-circle cursor-pointer" data-toggle="modal" data-target="#sfileModalRaw" (click)="userSelectRaw(ev)"></i>
           <i class="fa fa-trash cursor-pointer margin-left-10" (click)="deleteEventFromList(ev)"></i>

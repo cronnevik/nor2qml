@@ -254,6 +254,7 @@ public class SfileLineReader {
         Sfile sfile = new Sfile();
         sfile.setFilename(filename);
         sfile.setData(this.getData());
+        sfile.setVersion(this.versionLine7);
         this.result.add(sfile);
         initSequenceValues();
     }
