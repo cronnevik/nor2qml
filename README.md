@@ -21,8 +21,8 @@ The maven build tool then produce a jar or a war file which is found in the *tar
 * Web-service (*war file*) for data exchange (QuakeML, Nordic and text format)
 * Web converter (*war file*) - web application for conversion in the browser - server and client
 
-##How to run the applications
-###Executable jars
+## How to run the applications
+### Executable jars
 The jar files is executable by:\
 ``` java -jar <name of file.jar> ```
 
@@ -30,7 +30,7 @@ Please be aware that the executable *quakeml-web-service-ingestor* application r
 Configurations for the MySQL connection can be altered by changing the values in the *database.yml* file located at
 the path: */quakeml-web-service-ingestor-executable/src/main/resources*
 
-###War files
+### War files
 The war files produces are applications ment for servers. For deployment these could be uploaded and made runnable by a Tomcat server.\
 If you would like to run the server applications locally, an embedded tomcat server is applied and can be initiated by navigating into the application folder
 and execute the command: 
@@ -42,14 +42,14 @@ Configurations for the MySQL connection can be altered by changing the values in
 following the path: */quakeml-web-service/src/main/resources*. Change the name (database name), username and password 
 under the profile section for *prod*.
 
-###Docker
+### Docker
 A docker configuration has also been implemented to bypass the requirement of installing 
 MySQL (ingestor, web-service) and a tomcat server for the web-service. Within docker, a virtual container spins up 
 to initiate the database and host the web-service application.The docker option is only for running the
 web-service application, but creates a MySQL instance that can be populated with data by executing the ingestor application
 separately as an executable jar.
 
-####Configure Database and Tomcat server
+#### Configure Database and Tomcat server
 The database setup for the MySQL instance (like database name, user, password) have some default test values. 
 These values can be altered directly within the*docker-compose.yml* file, 
 but a change in credentials is also needed for the application itself. Please see the description
@@ -62,7 +62,7 @@ To summarise, the following files is where configurations can be applied:
  - *tomcat-users.xml* under *./devops/tomcat/*
  - *application.yml* under *./quakeml-web-service/src/main/resources/*
 
-####Running docker
+#### Running docker
 Make sure that you have docker installed on your computer and that it is running.
 Open a terminal, navigate to the main folder and enter:\
 ``` docker-compose up```
