@@ -28,12 +28,7 @@ import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.List;
 
-@CrossOrigin(
-        origins = "http://localhost:4200",
-        allowCredentials = "true",
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT}
-)
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class NordicController {
     final NordicToQml nordicToQml;
