@@ -5,13 +5,15 @@ import { environment } from '../../../environments/environment';
 import { Sfile } from 'src/app/shared/models/sfile.model';
 import { ErrorSfile } from '../../shared/models/errorSfile.model';
 import {IgnoredError} from "../../shared/models/ignoredError.model";
+import {SfileObj} from "../../shared/models/sfileObj.model";
+import {SfileData} from "../../shared/models/sfileData";
 declare var require: any;
 
 @Injectable()
 export class SfileToQmlService {
 
     baseUrl = environment.baseUrl;
-    sfileData: Sfile[];
+    sfileData: SfileObj[];
     testData: string;
     version: string;
 
@@ -28,17 +30,12 @@ export class SfileToQmlService {
         this.sfileData = null;
     }
 
-    public setLinesData(lines: Sfile[]) {
-        if (this.sfileData == null || this.sfileData.length < 0) {
-            this.sfileData = lines;
-        } else {
-            lines.forEach(line => {
-                this.sfileData.push(line);
-            });
-        }
+    public setLinesData(sfiles: SfileObj[]) {
+      console.log(sfiles)
+      this.sfileData = sfiles;
     }
 
-    public getLinesData(): Sfile[] {
+    public getLinesData(): SfileObj[] {
         return this.sfileData;
     }
 
