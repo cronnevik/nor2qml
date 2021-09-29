@@ -27,7 +27,7 @@ import java.util.Properties;
 )
 @PropertySources({
         @PropertySource({"classpath:jpa.properties" }),
-        @PropertySource(value = "classpath:database.yml", factory = YamlPropertySourceFactory.class)
+        @PropertySource(value = "classpath:application.yml", factory = YamlPropertySourceFactory.class)
 })
 @EnableTransactionManagement
 public class JpaConfig {
@@ -46,10 +46,10 @@ public class JpaConfig {
         dataSource.setDriverClassName(environment.getProperty("datasource.driver-class-name"));
         dataSource.setJdbcUrl(
                 environment.getProperty("datasource.url_prefix") +
-                        environment.getProperty("database.address") + ":" +
-                        environment.getProperty("database.port") + "/" +
-                        environment.getProperty("database.name") + "?" +
-                        environment.getProperty("datasource.url_properties")
+                environment.getProperty("database.address") + ":" +
+                environment.getProperty("database.port") + "/" +
+                environment.getProperty("database.name") + "?" +
+                environment.getProperty("datasource.url_properties")
         );
         dataSource.setUsername(environment.getProperty("database.username"));
         dataSource.setPassword(environment.getProperty("database.password"));
