@@ -23,12 +23,12 @@ The maven build tool then produce a jar or a war file which is found in the *tar
 
 ## How to run the applications
 ### Executable jars
-The jar files is executable by:\
+The jar files (located in the target folder of the application) is executable by the command:\
 ``` java -jar <name of file.jar> ```
 
 Please be aware that the executable *quakeml-web-service-ingestor* application require a MySQL database running.
-Configurations for the MySQL connection can be altered by changing the values in the *database.yml* file located at
-the path: */quakeml-web-service-ingestor-executable/src/main/resources*
+Configurations for the MySQL connection can be altered by changing the values in the *.env* file located 
+in the project root folder.
 
 ### War files
 The war files produces are applications ment for servers. For deployment these could be uploaded and made runnable by a Tomcat server.\
@@ -38,29 +38,42 @@ and execute the command:
 ``` mvn spring-boot:run ```
 
 Please be aware that the *quakeml-web-service*mapplication require a MySQL database running.
-Configurations for the MySQL connection can be altered by changing the values in the *application.yml* file located within the application folder
-following the path: */quakeml-web-service/src/main/resources*. Change the name (database name), username and password 
-under the profile section for *prod*.
+Configurations for the MySQL connection can be altered by changing the values in *.env* file located
+in the project root folder.
 
 ### Docker
 A docker configuration has also been implemented to bypass the requirement of installing 
-MySQL (ingestor, web-service) and a tomcat server for the web-service. Within docker, a virtual container spins up 
-to initiate the database and host the web-service application.The docker option is only for running the
-web-service application, but creates a MySQL instance that can be populated with data by executing the ingestor application
-separately as an executable jar.
+MySQL (ingestor, web-service) and a tomcat server for the web-service. Within docker, a virtual containers spins up 
+to initiate the database, host the web-service application and populates the database with data
+from one or multiple catalog(s).
 
-#### Configure Database and Tomcat server
-The database setup for the MySQL instance (like database name, user, password) have some default test values. 
-These values can be altered directly within the*docker-compose.yml* file, 
-but a change in credentials is also needed for the application itself. Please see the description
-in the last paragraph under the *War files* section. In addition, the tomcat server have their own credentials for 
-installing and hosting the web-service application. These values are defined in the *tomcat-users.xml* found 
-at *./quakeml-web-service/src/main/resources/*. The same credentials 
+#### Configure Database, catalog path and Tomcat server
+A configuration file (.env) exists in the main project folder for editing database configurations,
+such as database name, user and password. The application name can also be
+altered, whose name will be the end path of your hosting domain.
 
-To summarise, the following files is where configurations can be applied:
- - *docker-compose.yml* in main folder
- - *tomcat-users.xml* under *./devops/tomcat/*
- - *application.yml* under *./quakeml-web-service/src/main/resources/*
+In addition, a path to REA folder (or alternative folder where catalogs are located) need to 
+be specified within the .env file. The ingestor component will thus scan all catalogs within this
+folder and populate the database with the records inside. To selective choose which catalog to
+include, this can be achieved by going into the *docker-compose.yml* file within the main project folder
+and editing the following command:"
+``` 
+command: >
+      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs"' 
+```
+
+and add */catalogname* within the input path argument like so:
+``` 
+command: >
+      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs/NNSN_"' 
+```
+
+To include multiple catalogs, simply duplicate the java command and concatenate it with *&&* like:
+``` 
+command: >
+      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs/NNSN_" &&
+             java -jar ./ingestor.jar --input="/app/catalogs/NNSN2_"' 
+```
 
 #### Running docker
 Make sure that you have docker installed on your computer and that it is running.
@@ -84,7 +97,7 @@ converter-standalone | standalone | jar | Executable jar file for conversion
 converter-web-client | web | - |Web interface (front end) for the converter
 converter-web-server | web | war |Web server (back end) for the converter
 quakeml-web-service | ws-prod, ws-container | war | Service for extracting data from a QuakeML based database. Both QuakeML and Nordic format is supported as output
-quakeml-web-service-ingestor | ingestor | jar |Executable jar file for ingesting the Seisan catalog into database
+quakeml-web-service-ingestor | ing-prod, ing-container | jar |Executable jar file for ingesting the Seisan catalog into database
 seisan-quakeml-commons-file | - | jar | Shared tools for file handling
 seisan-quakeml-commons-jpa | - | jar | The Nordic format and QuakeML represented as java objects
 seisan-quakeml-commins-web | - | jar | Shared tools for interactions with web

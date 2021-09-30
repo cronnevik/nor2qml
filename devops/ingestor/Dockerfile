@@ -5,6 +5,7 @@ WORKDIR /app
 
 # Copy parent files
 COPY ../../pom.xml .
+COPY ../../.env .env
 
 # Copy child modules needed
 COPY ../../seisan-quakeml-commons-jpa ./seisan-quakeml-commons-jpa

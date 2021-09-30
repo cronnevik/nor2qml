@@ -20,14 +20,18 @@ services:
   # Service 2 - Spring boot applciation
   tomcat-server:
     container_name: spring-boot-app
+    env_file:
+      - .env
     build:
       context: .
       args:
-        APP_NAME: ${WS_APP_NAME}
+        APP_NAME: "${WS_APP_NAME}"
+        TOMCAT_USER: "${TOMCAT_USER}"
+        TOMCAT_PASSWORD: "${TOMCAT_PASSWORD}"
       dockerfile: devops/tomcat/Dockerfile
     ports:
       - 8090:8080
-    #restart: always
+    restart: always
     depends_on:
       - db
     environment:
@@ -40,9 +44,11 @@ services:
     build:
       context: .
       dockerfile: devops/ingestor/Dockerfile
-    command: bash -c 'java -jar ./ingestor.jar --input="/app/catalogs/NNSN_"'
+    command: >
+      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs"'
     depends_on:
       - db
+      - tomcat-server
     environment:
       SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
       SPRING_DATASOURCE_USERNAME: "${DB_USER}"
