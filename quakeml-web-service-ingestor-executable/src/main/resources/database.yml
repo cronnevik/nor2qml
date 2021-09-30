@@ -1,6 +1,0 @@
-database:
-  address: localhost
-  port: 3306
-  name: nnsn
-  username: epos
-  password: epos

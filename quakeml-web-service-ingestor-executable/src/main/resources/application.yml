@@ -1,0 +1,59 @@
+# arguments
+ingestor:
+  input: ${input:false}
+  source: ${source:sfile}
+  startdate: ${startdate:1900-01-01}
+  enddate: ${enddate:now}
+  profile: ${profile:none}
+  clean: ${clean:false}
+  chunk: ${chunk:5000}
+  dbname: ${dbname:nnsn_qml}
+  force: ${force:false}
+
+quakeml:
+  prefix: ${prefix:smi}
+  agency: ${agency:no.uib.nnsn}
+
+# Override catalog name if other than "default" is specified
+seisan:
+  catalog: ${catalog:default}
+
+server:
+  port: 8092
+
+# logging level
+logging:
+  level:
+    org.springframework: ERROR
+    sql: ERROR
+    root: OFF
+    org.hibernate:
+      SQL: ERROR
+      stat: INFO
+    no.nnsn.quakemlwebserviceingestorexecutable.components: INFO
+    com.zaxxer.hikari: ERROR
+  pattern:
+    file: "%d{HH:mm:ss.SSS} %msg%n"
+  file:
+    name: logs/app.log
+
+spring:
+  profiles:
+    active: '@spring.profiles.active@'
+  main.banner-mode: off
+---
+spring.config.activate.on-profile: prod
+database:
+  address: localhost
+  port: 3306
+  name: ${env.DB_NAME}
+  username: ${env.DB_USER}
+  password: ${env.DB_PW}
+---
+spring.config.activate.on-profile: container
+database:
+  address: mysql-db
+  port: 3306
+  name: ${env.DB_NAME}
+  username: ${env.DB_USER}
+  password: ${env.DB_PW}

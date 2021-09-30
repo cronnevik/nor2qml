@@ -10,28 +10,57 @@ services:
       - 3306:3306
     restart: always
     environment:
-      MYSQL_DATABASE: nnsn
-      MYSQL_USER: epos
-      MYSQL_PASSWORD: epos
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PW}"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PW}"
       MYSQL_ROOT_HOST: '%'
     volumes:
       - db-data:/var/lib/mysql
   # Service 2 - Spring boot applciation
   tomcat-server:
     container_name: spring-boot-app
+    env_file:
+      - .env
     build:
       context: .
-      dockerfile: Dockerfile
+      args:
+        APP_NAME: "${WS_APP_NAME}"
+        TOMCAT_USER: "${TOMCAT_USER}"
+        TOMCAT_PASSWORD: "${TOMCAT_PASSWORD}"
+      dockerfile: devops/tomcat/Dockerfile
     ports:
       - 8090:8080
-    #restart: always
+    restart: always
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/nnsn?autoReconnect=true&useSSL=false
-      SPRING_DATASOURCE_USERNAME: epos
-      SPRING_DATASOURCE_PASSWORD: epos
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
+      SPRING_DATASOURCE_USERNAME: "${DB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PW}"
+  # Service 3 . Ingestor for catalog data
+  ingestor:
+    container_name: ingestor-app
+    build:
+      context: .
+      dockerfile: devops/ingestor/Dockerfile
+    command: >
+      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs"'
+    depends_on:
+      - db
+      - tomcat-server
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
+      SPRING_DATASOURCE_USERNAME: "${DB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PW}"
+    volumes:
+      - catalog-data:/app/catalogs
 #Volumes
 volumes:
   db-data:
+  catalog-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: "${CATALOG_FOLDER}"

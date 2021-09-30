@@ -10,17 +10,17 @@ spring.config.activate.on-profile: prod
 database:
   address: localhost
   port: 3306
-  name: nnsn
-  username: epos
-  password: epos
+  name: ${env.DB_NAME}
+  username: ${env.DB_USER}
+  password: ${env.DB_PW}
 ---
 spring.config.activate.on-profile: container
 database:
   address: mysql-db
   port: 3306
-  name: nnsn
-  username: epos
-  password: epos
+  name: ${env.DB_NAME}
+  username: ${env.DB_USER}
+  password: ${env.DB_PW}
 
 
 

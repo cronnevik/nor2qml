@@ -49,7 +49,22 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>ingestor</id>
+			<id>ing-prod</id>
+			<properties>
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+			<modules>
+				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
+				<module>seisan-quakeml-commons-file</module>
+				<module>quakeml-web-service-ingestor-executable</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>ing-container</id>
+			<properties>
+				<spring.profiles.active>container</spring.profiles.active>
+			</properties>
 			<modules>
 				<module>seisan-quakeml-commons-jpa</module>
 				<module>converter-core</module>
