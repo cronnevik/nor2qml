@@ -2,6 +2,7 @@ package no.nnsn.convertercore.helpers.collections;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Line1QuakemlEntities {
     String preferredOriginID;
     String preferredMagnitudeID;

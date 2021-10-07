@@ -259,7 +259,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
             return new Line1QuakemlEntities(preferredOriginID, preferredMagnitudeID, origins, magnitudes, errors, false);
         }
-        return null;
+        return new Line1QuakemlEntities();
     }
 
     private LineFQuakemlEntities convertLineF(List<Line1> l1s, List<LineF> lfs, List<LineM2> lm2s, SfileInfo sfileInfo) {
@@ -356,7 +356,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
             return new LineFQuakemlEntities(preferredFocalMechanismID, lm1Origins,focalMechanisms, lm1Magnitudes, errors);
         }
-        return null;
+        return new LineFQuakemlEntities();
     }
 
     private Line3QuakemlEntities convertLine3(List<Line3> l3s, SfileInfo sfileInfo) {
@@ -399,7 +399,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
             return new Line3QuakemlEntities(descriptions, comments, errors);
         }
-        return null;
+        return new Line3QuakemlEntities();
     }
 
     private Line4QuakemlEntities convertLine4(List<Line1> l1s, List<Line> l4s, SfileInfo sfileInfo) {
@@ -482,7 +482,7 @@ public class NordicToQmlImpl implements NordicToQml {
             return new Line4QuakemlEntities(picks, amplitudes, arrivals, errors);
         }
 
-        return null;
+        return new Line4QuakemlEntities();
     }
 
     private Line5QuakemlEntities convertLine5(List<Line5> l5s, SfileInfo sfileInfo) {
@@ -501,7 +501,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
             return new Line5QuakemlEntities(comments, errors);
         }
-        return null;
+        return new Line5QuakemlEntities();
     }
 
     private Line6QuakemlEntities convertLine6(List<Line6> l6s, SfileInfo sfileInfo) {
@@ -520,7 +520,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
             return new Line6QuakemlEntities(comments, errors);
         }
-        return null;
+        return new Line6QuakemlEntities();
     }
 
     private LineIQuakemlEntities convertLineI(List<LineI> lis, SfileInfo sfileInfo) {
@@ -539,7 +539,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
             return new LineIQuakemlEntities(comments, errors);
         }
-        return null;
+        return new LineIQuakemlEntities();
     }
 
     private LineSQuakemlEntities convertLineS(List<LineS> lSs, SfileInfo sfileInfo) {
@@ -558,7 +558,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
             return new LineSQuakemlEntities(comments, errors);
         }
-        return null;
+        return new LineSQuakemlEntities();
     }
 
     private IgnoredLineError generateError(Line line, Exception ex, SfileInfo sfileInfo) {
