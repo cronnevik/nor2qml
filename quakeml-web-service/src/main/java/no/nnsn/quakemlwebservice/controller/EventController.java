@@ -129,7 +129,7 @@ public class EventController {
 
                 List<Sfile> sfiles = nordicToQml.readSfile(input, sfileCheck.getSfileID(), CallerType.WEBSERVICE);
                 ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, eventid);
-                EventOverview events = nordicToQml.getEvents(sfiles, options);
+                EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
                 return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events.getEvents(), cat)) // Return 200 OK
                         .header("Content-Type", "application/xml")
@@ -166,7 +166,7 @@ public class EventController {
                     InputStream input = new ByteArrayInputStream(sfile);
                     List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
                     ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, sf.getSfileID());
-                    EventOverview eventOverview = nordicToQml.getEvents(sfiles, options);
+                    EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
                     events.addAll(eventOverview.getEvents());
                 }
                 return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events, cat))
@@ -180,7 +180,7 @@ public class EventController {
                     InputStream input = new ByteArrayInputStream(sfile);
                     List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
                     ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, sf.getSfileID());
-                    EventOverview eventOverview = nordicToQml.getEvents(sfiles, options);
+                    EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
                     events.addAll(eventOverview.getEvents());
                 }
                 return Response.ok(QuakemlUtils.getQuakeml20DocFromEvents(events, cat))

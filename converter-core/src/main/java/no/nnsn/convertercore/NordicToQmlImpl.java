@@ -47,10 +47,10 @@ public class NordicToQmlImpl implements NordicToQml {
     }
 
     @Override
-    public EventOverview getEvents(List<Sfile> sFiles, ConverterOptions options) {
+    public EventOverview convertToQuakeml(List<Sfile> sFiles, ConverterOptions options) {
 
-        List<Event> events = new ArrayList<>();
         int eventCount = 0;
+        List<Event> events = new ArrayList<>();
         List<IgnoredLineError> errors = new ArrayList<>();
         List<Sfile> ignoredSfiles = new ArrayList<>();
 
@@ -59,17 +59,13 @@ public class NordicToQmlImpl implements NordicToQml {
             eventCount++;
             SfileInfo sfileInfo = new SfileInfo(eventCount, sfile.getFilename(), options.getErrorHandling());
 
-            // Create new Event object to store Sfile data
             Event ev = new Event();
-
             SfileData data = sfile.getData();
-            Line1 firstLine1 = (Line1) data.getLine1s().get(0);
 
             if (options.getCaller().equals(CallerType.STANDALONE)) {
-                System.out.println("*** Event:" + firstLine1.getLineText());
+                printFirstLine1ForStandaloneConverter(data.getLine1s().get(0));
             }
 
-            // Lines fetched from Sfile object
             List<Line1> l1s = data.getLine1s();
             List<Line3> l3s = data.getLine3s();
             List<Line> l4s = data.getLine4s();
@@ -83,15 +79,15 @@ public class NordicToQmlImpl implements NordicToQml {
             List<LineM2> lm2s = data.getLineM2s();
             List<LineS> lSs = data.getLineSs();
 
-            Line1EntityCollection line1Entities = convertLine1(l1s, les, sfileInfo);
-            if (line1Entities == null) continue sFileLoop; // skip event if null
-            LineFEntityCollection lineFEntities = convertLineF(l1s, lfs, lm2s, sfileInfo);
-            Line3EntityCollection line3Entities = convertLine3(l3s, sfileInfo);
-            Line4EntityCollection line4Entities = convertLine4(l1s, l4s, sfileInfo);
-            Line5EntityCollection line5Entities = convertLine5(l5s, sfileInfo);
-            Line6EntityCollection line6Entities = convertLine6(l6s, sfileInfo);
-            LineIEntityCollection lineIEntities = convertLineI(lis, sfileInfo);
-            LineSEntityCollection lineSEntities = convertLineS(lSs, sfileInfo);
+            Line1QuakemlEntities line1Entities = convertLine1(l1s, les, sfileInfo);
+            if (line1Entities.hasErrorInFirstLine1()) continue sFileLoop; // skip event
+            LineFQuakemlEntities lineFEntities = convertLineF(l1s, lfs, lm2s, sfileInfo);
+            Line3QuakemlEntities line3Entities = convertLine3(l3s, sfileInfo);
+            Line4QuakemlEntities line4Entities = convertLine4(l1s, l4s, sfileInfo);
+            Line5QuakemlEntities line5Entities = convertLine5(l5s, sfileInfo);
+            Line6QuakemlEntities line6Entities = convertLine6(l6s, sfileInfo);
+            LineIQuakemlEntities lineIEntities = convertLineI(lis, sfileInfo);
+            LineSQuakemlEntities lineSEntities = convertLineS(lSs, sfileInfo);
 
             // Event object's properties to be added
             List<Arrival> arrivals = null;
@@ -111,7 +107,7 @@ public class NordicToQmlImpl implements NordicToQml {
                 if (lineFEntities != null) focalMechanisms = lineFEntities.getFocalMechanisms();
                 if (line3Entities != null) descriptions = line3Entities.getDescriptionList();
             } catch (Exception e) {
-                System.out.println("Error in attaching entities");
+                System.out.println("Error in attaching line entities");
                 e.printStackTrace();
             }
 
@@ -129,176 +125,72 @@ public class NordicToQmlImpl implements NordicToQml {
             }
 
             // Concatenate Comments from multiple lines
-            try {
-                comments = new ArrayList<>();
-                if (line3Entities != null && !CollectionUtils.isEmpty(line3Entities.getCommentList())) {
-                    comments.addAll(line3Entities.getCommentList());
-                }
-                if (line5Entities != null && !CollectionUtils.isEmpty(line5Entities.getCommentList())) {
-                    comments.addAll(line5Entities.getCommentList());
-                }
-                if (line6Entities != null && !CollectionUtils.isEmpty(line6Entities.getCommentList())) {
-                    comments.addAll(line6Entities.getCommentList());
-                }
-                if (lineIEntities != null && !CollectionUtils.isEmpty(lineIEntities.getCommentList())) {
-                    comments.addAll(lineIEntities.getCommentList());
-                }
-                if (lineSEntities != null && !CollectionUtils.isEmpty(lineSEntities.getCommentList())) {
-                    comments.addAll(lineSEntities.getCommentList());
-                }
-            } catch (Exception e) {
-                System.out.println("Problem in concatenating comments");
-                e.printStackTrace();
-            }
+            comments = new ArrayList<>();
+            concatenateCommentsFromLineEntities(line3Entities.getCommentList(), comments);
+            concatenateCommentsFromLineEntities(line5Entities.getCommentList(), comments);
+            concatenateCommentsFromLineEntities(line6Entities.getCommentList(), comments);
+            concatenateCommentsFromLineEntities(lineIEntities.getCommentList(), comments);
+            concatenateCommentsFromLineEntities(lineSEntities.getCommentList(), comments);
 
             // Concatenate Errors from various conversions
-            try {
-                if (line1Entities != null && !CollectionUtils.isEmpty(line1Entities.getErrors())) {
-                    errors.addAll(line1Entities.getErrors());
-                }
-                if (lineFEntities != null && !CollectionUtils.isEmpty(lineFEntities.getErrors())) {
-                    errors.addAll(lineFEntities.getErrors());
-                }
-                if (line3Entities != null && !CollectionUtils.isEmpty(line3Entities.getErrors())) {
-                    errors.addAll(line3Entities.getErrors());
-                }
-                if (line4Entities != null && !CollectionUtils.isEmpty(line4Entities.getErrors())) {
-                    errors.addAll(line4Entities.getErrors());
-                }
-                if (line5Entities != null && !CollectionUtils.isEmpty(line5Entities.getErrors())) {
-                    errors.addAll(line5Entities.getErrors());
-                }
-                if (line6Entities != null && !CollectionUtils.isEmpty(line6Entities.getErrors())) {
-                    errors.addAll(line6Entities.getErrors());
-                }
-                if (lineIEntities != null && !CollectionUtils.isEmpty(lineIEntities.getErrors())) {
-                    errors.addAll(lineIEntities.getErrors());
-                }
-                if (lineSEntities != null && !CollectionUtils.isEmpty(lineSEntities.getErrors())) {
-                    errors.addAll(lineSEntities.getErrors());
-                }
-            } catch (Exception e) {
-                System.out.println("Error in concatenating errors");
-                e.printStackTrace();
+            concatenateErrorsFromLineEntities(line1Entities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(lineFEntities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(line3Entities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(line4Entities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(line5Entities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(line6Entities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(lineIEntities.getErrors(), errors);
+            concatenateErrorsFromLineEntities(lineSEntities.getErrors(), errors);
+
+            // Attach Arrival objects to the first Origin Entity
+            Origin org = origins.get(0);
+            org.setArrival(arrivals);
+
+            // Set linked entities
+            ev.setOrigin(origins);
+            ev.setMagnitude(magnitudes);
+            ev.setAmplitude(amplitudes);
+            ev.setComment(comments);
+            ev.setPick(picks);
+            ev.setFocalMechanism(focalMechanisms);
+            ev.setDescription(descriptions);
+
+            // Set event properties fetched from converted origin object
+            Boolean hasSetEventPropertiesFromOrigin = setEventPropertiesFromOrigin(ev, origins, options);
+            if (!hasSetEventPropertiesFromOrigin) {
+                // missing creation of event id --> invalid event and thus skipped
+                ignoredSfiles.add(sfile);
+                continue sFileLoop;
             }
 
-            // Set event properties fetched from origin object
-            try {
-                if (origins.size() > 0) {
-                    CreationInfo eventCreationInfo = new CreationInfo();
-                    if (origins.get(0) != null) {
-                        // Attach Arrival objects to the first Origin Entity
-                        // First origin should be preferred
-                        Origin org = origins.get(0);
-                        org.setArrival(arrivals);
-
-                        // Set preferredOriginID
-                        ev.setPreferredOriginID(org.getPublicID());
-
-                        // Generate eventID
-                        String eventID = produceEventID(origins.get(0), options);
-                        if (eventID == null) {
-                            ignoredSfiles.add(sfile);
-                            continue sFileLoop; // invalid event and thus skipped
-                        }
-
-                        ev.setEventID(eventID);
-                        ev.setPublicID(IdGenerator.getInstance().genEventPublicID(eventID, Event.class));
-
-                        // Creation Info for Event - agency is same as for main origin
-                        if (org.getCreationInfo() != null) {
-                            if (org.getCreationInfo().getAgencyID() != null) {
-                                String agencyID = org.getCreationInfo().getAgencyID();
-                                eventCreationInfo.setAgencyID(agencyID);
-                            }
-                        }
-                    }
-
-                    // Author or contributor given in 2nd line type-1
-                    if (origins.size() > 1 && origins.get(1) != null) {
-                        Origin org = origins.get(1);
-                        if (org.getCreationInfo() != null) {
-                            if (org.getCreationInfo().getAgencyID() != null) {
-                                String agencyID = org.getCreationInfo().getAgencyID();
-                                eventCreationInfo.setAuthor(agencyID);
-                            }
-                        }
-                    } else { // Set the author the same as agencyID of first origin
-                        if (eventCreationInfo.getAgencyID() != null) {
-                            String agencyID = eventCreationInfo.getAgencyID();
-                            eventCreationInfo.setAuthor(agencyID);
-                        }
-                    }
-
-                    if (eventCreationInfo.getAgencyID() != null || eventCreationInfo.getAuthor() != null) {
-                        ev.setCreationInfo(eventCreationInfo);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            // Set preferred IDs
+            if (line1Entities != null && line1Entities.getPreferredMagnitudeID() != null) {
+                ev.setPreferredMagnitudeID(line1Entities.getPreferredMagnitudeID());
+            }
+            if (lineFEntities != null && lineFEntities.getPreferredFocalMechanismID() != null) {
+                ev.setPreferredFocalMechanismID(lineFEntities.getPreferredFocalMechanismID());
             }
 
-            // Attach linked objects to event
-            try {
-                ev.setOrigin(origins);
-                ev.setMagnitude(magnitudes);
-                ev.setAmplitude(amplitudes);
-                ev.setComment(comments);
-                ev.setPick(picks);
-                ev.setFocalMechanism(focalMechanisms);
-                if(descriptions != null && descriptions.size() > 0) {
-                    ev.setDescription(descriptions);
-                } else {
-                    ev.setDescription(null);
-                }
+            // Set EventType and EventTypeCertainty
+            EventTypeSetter.setEventTypeAndUncertainty(ev, l1s.get(0));
 
-                // Set preferred IDs
-                if (line1Entities != null && line1Entities.getPreferredMagnitudeID() != null) {
-                    ev.setPreferredMagnitudeID(line1Entities.getPreferredMagnitudeID());
-                }
-                if (lineFEntities != null && lineFEntities.getPreferredFocalMechanismID() != null) {
-                    ev.setPreferredFocalMechanismID(lineFEntities.getPreferredFocalMechanismID());
-                }
-
-                // Set EventType and EventTypeCertainty
-                EventTypeSetter.setEventTypeAndUncertainty(ev, l1s.get(0));
-
-                // Set CreationInfo based on profile
-                if (options.getProfile() == ConverterProfile.INTAROS) {
-                    CreationInfo creationInfo = new CreationInfo();
-                    String agency;
-                    String author = null;
-
-                    if (l1s.size() > 1) {
-                        String hypoCenterRepAgency = l1s.get(1).getHypoCenterRepAgency();
-                        if (!StringUtils.isBlank(hypoCenterRepAgency)) {
-                            author = l1s.get(1).getHypoCenterRepAgency();
-                        }
-                    }
-
-                    if (lhs != null && lhs.size() > 0) {
-                        agency = "INT";
-                    } else {
-                        agency = author;
-                    }
-                    creationInfo.setAgencyID(agency);
-                    creationInfo.setAuthor(author);
-                    ev.setCreationInfo(creationInfo);
-                }
-
-
-                events.add(ev);
-            } catch (Exception e) {
-                e.printStackTrace();
+            // Set CreationInfo based on profile
+            if (options.getProfile() == ConverterProfile.INTAROS) {
+                setCustomCreationInfoForIntaros(ev, l1s, lhs);
             }
 
-
+            events.add(ev);
         }
 
         return new EventOverview(events, errors, ignoredSfiles);
     }
 
-    private Line1EntityCollection convertLine1(List<Line1> l1s, List<LineE> les, SfileInfo sfileInfo) {
+    private void printFirstLine1ForStandaloneConverter(Object line1) {
+        Line1 firstLine1 = (Line1) line1;
+        System.out.println("*** Event:" + firstLine1.getLineText());
+    }
+
+    private Line1QuakemlEntities convertLine1(List<Line1> l1s, List<LineE> les, SfileInfo sfileInfo) {
         String preferredOriginID = null;
         String preferredMagnitudeID = null;
         List<Origin> origins = new ArrayList<>();
@@ -329,7 +221,7 @@ public class NordicToQmlImpl implements NordicToQml {
                         if (i == 0) { // Only remove Event if it is the first Line1
                             error.setEventRemoved(true); // Removing Event
                             errors.add(error);
-                            return null;
+                            return new Line1QuakemlEntities(true);
                         } else {
                             errors.add(error);
                             continue line1Loop;
@@ -365,12 +257,12 @@ public class NordicToQmlImpl implements NordicToQml {
                 preferredMagnitudeID = firstMagnitude.getPublicID();
             }
 
-            return new Line1EntityCollection(preferredOriginID, preferredMagnitudeID, origins, magnitudes, errors);
+            return new Line1QuakemlEntities(preferredOriginID, preferredMagnitudeID, origins, magnitudes, errors, false);
         }
         return null;
     }
 
-    private LineFEntityCollection convertLineF(List<Line1> l1s, List<LineF> lfs, List<LineM2> lm2s, SfileInfo sfileInfo) {
+    private LineFQuakemlEntities convertLineF(List<Line1> l1s, List<LineF> lfs, List<LineM2> lm2s, SfileInfo sfileInfo) {
         String preferredFocalMechanismID = null;
         List<FocalMechanism> focalMechanisms = new ArrayList<>();
         List<Origin> lm1Origins = new ArrayList<>();
@@ -462,12 +354,12 @@ public class NordicToQmlImpl implements NordicToQml {
                 preferredFocalMechanismID = firstFocalMechListed.getPublicID();
             }
 
-            return new LineFEntityCollection(preferredFocalMechanismID, lm1Origins,focalMechanisms, lm1Magnitudes, errors);
+            return new LineFQuakemlEntities(preferredFocalMechanismID, lm1Origins,focalMechanisms, lm1Magnitudes, errors);
         }
         return null;
     }
 
-    private Line3EntityCollection convertLine3(List<Line3> l3s, SfileInfo sfileInfo) {
+    private Line3QuakemlEntities convertLine3(List<Line3> l3s, SfileInfo sfileInfo) {
         if (l3s != null) {
             List<EventDescription> descriptions = new ArrayList<>();
             List<Comment> comments = new ArrayList<>();
@@ -505,12 +397,12 @@ public class NordicToQmlImpl implements NordicToQml {
                 }
             }
 
-            return new Line3EntityCollection(descriptions, comments, errors);
+            return new Line3QuakemlEntities(descriptions, comments, errors);
         }
         return null;
     }
 
-    private Line4EntityCollection convertLine4(List<Line1> l1s, List<Line> l4s, SfileInfo sfileInfo) {
+    private Line4QuakemlEntities convertLine4(List<Line1> l1s, List<Line> l4s, SfileInfo sfileInfo) {
         List<Arrival> arrivals = new ArrayList<>();
         List<Amplitude> amplitudes = new ArrayList<>();
         List<Pick> picks = new ArrayList<>();
@@ -587,13 +479,13 @@ public class NordicToQmlImpl implements NordicToQml {
                 }
             }
 
-            return new Line4EntityCollection(picks, amplitudes, arrivals, errors);
+            return new Line4QuakemlEntities(picks, amplitudes, arrivals, errors);
         }
 
         return null;
     }
 
-    private Line5EntityCollection convertLine5(List<Line5> l5s, SfileInfo sfileInfo) {
+    private Line5QuakemlEntities convertLine5(List<Line5> l5s, SfileInfo sfileInfo) {
         List<Comment> comments = new ArrayList<>();
         List<IgnoredLineError> errors = new ArrayList<>();
 
@@ -607,12 +499,12 @@ public class NordicToQmlImpl implements NordicToQml {
                     continue line5Loop;
                 }
             }
-            return new Line5EntityCollection(comments, errors);
+            return new Line5QuakemlEntities(comments, errors);
         }
         return null;
     }
 
-    private Line6EntityCollection convertLine6(List<Line6> l6s, SfileInfo sfileInfo) {
+    private Line6QuakemlEntities convertLine6(List<Line6> l6s, SfileInfo sfileInfo) {
         List<Comment> comments = new ArrayList<>();
         List<IgnoredLineError> errors = new ArrayList<>();
 
@@ -626,12 +518,12 @@ public class NordicToQmlImpl implements NordicToQml {
                     continue line6Loop;
                 }
             }
-            return new Line6EntityCollection(comments, errors);
+            return new Line6QuakemlEntities(comments, errors);
         }
         return null;
     }
 
-    private LineIEntityCollection convertLineI(List<LineI> lis, SfileInfo sfileInfo) {
+    private LineIQuakemlEntities convertLineI(List<LineI> lis, SfileInfo sfileInfo) {
         List<Comment> comments = new ArrayList<>();
         List<IgnoredLineError> errors = new ArrayList<>();
 
@@ -645,12 +537,12 @@ public class NordicToQmlImpl implements NordicToQml {
                     continue lineILoop;
                 }
             }
-            return new LineIEntityCollection(comments, errors);
+            return new LineIQuakemlEntities(comments, errors);
         }
         return null;
     }
 
-    private LineSEntityCollection convertLineS(List<LineS> lSs, SfileInfo sfileInfo) {
+    private LineSQuakemlEntities convertLineS(List<LineS> lSs, SfileInfo sfileInfo) {
         List<Comment> comments = new ArrayList<>();
         List<IgnoredLineError> errors = new ArrayList<>();
 
@@ -664,7 +556,7 @@ public class NordicToQmlImpl implements NordicToQml {
                     continue lineSLoop;
                 }
             }
-            return new LineSEntityCollection(comments, errors);
+            return new LineSQuakemlEntities(comments, errors);
         }
         return null;
     }
@@ -689,6 +581,83 @@ public class NordicToQmlImpl implements NordicToQml {
         return e;
     }
 
+    private void concatenateCommentsFromLineEntities(List<Comment> entitiesComments, List<Comment> comments) {
+        try {
+            if (entitiesComments != null && !CollectionUtils.isEmpty(entitiesComments)) {
+                comments.addAll(entitiesComments);
+            }
+        } catch (Exception e) {
+            System.out.println("Problem in concatenating comments");
+            e.printStackTrace();
+        }
+    }
+
+    private void concatenateErrorsFromLineEntities(List<IgnoredLineError> entitiesErrors, List<IgnoredLineError> errors) {
+        try {
+            if (entitiesErrors != null && !CollectionUtils.isEmpty(entitiesErrors)) {
+                errors.addAll(entitiesErrors);
+            }
+        } catch (Exception e) {
+            System.out.println("Error in concatenating errors");
+            e.printStackTrace();
+        }
+    }
+
+    private Boolean setEventPropertiesFromOrigin(Event event, List<Origin> origins, ConverterOptions options) {
+        try {
+            if (origins.size() > 0) {
+                CreationInfo eventCreationInfo = new CreationInfo();
+                if (origins.get(0) != null) {
+
+                    // Set preferredOriginID - First origin should be preferred
+                    Origin org = origins.get(0);
+                    event.setPreferredOriginID(org.getPublicID());
+
+                    // Generate eventID
+                    String eventID = produceEventID(origins.get(0), options);
+                    if (eventID.isEmpty()) {
+                        return false;
+                    }
+
+                    event.setEventID(eventID);
+                    event.setPublicID(IdGenerator.getInstance().genEventPublicID(eventID, Event.class));
+
+                    // Creation Info for Event - agency is same as for main origin
+                    if (org.getCreationInfo() != null) {
+                        if (org.getCreationInfo().getAgencyID() != null) {
+                            String agencyID = org.getCreationInfo().getAgencyID();
+                            eventCreationInfo.setAgencyID(agencyID);
+                        }
+                    }
+                }
+
+                // Author or contributor given in 2nd line type-1
+                if (origins.size() > 1 && origins.get(1) != null) {
+                    Origin org = origins.get(1);
+                    if (org.getCreationInfo() != null) {
+                        if (org.getCreationInfo().getAgencyID() != null) {
+                            String agencyID = org.getCreationInfo().getAgencyID();
+                            eventCreationInfo.setAuthor(agencyID);
+                        }
+                    }
+                } else { // Set the author the same as agencyID of first origin
+                    if (eventCreationInfo.getAgencyID() != null) {
+                        String agencyID = eventCreationInfo.getAgencyID();
+                        eventCreationInfo.setAuthor(agencyID);
+                    }
+                }
+
+                if (eventCreationInfo.getAgencyID() != null || eventCreationInfo.getAuthor() != null) {
+                    event.setCreationInfo(eventCreationInfo);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private String produceEventID(Origin origin, ConverterOptions options) {
         DecimalFormat df =  (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         df.applyPattern("00");
@@ -698,21 +667,21 @@ public class NordicToQmlImpl implements NordicToQml {
             sYear = origin.getCompositeTime().get(0).getYear().getValue().toString();
         } else {
             System.out.println("Year not existing for creating ID. Event excluded");
-            return null;
+            return "";
         }
         String sMonth = "";
         if (origin.getCompositeTime().get(0).getMonth() != null) {
             sMonth = df.format(origin.getCompositeTime().get(0).getMonth().getValue());
         } else {
             System.out.println("Month not existing for creating ID. Event excluded");
-            return null;
+            return "";
         }
         String sDay = "";
         if (origin.getCompositeTime().get(0).getDay() != null) {
             sDay = df.format(origin.getCompositeTime().get(0).getDay().getValue());
         } else {
             System.out.println("Day not existing for creating ID. Event excluded");
-            return null;
+            return "";
         }
         String sHour = "";
         if (origin.getCompositeTime().get(0).getHour() != null) {
@@ -739,6 +708,28 @@ public class NordicToQmlImpl implements NordicToQml {
             );
         }
         return eventID;
+    }
+
+    private void setCustomCreationInfoForIntaros(Event event, List<Line1> l1s, List<LineH> lhs) {
+        CreationInfo creationInfo = new CreationInfo();
+        String agency;
+        String author = null;
+
+        if (l1s.size() > 1) {
+            String hypoCenterRepAgency = l1s.get(1).getHypoCenterRepAgency();
+            if (!StringUtils.isBlank(hypoCenterRepAgency)) {
+                author = l1s.get(1).getHypoCenterRepAgency();
+            }
+        }
+
+        if (lhs != null && lhs.size() > 0) {
+            agency = "INT";
+        } else {
+            agency = author;
+        }
+        creationInfo.setAgencyID(agency);
+        creationInfo.setAuthor(author);
+        event.setCreationInfo(creationInfo);
     }
 
 }

@@ -1,6 +1,5 @@
 package no.nnsn.convertercore;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
@@ -12,7 +11,6 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.NodalPlane;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.NodalPlanes;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineF;
 import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
 import org.junit.jupiter.api.Test;
@@ -57,11 +55,11 @@ public class MappingEntityTests {
 
             // Nordic ==> QuakeML conversion
             ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-            EventOverview events = nordicToQml.getEvents(sfiles, options);
+            EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
             List<Event> eventList = events.getEvents();
 
             // QuakeMl ==> Nordic conversion
-            SfileOverview sfileOverview = qmlToSfile.convertToSfiles(eventList, CallerType.CONVERTER, NordicFormatVersion.VERSION2);
+            SfileOverview sfileOverview = qmlToSfile.convertToNordic(eventList, CallerType.CONVERTER, NordicFormatVersion.VERSION2);
             List<Sfile> sfsBack = sfileOverview.getSfiles();
 
             // Only 1 event in list
@@ -127,11 +125,11 @@ public class MappingEntityTests {
 
             // Nordic ==> QuakeML conversion
             ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-            EventOverview events = nordicToQml.getEvents(sfiles, options);
+            EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
             List<Event> eventList = events.getEvents();
 
             // QuakeMl ==> Nordic conversion
-            SfileOverview sfileOverview = qmlToSfile.convertToSfiles(eventList, CallerType.CONVERTER, NordicFormatVersion.VERSION2);
+            SfileOverview sfileOverview = qmlToSfile.convertToNordic(eventList, CallerType.CONVERTER, NordicFormatVersion.VERSION2);
             List<Sfile> sfsBack = sfileOverview.getSfiles();
 
             // Only 1 event in list

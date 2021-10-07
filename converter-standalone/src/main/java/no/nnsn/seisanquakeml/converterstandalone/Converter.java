@@ -11,7 +11,6 @@ import no.nnsn.seisanquakeml.seisanquakemlcommonsweb.helpers.QuakemlContent;
 import no.nnsn.seisanquakeml.seisanquakemlcommonsweb.utils.QuakemlUtils;
 import no.nnsn.seisanquakemlcommonsfile.FileInfo;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.SfileDataImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -141,7 +140,7 @@ public class Converter {
         EventOverview eventOverview = null;
         try {
             ConverterOptions options = new ConverterOptions(null, CallerType.STANDALONE, null, "");
-            eventOverview = nordicToQml.getEvents(sFileEvents, options);
+            eventOverview = nordicToQml.convertToQuakeml(sFileEvents, options);
             System.out.println("Number of events: " + eventOverview.getEventSize());
         } catch (Exception ex) {
             throw new CustomException(ex.getMessage());
@@ -213,7 +212,7 @@ public class Converter {
 
                 QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
                 SfileOverview sfileOverview =
-                        qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormVersion);
+                        qmlToSfile.convertToNordic(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormVersion);
                 this.printQmlErrors(sfileOverview.getErrors());
                 sFiles.add(sfileOverview.getSfiletext());
 
@@ -231,7 +230,7 @@ public class Converter {
                 QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
 
                 SfileOverview sfileOverview =
-                        qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormatVersion);
+                        qmlToSfile.convertToNordic(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.STANDALONE, nordicFormatVersion);
                 this.printQmlErrors(sfileOverview.getErrors());
                 return sfileOverview.getSfiletext();
 

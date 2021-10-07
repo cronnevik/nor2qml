@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class Line5EntityCollection {
+public class LineSQuakemlEntities {
     List<Comment> commentList;
     List<IgnoredLineError> errors;
 }

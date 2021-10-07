@@ -5,7 +5,6 @@ import no.nnsn.convertercore.helpers.ConverterOptions;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.SfileDataImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,7 @@ public class Converter {
 
         try {
             ConverterOptions options = new ConverterOptions(null, CallerType.INGESTOR, arguments.getProfile(), id);
-            eventOverview = nordicToQml.getEvents(sFileEvents, options);
+            eventOverview = nordicToQml.convertToQuakeml(sFileEvents, options);
             eventOverview.setFilename(path);
         } catch (Exception ex) {
             //throw new CustomException(ex.getMessage());

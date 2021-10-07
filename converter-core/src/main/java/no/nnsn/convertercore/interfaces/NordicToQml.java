@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface NordicToQml {
     public List<Sfile> readSfile(InputStream is, String filename, CallerType caller);
-    public EventOverview getEvents(
+    public EventOverview convertToQuakeml(
             List<Sfile> sFiles, ConverterOptions options
     );
 }

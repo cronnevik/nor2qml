@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class Line4EntityCollection {
+public class Line4QuakemlEntities {
     List<Pick> picks;
     List<Amplitude> amplitudes;
     List<Arrival> arrivals;

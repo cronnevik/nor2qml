@@ -86,7 +86,7 @@ public class Line1Tests {
 
         // Convert to QuakeML
         ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-        EventOverview eventOverview = nordicToQml.getEvents(sfiles, options);
+        EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
         List<Event> events = eventOverview.getEvents();
         Event event = events.get(0);
 
@@ -100,7 +100,7 @@ public class Line1Tests {
         Collections.swap(tempOrigin, 0, 1);
         event.setOrigin(tempOrigin);
 
-        SfileOverview converter = qmlToSfile.convertToSfiles(events, CallerType.CONVERTER, NordicFormatVersion.VERSION1);
+        SfileOverview converter = qmlToSfile.convertToNordic(events, CallerType.CONVERTER, NordicFormatVersion.VERSION1);
         String sfiletext = converter.getSfiletext();
         System.out.println(sfiletext);
 

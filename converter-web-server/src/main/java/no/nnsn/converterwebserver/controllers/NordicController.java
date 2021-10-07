@@ -76,7 +76,7 @@ public class NordicController {
         }
         RandomString genString = new RandomString(12, new SecureRandom());
         ConverterOptions options = new ConverterOptions(sfileOptions.getErrorHandling(), CallerType.WEBSERVER, null, genString.nextString());
-        EventOverview eventOverview = nordicToQml.getEvents(sfiles, options);
+        EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
 
         String errorHandling = sfileOptions.getErrorHandling();
         if (!errorHandling.equals("ignore")) {

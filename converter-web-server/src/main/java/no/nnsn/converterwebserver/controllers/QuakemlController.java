@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -32,7 +31,7 @@ public class QuakemlController {
     public String readQmlService(@RequestBody ConvertOptions options) throws URISyntaxException {
         InputStream stream = QuakemlUtils.getQuakemlStreamFromWebService(options.getData().getUrl());
         QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
-        SfileOverview sfileOverview = qmlToSfile.convertToSfiles(
+        SfileOverview sfileOverview = qmlToSfile.convertToNordic(
                 QuakemlUtils.getEventsFromQuakemlString(content), CallerType.WEBSERVER, getNordicVersion(options.getVersion())
         );
         return sfileOverview.getSfiletext();
@@ -42,7 +41,7 @@ public class QuakemlController {
     public String readQmlRawText(@RequestBody String rawText) {
         InputStream stream = QuakemlUtils.getQuakemlStreamFromRawText(rawText);
         QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
-        SfileOverview sfileOverview = qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.WEBSERVER, getNordicVersion(""));
+        SfileOverview sfileOverview = qmlToSfile.convertToNordic(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.WEBSERVER, getNordicVersion(""));
         return sfileOverview.getSfiletext();
     }
 
@@ -55,7 +54,7 @@ public class QuakemlController {
 
         InputStream stream = file.getInputStream();
         QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
-        SfileOverview sfileOverview = qmlToSfile.convertToSfiles(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.WEBSERVER, getNordicVersion(version));
+        SfileOverview sfileOverview = qmlToSfile.convertToNordic(QuakemlUtils.getEventsFromQuakemlString(content), CallerType.WEBSERVER, getNordicVersion(version));
         return sfileOverview.getSfiletext();
     }
 

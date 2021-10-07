@@ -8,5 +8,5 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
 import java.util.List;
 
 public interface QmlToSfile {
-    public SfileOverview convertToSfiles(List<Event> events, CallerType caller, NordicFormatVersion nordicFormatVersion);
+    public SfileOverview convertToNordic(List<Event> events, CallerType caller, NordicFormatVersion nordicFormatVersion);
 }

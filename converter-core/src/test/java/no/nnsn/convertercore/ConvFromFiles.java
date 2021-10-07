@@ -45,12 +45,12 @@ public class ConvFromFiles {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
             ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-            EventOverview events = nordicToQml.getEvents(sfiles, options);
+            EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of Picks: " + events.getEvents().get(0).getPick().size());
 
-            qmlToSfile.convertToSfiles(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION1);
+            qmlToSfile.convertToNordic(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION1);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -70,7 +70,7 @@ public class ConvFromFiles {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
             ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-            EventOverview events = nordicToQml.getEvents(sfiles, options);
+            EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of Picks: " + events.getEvents().get(0).getPick().size());
@@ -83,7 +83,7 @@ public class ConvFromFiles {
                 System.out.println(error.getMessage());
             }
 
-            SfileOverview sfileOverview = qmlToSfile.convertToSfiles(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION2);
+            SfileOverview sfileOverview = qmlToSfile.convertToNordic(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION2);
             // System.out.println("---------------------------------");
             // System.out.println(sfileOverview.getSfiletext());
 
@@ -104,7 +104,7 @@ public class ConvFromFiles {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
             ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-            EventOverview events = nordicToQml.getEvents(sfiles, options);
+            EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of errors: " + events.getErrors().size());
@@ -124,12 +124,12 @@ public class ConvFromFiles {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
             ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
-            EventOverview events = nordicToQml.getEvents(sfiles, options);
+            EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
             System.out.println("Number of errors: " + events.getErrors().size());
 
-            SfileOverview sfileOverview = qmlToSfile.convertToSfiles(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION2);
+            SfileOverview sfileOverview = qmlToSfile.convertToNordic(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION2);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
