@@ -113,7 +113,12 @@ public abstract class NordicDtoToArrivalMapper {
     protected void setWeight(@MappingTarget Arrival arrival, Line4Dto line4Dto) {
         if (line4Dto.getWeight() != null) {
             String[] weightSplit = line4Dto.getWeight().split("");
-            String weight = weightSplit[0] + "." + weightSplit[1];
+            String weight = "";
+            if (weightSplit.length > 1) {
+                weight = weightSplit[0] + "." + weightSplit[1];
+            } else {
+                weight = "0." + line4Dto.getWeight().trim();
+            }
 
             Comment comment = new Comment();
             comment.setId(PropertyIdType.PROPERTY_WEIGHT.getPropertyIdtype());

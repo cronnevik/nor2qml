@@ -141,9 +141,14 @@ public abstract class NordicToArrivalMapper {
      */
     @AfterMapping
     protected void setWeight(@MappingTarget Arrival arrival, Line4 line4) {
-        if (line4.getWeight() != null) {
+        if (line4.getWeight() != null && line4.getWeight() != "") {
             String[] weightSplit = line4.getWeight().split("");
-            String weight = weightSplit[0] + "." + weightSplit[1];
+            String weight = "";
+            if (weightSplit.length > 1) {
+                weight = weightSplit[0] + "." + weightSplit[1];
+            } else {
+                weight = "0." + line4.getWeight().trim();
+            }
 
             Comment comment = new Comment();
             comment.setId(PropertyIdType.PROPERTY_WEIGHT.getPropertyIdtype());
@@ -156,6 +161,7 @@ public abstract class NordicToArrivalMapper {
                 commentList.add(comment);
                 arrival.setComment(commentList);
             }
+
         }
     }
 
