@@ -52,7 +52,7 @@ public class Line4 extends Line {
     private PropertyObject periodSeconds =
             new PropertyObject("Period Seconds", 42, 45, PropertyType.DOUBLE, 2);
     private PropertyObject directionDegrees =
-            new PropertyObject("Direction of Approach, back azimuth", 47, 51, PropertyType.DOUBLE);
+            new PropertyObject("Direction of Approach, back azimuth", 47, 51, PropertyType.DOUBLE, 1);
     private PropertyObject phaseVelocity =
             new PropertyObject("Phase Velocity", 53, 56, PropertyType.DOUBLE);
 
