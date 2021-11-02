@@ -75,6 +75,42 @@ command: >
              java -jar ./ingestor.jar --input="/app/catalogs/NNSN2_"' 
 ```
 
+#### Configure html document for the web-service
+The query builder page can be customised to your needs. The application has build
+in profiles for change of content in title, header and footer. To add your own
+custom content for these sections, please edit the default section (html comment is
+given where you can add your html code) within *title.html*, *header.html* and
+*footer.html* in the following folder:
+
+``` quakeml-web-service -> src -> main -> resources -> pages -> fragments ```
+
+After changes are made, if you have already built (applying the run command) the docker images, please make sure to remove
+the previous build images and rebuild (description given in section about running docker).
+
+#### Make own custom profiles for html documents
+If you want to make your own profile, or multiple profiles for various deployments,
+you can do so by adding another fragment within the same files as mentioned in the
+previous section. For example:
+
+``` 
+<header th:fragment="default-header"></header> 
+```
+
+Replace the *default-header* with you custom reference name. Then go into the *index.html file*
+within the pages folder (one level above the fragments folder) and add another statement below the following block:
+
+```
+<div th:replace="${profile == 'default'} ? ~{fragments/header :: default-header} : ~{}" />
+```
+
+Change *default-header* with you custom reference name, and change the *default* name in 
+*${profile == 'default'}* with a profile name of your choice. The last step is to apply this 
+profile name within the *.env* file in the root folder of all the projects. Change the 
+*default* in *PROFILE=default* with the name your selected for your new profile.
+
+After changes are made, if you have already built (applying the run command)  the docker images, please make sure to remove
+the previous build images and rebuild (description given in section about running docker). 
+
 #### Running docker
 Make sure that you have docker installed on your computer and that it is running.
 Open a terminal, navigate to the main folder and enter:\
@@ -88,6 +124,12 @@ If you already did a run and want to change the database credentials,  add the f
 
 Please be aware that the '-v' flag will permanently delete the database volume, and you will lose all the data stored
 within the database created within the MySQL instance.
+
+To remove the images created (useful for rebuild if changes are made to the html documents
+or other files within the applications), use the following command:\
+``` docker-compose down --rmi=all ```
+
+To build the images again, enter the *docker-compose up* command again.
 
 ## Modules
 Components | Maven profiles | Produces | Description
