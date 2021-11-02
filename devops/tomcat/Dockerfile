@@ -6,6 +6,7 @@ WORKDIR /app
 ARG APP_NAME
 ARG TOMCAT_USER
 ARG TOMCAT_PASSWORD
+ARG PROFILE
 
 # Copy parent files
 COPY ../../pom.xml .
@@ -18,7 +19,7 @@ COPY ../../seisan-quakeml-commons-web ./seisan-quakeml-commons-web
 COPY ../../quakeml-web-service ./quakeml-web-service
 
 # Build the application with maven
-RUN mvn clean install -P ws-container -Dspring.profiles.active=container
+RUN mvn clean install -P ws-container -Dspring.profiles.active=container -Dspring.page.profile=${PROFILE}
 
 # Deployment stage
 FROM tomcat:9.0.12-jre8 as production
