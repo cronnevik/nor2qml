@@ -74,6 +74,8 @@ To selective choose which catalog to include, this can be achieved by adding the
 CATALOGS="CATALOG1_ CATALOG2_"
 ```
 
+It is important to apply the quotes and separate each catalog with a space.
+
 #### Configure html document for the web-service
 The query builder page can be customised to your needs. The application has build
 in profiles for change of content in title, header and footer. To add your own
