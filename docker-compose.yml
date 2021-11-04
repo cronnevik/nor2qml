@@ -41,11 +41,24 @@ services:
   # Service 3 . Ingestor for catalog data
   ingestor:
     container_name: ingestor-app
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: devops/ingestor/Dockerfile
     command: >
-      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs"'
+      bash -c '
+        if [ -z "${CATALOGS}" ]; then
+          java -jar ./ingestor.jar --input="/app/catalogs"
+        else
+          declare -a array=($${CATALOGS[@]})
+          for catalog in "$${array[@]}"
+          do
+              echo $${catalog};
+              java -jar ./ingestor.jar --input="/app/catalogs/$${catalog}"
+          done
+        fi
+      '
     depends_on:
       - db
       - tomcat-server
@@ -53,6 +66,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
       SPRING_DATASOURCE_USERNAME: "${DB_USER}"
       SPRING_DATASOURCE_PASSWORD: "${DB_PW}"
+      CATALOGS: "${CATALOGS}"
     volumes:
       - catalog-data:/app/catalogs
 #Volumes

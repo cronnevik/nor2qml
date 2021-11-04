@@ -48,32 +48,33 @@ to initiate the database, host the web-service application and populates the dat
 from one or multiple catalog(s).
 
 #### Configure Database, catalog path and Tomcat server
-A configuration file (.env) exists in the main project folder for editing database configurations,
-such as database name, user and password. The application name can also be
-altered, whose name will be the end path of your hosting domain.
+A configuration file (.env) exists in the main project folder for configuring credentials for the MySQl database 
+and tomcat server. The application name can also be altered, whose name will be the end path of your hosting domain.
+In addition, a path to REA folder (or alternative folder where catalogs are located) needs to
+be specified within the .env file. 
 
-In addition, a path to REA folder (or alternative folder where catalogs are located) need to 
-be specified within the .env file. The ingestor component will thus scan all catalogs within this
-folder and populate the database with the records inside. To selective choose which catalog to
-include, this can be achieved by going into the *docker-compose.yml* file within the main project folder
-and editing the following command:"
 ``` 
-command: >
-      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs"' 
+DB_NAME=dbname
+DB_USER=username
+DB_PW=password
+DB_ROOT_PW=password
+TOMCAT_USER=username
+TOMCAT_PASSWORD=password
+WS_APP_NAME=eqcat
+CATALOG_FOLDER=C:/SEISAN/REA
+CATALOGS=
+PROFILE=default
 ```
 
-and add */catalogname* within the input path argument like so:
+A catalogs options exists to select one or multiple catalog(s) to be accessible through the web-service. If left blank,
+the ingestor component will thus scan all catalogs within this folder and populate the database with the records inside. 
+To selective choose which catalog to include, this can be achieved by adding the catalogs name in to an array like so:
+
 ``` 
-command: >
-      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs/NNSN_"' 
+CATALOGS="CATALOG1_ CATALOG2_"
 ```
 
-To include multiple catalogs, simply duplicate the java command and concatenate it with *&&* like:
-``` 
-command: >
-      sh -c 'java -jar ./ingestor.jar --input="/app/catalogs/NNSN_" &&
-             java -jar ./ingestor.jar --input="/app/catalogs/NNSN2_"' 
-```
+It is important to apply the quotes and separate each catalog with a space.
 
 #### Configure html document for the web-service
 The query builder page can be customised to your needs. The application has build
