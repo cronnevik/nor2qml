@@ -1,5 +1,20 @@
 # Nordic to QuakeML converter tool package
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+* [How to install](#how-to-install)
+* [Applications](#applications)
+* [How to run the applications](#how-to-run-the-applications)
+  * [Executable jars](#executable-jars)
+  * [War files](#war-files)
+  * [Docker](#docker)
+    * [Configuration file](#configure-database-catalog-path-and-tomcat-server) 
+    * [Edit HTML for web-service](#configure-html-document-for-the-web-service)
+    * [Make custom profiles](#make-own-custom-profiles-for-html-documents)
+    * [Running docker](#running-docker)
+* [Modules](#modules)
+* [Mapping](#mapping)
+
 ## How to install
 To download, build and run the various modules (see list below) within this package, you first need to have installed Git on you computer. See the official documentation for Git on: https://git-scm.com/
 
