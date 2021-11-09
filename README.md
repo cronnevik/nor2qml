@@ -2,9 +2,10 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-* [How to install](#how-to-install)
-* [Applications](#applications)
-* [How to run the applications](#how-to-run-the-applications)
+* [What is Nor2QML?](#what-is-nor2qml)
+* [Applications within the package](#applications)
+* [How to download and build the applications?](#how-to-download-and-build-the-applications)
+* [How to run the applications?](#how-to-run-the-applications)
   * [Executable jars](#executable-jars)
   * [War files](#war-files)
   * [Docker](#docker)
@@ -15,8 +16,29 @@
 * [Modules](#modules)
 * [Mapping](#mapping)
 
-## How to install
-To download, build and run the various modules (see list below) within this package, you first need to have installed Git on you computer. See the official documentation for Git on: https://git-scm.com/
+## What is Nor2QML?
+Nor2QML is a conversion tool between the Nordic (used in SEISAN) and QuakeML (European Standard) formats for provision 
+of earthquake parametric data. The SEISAN seismic analysis system contains a set of programs for analyzing earthquakes 
+from analog and digital data ([See official SEISAN documentation](http://seis.geus.net/software/seisan/seisan.pdf)).
+The data is organized in catalogue structure using the file system. The smallest basic unit is a file (the S-file) 
+containing original phase readings (arrival times, amplitude, period, azimuth, and apparent velocity) for one event. 
+These s-files are expressed through the Nordic format, which since 1985 has been the common exchange format in the 
+Nordic countries. The standard format for provision of earthquake parametric data within various European 
+infrastructures is QuakeML ([See official QuakeML documentation](https://quake.ethz.ch/quakeml/docs/latest?action=AttachFile&do=get&target=QuakeML-BED.pdf)).
+
+In addition, the Nor2QML package include a set of tools for easier exchange of earthquake parametric data 
+between applications. The interaction is organized through a web-service , where A client can send a request over 
+the internet for data through a web-service and receive the data in multiple formats (Nordic, Nordic2, 
+QuakeML, Text) of their choice. 
+
+## Applications
+* Standalone converter (*executable jar*) - file conversion locally on the computer
+* Ingestor (*executable jar*) - providing data to the web-service
+* Web-service (*war file*) for data exchange (QuakeML, Nordic and text format)
+* Web converter (*war file*) - web application for conversion in the browser - server and client
+
+## How to download and build the applications?
+To download, build and run the various modules ([see list below](#modules)) within this package, you first need to have installed Git on you computer. See the official documentation for Git on: https://git-scm.com/
 
 Clone the project from this GitHub repository into your desired folder by entering the command:\
 ``` git clone https://github.com/cronnevik/nor2qml.git ```
@@ -28,17 +50,13 @@ To simplify the build of the applications and the modules they depend on, maven 
 To build an application, enter the command:\
 ``` mvn clean install -P  <maven profile name>```
 
-The maven build tool then produce a jar or a war file which is found in the *target* folder within the component/application folder.
+The maven profile name is found in the [modules list below](#modules). The maven build tool then produce a jar or a war file which is found in the *target* folder within the component/application folder.
 
-## Applications
-* Standalone converter (*executable jar*) - file conversion locally on the computer
-* Ingestor (*executable jar*) - providing data to the web-service
-* Web-service (*war file*) for data exchange (QuakeML, Nordic and text format)
-* Web converter (*war file*) - web application for conversion in the browser - server and client
+## How to run the applications?
+For the executable jars and war files, please read first in the previous section on how to build the applications.
 
-## How to run the applications
 ### Executable jars
-The jar files (located in the target folder of the application) is executable by the command:\
+The jar files (located in the target folder of the application after building the application) is executable by the command:\
 ``` java -jar <name of file.jar> ```
 
 Please be aware that the executable *quakeml-web-service-ingestor* application require a MySQL database running.
