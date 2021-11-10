@@ -81,7 +81,7 @@ to initiate the database, host the web-service application and populates the dat
 from one or multiple catalog(s).
 
 #### Configure Database, catalog path and Tomcat server
-A configuration file (.env) exists in the main project folder for configuring credentials for the MySQl database 
+A configuration file (.env) exists in the main project folder for configuring credentials and ports for the MySQl database 
 and tomcat server. The application name can also be altered, whose name will be the end path of your hosting domain.
 In addition, a path to REA folder (or alternative folder where catalogs are located) needs to
 be specified within the .env file. 
@@ -91,8 +91,10 @@ DB_NAME=dbname
 DB_USER=username
 DB_PW=password
 DB_ROOT_PW=password
+DB_PORT=3306
 TOMCAT_USER=username
 TOMCAT_PASSWORD=password
+TOMCAT_PORT=8090
 WS_APP_NAME=eqcat
 CATALOG_FOLDER=C:/SEISAN/REA
 CATALOGS=
