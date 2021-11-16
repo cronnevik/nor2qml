@@ -69,7 +69,7 @@ The war files produces are applications ment for servers. For deployment these c
 If you would like to run the server applications locally, an embedded tomcat server is applied and can be initiated by navigating into the application folder
 and execute the command: 
 
-``` mvn spring-boot:run ```
+``` mvn spring-boot:run -Dspring.profiles.active=prod ```
 
 Please be aware that the *quakeml-web-service*mapplication require a MySQL database running.
 Configurations for the MySQL connection can be altered by changing the values in *.env* file located
@@ -85,7 +85,9 @@ from one or multiple catalog(s).
 A configuration file (.env) exists in the main project folder for configuring credentials and ports for the MySQl database 
 and tomcat server. The application name can also be altered, whose name will be the end path of your hosting domain.
 In addition, a path to REA folder (or alternative folder where catalogs are located) needs to
-be specified within the .env file. 
+be specified within the .env file. A catalogs options exists to select one or multiple catalogs
+to be accessible through the web-service. It is important to keep the quotes and separate each 
+catalog with a space.
 
 ``` 
 DB_NAME=dbname
@@ -97,20 +99,10 @@ TOMCAT_USER=username
 TOMCAT_PASSWORD=password
 TOMCAT_PORT=8090
 WS_APP_NAME=eqcat
-CATALOG_FOLDER=C:/SEISAN/REA
-CATALOGS=
+REA_FOLDER=C:/SEISAN/REA
+CATALOGS="CATALOG1_ CATALOG2_"
 PROFILE=default
 ```
-
-A catalogs options exists to select one or multiple catalog(s) to be accessible through the web-service. If left blank,
-the ingestor component will thus scan all catalogs within this folder and populate the database with the records inside. 
-To selective choose which catalog to include, this can be achieved by adding the catalogs name in to an array like so:
-
-``` 
-CATALOGS="CATALOG1_ CATALOG2_"
-```
-
-It is important to apply the quotes and separate each catalog with a space.
 
 #### Configure html document for the web-service
 The query builder page can be customised to your needs. The application has build

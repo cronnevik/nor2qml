@@ -9,14 +9,11 @@ ingestor:
   chunk: ${chunk:5000}
   dbname: ${dbname:nnsn_qml}
   force: ${force:false}
+  catalog: ${catalog:default} # Override catalog name if other than "default" is specified
 
 quakeml:
   prefix: ${prefix:smi}
   agency: ${agency:no.uib.nnsn}
-
-# Override catalog name if other than "default" is specified
-seisan:
-  catalog: ${catalog:default}
 
 server:
   port: 8092

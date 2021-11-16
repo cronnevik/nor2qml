@@ -54,8 +54,7 @@ services:
           declare -a array=($${CATALOGS[@]})
           for catalog in "$${array[@]}"
           do
-              echo $${catalog};
-              java -jar ./ingestor.jar --input="/app/catalogs/$${catalog}"
+              java -jar ./ingestor.jar --input="/app/catalogs/$${catalog}" --catalog="$${catalog}"
           done
         fi
       '
@@ -77,4 +76,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: "${CATALOG_FOLDER}"
+      device: "${REA_FOLDER}"

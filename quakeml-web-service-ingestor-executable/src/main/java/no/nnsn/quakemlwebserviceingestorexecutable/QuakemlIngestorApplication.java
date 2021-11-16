@@ -12,9 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
-import java.util.NoSuchElementException;
-import java.util.Scanner;
-
 @SpringBootApplication(scanBasePackages =
         {
                 "no.nnsn.quakemlwebserviceingestorexecutable",

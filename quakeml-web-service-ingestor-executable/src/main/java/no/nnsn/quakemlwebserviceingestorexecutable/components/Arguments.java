@@ -27,14 +27,14 @@ public class Arguments {
     public String getQmlAgency() {
         return env.getProperty("quakeml.agency");
     }
-    public String getCatalog() { return env.getProperty("seisan.catalog"); }
+    public String getCatalog() { return env.getProperty("ingestor.catalog"); }
 
     public LocalDate getStartDate() {
         return LocalDate.parse(env.getProperty("ingestor.startdate"));
     }
     public Boolean startCleaner() {return env.getProperty("ingestor.clean").equals("true");}
     public int getChunk() { return Integer.valueOf(env.getProperty("ingestor.chunk")); }
-    public Boolean catalogFromPath() {return env.getProperty("seisan.catalog").equals("default");}
+    public Boolean catalogFromPath() {return env.getProperty("ingestor.catalog").equals("default");}
     public Boolean forceIngestion() { return env.getProperty("ingestor.force").equals("true"); }
 
     // Profiles

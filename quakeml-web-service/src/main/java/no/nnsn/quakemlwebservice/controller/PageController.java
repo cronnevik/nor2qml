@@ -5,7 +5,6 @@ import no.nnsn.quakemlwebservice.service.CatalogService;
 import no.nnsn.quakemlwebservice.service.SfileEventService;
 import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -41,7 +39,7 @@ public class PageController {
         } else if (env.getProperty("page.profile").equals("intaros")) {
             model.addObject("form", new EventFormQuery().getIntarosInstance());
         } else {
-            model.addObject("form", new EventFormQuery());
+            model.addObject("form", new EventFormQuery().getDefaultInstance());
         }
 
         model.addObject("profile", env.getProperty("page.profile"));

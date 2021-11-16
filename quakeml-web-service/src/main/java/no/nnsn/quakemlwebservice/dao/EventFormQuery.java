@@ -1,14 +1,9 @@
 package no.nnsn.quakemlwebservice.dao;
 
 import lombok.Data;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Data
 public class EventFormQuery {
@@ -60,6 +55,20 @@ public class EventFormQuery {
         maxLatitude = 85.0;
         minLongitude = -15.0;
         maxLongitude = 35.0;
+
+        return this;
+    }
+
+    // NNSN default parameters
+    public EventFormQuery getDefaultInstance() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekLimit = now.minusWeeks(1);
+        startTime = weekLimit.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        endTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+        minLatitude = -90.0;
+        maxLatitude = 90.0;
+        minLongitude = -180.0;
+        maxLongitude = 180.0;
 
         return this;
     }

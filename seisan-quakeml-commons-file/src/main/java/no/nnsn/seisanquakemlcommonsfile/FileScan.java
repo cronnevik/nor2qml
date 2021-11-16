@@ -6,8 +6,8 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,27 +22,25 @@ public class FileScan implements FileVisitor<Path> {
     @Getter private Set<Path> failedFileVisit = new HashSet<>();
 
     public FileScan(String parentPath) {
-        this.parentPath = parentPath;
+        this.parentPath = Paths.get(parentPath).getFileName().toString();
     }
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
         final String dirName = dir.getFileName().toString();
 
-        // Only scan through directories with number as name
-        if(dirName.matches("^[a-zA-Z0-9]+[_]$")) { // Catalog folder is with letters and underscore at the end
-            this.catalogName = dirName.substring(0, dirName.length() -1); // remove the underscore from catalog name
+        if (dirName.equals(this.parentPath)) {
+            this.catalogName = dirName;
             return FileVisitResult.CONTINUE;
-        } else if(dirName.matches("^[a-zA-Z0-9]+[_][_]$")) { // Catalog folder is with letters and two underscores at the end
-            this.catalogName = dirName.substring(0, dirName.length() - 2); // remove the two underscores from catalog name
-            return FileVisitResult.CONTINUE;
-        } else if (dirName.matches("[0-9 ]+") || dir.toString().equals(this.parentPath)) {
-            return FileVisitResult.CONTINUE;
-        } else {
-            // Skip subfolders if not valid by the regex patterns
-            skippedFolders.add(dir);
-            return FileVisitResult.SKIP_SUBTREE;
         }
+
+        if (dirName.equals("CAT") || dirName.equals("LOG")) {
+            skippedFolders.add(dir);
+            return FileVisitResult.SKIP_SIBLINGS;
+        } else {
+            return FileVisitResult.CONTINUE;
+        }
+
     }
 
     @Override
