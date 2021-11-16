@@ -68,9 +68,32 @@ services:
       CATALOGS: "${CATALOGS}"
     volumes:
       - catalog-data:/app/catalogs
+
+  # Service 4. Monitoring - prometheus
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    ports:
+      - 9000:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+
+  # Service 5. Monitoring - grafana
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+
 #Volumes
 volumes:
   db-data:
+  prometheus-data:
+  grafana-data:
   catalog-data:
     driver: local
     driver_opts:

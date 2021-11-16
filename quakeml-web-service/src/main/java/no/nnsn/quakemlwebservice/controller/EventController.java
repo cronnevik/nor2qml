@@ -20,6 +20,8 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -32,7 +34,8 @@ import java.io.InputStream;
 import java.util.*;
 
 @Component
-@Path("/query")
+@Path("/")
+@Endpoint(id = "event-query")
 public class EventController {
 
     final QmlToSfile qmlToSfile;
@@ -51,7 +54,9 @@ public class EventController {
     }
 
     @GET
+    @Path("query")
     @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
+    @ReadOperation
     public Response getEvents(
             @QueryParam("catalog") String catalog,
             @QueryParam("eventtype") String eventTypes,

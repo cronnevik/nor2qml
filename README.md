@@ -143,7 +143,7 @@ the previous build images and rebuild (description given in section about runnin
 #### Running docker
 Make sure that you have docker installed on your computer and that it is running.
 Open a terminal, navigate to the main folder and enter:\
-``` docker-compose up```
+``` docker-compose up -d```
 
 To shutdown the docker instances, enter:\
 ``` docker-compose down ```
