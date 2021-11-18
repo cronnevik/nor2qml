@@ -2,7 +2,27 @@ spring:jpa.open-in-view: false
 server.error.whitelabel.enabled: false
 page.profile: ${profile:nnsn}
 
+management:
+  endpoints:
+    enabled: true
+    health:
+      group:
+        custom:
+          include: diskSpace,ping
+          show-components: always
+          show-details: always
+    web:
+      exposure:
+        include: health,info,metrics,httptrace,mappings,query,prometheus
+
 spring:
+  jersey:
+    applicationPath: "/fdsnws/event/1"
+    config:
+      server:
+        monitoring:
+          statistics:
+            enabled: true
   profiles:
     active: '@spring.profiles.active@'
 ---

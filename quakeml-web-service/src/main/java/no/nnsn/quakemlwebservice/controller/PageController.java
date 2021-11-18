@@ -6,8 +6,6 @@ import no.nnsn.quakemlwebservice.service.SfileEventService;
 import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import org.springframework.core.env.Environment;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
