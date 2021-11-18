@@ -1,0 +1,35 @@
+version: '3.7'
+
+# Services
+services:
+  # Service 4. Monitoring - prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring-network
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  # Service 5. Monitoring - grafana
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+
+networks:
+  monitoring-network:
+    external:
+      name: nor2qml-network
+
+#Volumes
+volumes:
+  prometheus-data:
+  grafana-data:
