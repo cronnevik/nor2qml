@@ -14,8 +14,12 @@ import java.util.List;
 @Transactional
 public class CatalogServiceImpl implements CatalogService {
 
-    @Autowired
+    final
     CatalogRepository repo;
+
+    public CatalogServiceImpl(CatalogRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
     public Catalog getCatalogNyName(String name) {
