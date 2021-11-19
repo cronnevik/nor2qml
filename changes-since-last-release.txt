@@ -1,0 +1,11 @@
+Changes since last release:
+- File scanner changed to visit all folder names except "CAT" and "LOG"
+- Docker files moved to root project folder to comply with older docker versions and issues with copying files outside the build context
+- monitoring systems added
+  - actuator (integrated into web-service module)
+  - prometheus (external docker service)
+  - grafana (external docker service)
+- prometheus and grafana are currently only runnable from a separate docker-compose file
+- custom paths for monitoring of jersey endpoints
+- web security added for web-service to secure sensitive information generated from actuator monitoring
+- fixed bug of catalog list endpoint not working due to dependency (jersey-media-jaxb) issue

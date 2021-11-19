@@ -5,15 +5,9 @@ page.profile: ${profile:nnsn}
 management:
   endpoints:
     enabled: true
-    health:
-      group:
-        custom:
-          include: diskSpace,ping
-          show-components: always
-          show-details: always
     web:
       exposure:
-        include: health,info,metrics,httptrace,mappings,query,prometheus
+        include: health,info,metrics,prometheus
 
 spring:
   jersey:
@@ -23,6 +17,10 @@ spring:
         monitoring:
           statistics:
             enabled: true
+  security:
+    user:
+      name: ${MONITOR_USER}
+      password: ${MONITOR_PASSWORD}
   profiles:
     active: '@spring.profiles.active@'
 ---
