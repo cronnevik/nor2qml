@@ -82,8 +82,8 @@ to initiate the database, host the web-service application and populates the dat
 from one or multiple catalog(s).
 
 #### Configure Database, catalog path and Tomcat server
-A configuration file (.env) exists in the main project folder for configuring credentials and ports for the MySQl database 
-and tomcat server. The application name can also be altered, whose name will be the end path of your hosting domain.
+A configuration file (.env) exists in the main project folder for configuring credentials and ports for the MySQL database, 
+tomcat server and monitoring data access. The application name can also be altered, whose name will be the end path of your hosting domain.
 In addition, a path to REA folder (or alternative folder where catalogs are located) needs to
 be specified within the .env file. A catalogs options exists to select one or multiple catalogs
 to be accessible through the web-service. It is important to keep the quotes and separate each 
@@ -98,6 +98,8 @@ DB_PORT=3306
 TOMCAT_USER=username
 TOMCAT_PASSWORD=password
 TOMCAT_PORT=8090
+MONITOR_USER=username
+MONITOR_PASSWORD=password
 WS_APP_NAME=eqcat
 REA_FOLDER=C:/SEISAN/REA
 CATALOGS="CATALOG1_ CATALOG2_"
@@ -140,25 +142,47 @@ profile name within the *.env* file in the root folder of all the projects. Chan
 After changes are made, if you have already built (applying the run command)  the docker images, please make sure to remove
 the previous build images and rebuild (description given in section about running docker). 
 
-#### Running docker
+#### Running the applications through docker
 Make sure that you have docker installed on your computer and that it is running.
-Open a terminal, navigate to the main folder and enter:\
+Open a terminal, navigate to the main folder and enter
+
 ``` docker-compose up -d```
 
-To shutdown the docker instances, enter:\
+To shutdown the docker instances, enter
+
 ``` docker-compose down ```
 
-If you already did a run and want to change the database credentials,  add the flag '-v' like so:\
+If you already did a run and want to change the database credentials,  add the flag '-v' like so
+
 ``` docker-compose down -v ```
 
 Please be aware that the '-v' flag will permanently delete the database volume, and you will lose all the data stored
 within the database created within the MySQL instance.
 
 To remove the images created (useful for rebuild if changes are made to the html documents
-or other files within the applications), use the following command:\
+or other files within the applications), use the following command
+
 ``` docker-compose down --rmi=all ```
 
-To build the images again, enter the *docker-compose up* command again.
+It is also possible to add both *-v* and *--rmi=all* in the same command for shutting down the application
+for rebuilding. To build the images again, enter the *docker-compose up -d* command again.
+
+#### Running the monitoring system through docker
+Make sure that the other applications are already running (see previous section).
+You can check that the applications are running by entering the following command:\
+
+``` docker ps```
+
+A list of docker images (tomcat server and mysql database) should then appear with a status 
+of *Up* and how long it has been running.
+
+To run the monitoring applications through docker, enter:
+
+````docker-compose -f docker-compose-monitoring.yml up -d ````
+
+And to stop these applications, enter:
+
+````docker-compose -f docker-compose-monitoring.yml down --rmi=all -v````
 
 ## Modules
 Components | Maven profiles | Produces | Description
