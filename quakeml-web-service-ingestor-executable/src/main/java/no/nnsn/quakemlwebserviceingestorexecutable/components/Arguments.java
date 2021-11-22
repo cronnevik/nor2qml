@@ -20,7 +20,7 @@ public class Arguments {
         return !env.getProperty("ingestor.input").equals("false");
     }
     public String getInput() { return env.getProperty("ingestor.input"); }
-    public String getSource() { return env.getProperty("ingestor.source"); }
+    public String getSourceType() { return env.getProperty("ingestor.source"); }
     public String getQmlPrefix() {
         return env.getProperty("quakeml.prefix");
     }
@@ -37,7 +37,7 @@ public class Arguments {
     public Boolean catalogFromPath() {return env.getProperty("ingestor.catalog").equals("default");}
     public Boolean forceIngestion() { return env.getProperty("ingestor.force").equals("true"); }
 
-    // Profiles
+    // Profiles for specific mappings
     public ConverterProfile getProfile() {
         String profile = env.getProperty("ingestor.profile");
         if (profile.equals("intaros")) {

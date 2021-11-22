@@ -11,6 +11,7 @@ COPY .env .env
 COPY seisan-quakeml-commons-jpa ./seisan-quakeml-commons-jpa
 COPY converter-core ./converter-core
 COPY seisan-quakeml-commons-file ./seisan-quakeml-commons-file
+COPY ingestor-core ./ingestor-core
 COPY quakeml-web-service-ingestor-executable ./quakeml-web-service-ingestor-executable
 
 # Build the application with maven

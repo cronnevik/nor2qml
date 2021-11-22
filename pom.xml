@@ -4,7 +4,7 @@
 	<groupId>no.nnsn</groupId>
     <artifactId>seisan-quakeml</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
     <name>seisan-quakeml</name>
     <description>Package for seisan-quakeml tools</description>
@@ -36,11 +36,8 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>converter-core</module>
-				<module>converter-standalone</module>
-				<module>quakeml-web-service</module>
-				<module>quakeml-web-service-ingestor-executable</module>
 				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
 				<module>seisan-quakeml-commons-web</module>
 				<module>seisan-quakeml-commons-file</module>
 			</modules>
@@ -64,6 +61,7 @@
 				<module>seisan-quakeml-commons-jpa</module>
 				<module>converter-core</module>
 				<module>seisan-quakeml-commons-file</module>
+				<module>ingestor-core</module>
 				<module>quakeml-web-service-ingestor-executable</module>
 			</modules>
 		</profile>
@@ -76,6 +74,7 @@
 				<module>seisan-quakeml-commons-jpa</module>
 				<module>converter-core</module>
 				<module>seisan-quakeml-commons-file</module>
+				<module>ingestor-core</module>
 				<module>quakeml-web-service-ingestor-executable</module>
 			</modules>
 		</profile>
