@@ -1,6 +1,9 @@
 package no.nnsn.ingestor.components;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nnsn.convertercore.helpers.ConverterProfile;
+import no.nnsn.ingestor.dao.CatalogConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -11,13 +14,18 @@ public class Arguments {
     @Autowired
     Environment env;
 
+    ObjectMapper mapper = new ObjectMapper();
+
     public String getCurrentPath() {
         return System.getProperty("user.dir");
     }
-    public Boolean hasInput() {
-        return !env.getProperty("ingestor.input").equals("false");
+    public Boolean hasInputFolder() {
+        return !env.getProperty("ingestor.folder").equals("false");
     }
-    public String getInput() { return env.getProperty("ingestor.input"); }
+    public String getInputFolder() { return env.getProperty("ingestor.folder"); }
+    public CatalogConfig[] getCatalogsConfig() throws JsonProcessingException {
+        return mapper.readValue(env.getProperty("ingestor.catalogs"), CatalogConfig[].class);
+    }
     public String getSourceType() { return env.getProperty("ingestor.source"); }
     public String getQmlPrefix() {
         return env.getProperty("quakeml.prefix");
@@ -28,6 +36,8 @@ public class Arguments {
     public String getCatalog() { return env.getProperty("ingestor.catalog"); }
     public Boolean catalogFromPath() {return env.getProperty("ingestor.catalog").equals("default");}
     public Boolean forceIngestion() { return env.getProperty("ingestor.force").equals("true"); }
+    public Boolean isScheduled() { return env.getProperty("scheduler.enabled").equals("true"); }
+    public String getScheduledInterval() { return env.getProperty("scheduler.interval"); }
 
     // Profiles for specific mappings
     public ConverterProfile getProfile() {

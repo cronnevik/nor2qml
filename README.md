@@ -14,6 +14,7 @@
     * [Edit HTML for web-service](#configure-html-document-for-the-web-service)
     * [Make custom profiles](#make-own-custom-profiles-for-html-documents)
     * [Running docker](#running-docker)
+    * [Monitoring](#running-the-monitoring-system-through-docker)
 * [Modules](#modules)
 * [Mapping](#mapping)
 
@@ -104,6 +105,8 @@ WS_APP_NAME=eqcat
 REA_FOLDER=C:/SEISAN/REA
 CATALOGS="CATALOG1_ CATALOG2_"
 PROFILE=default
+INGEST_SCHEDULER_ENABLED=true
+INGEST_SCHEDULER_INTERVAL=PT02M
 ```
 
 #### Configure html document for the web-service

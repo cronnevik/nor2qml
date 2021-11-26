@@ -3,16 +3,20 @@ server:
 
 # arguments
 ingestor:
-  input: ${input:false}
+  folder: ${folder:false}
+  catalogs: ${catalogs:default}
   source: ${source:sfile}
   profile: ${profile:none}
   dbname: ${dbname:nnsn_qml}
   force: ${force:false}
-  catalog: ${catalog:default} # Override catalog name if other than "default" is specified
 
 quakeml:
   prefix: ${prefix:smi}
   agency: ${agency:no.uib.nnsn}
+
+scheduler:
+  enabled: ${scheduled:true}
+  interval: ${interval:PT02M}
 
 
 # logging level

@@ -29,6 +29,7 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescrip
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -54,6 +55,20 @@ public class Ingestor {
         this.sfileEventService = sfileEventService;
         this.sfileCheckerService = sfileCheckerService;
         this.converter = converter;
+    }
+
+    public void execute(FileInfo fileInfo, IngestorOptions options) throws Exception {
+
+
+        System.out.println("Scanning catalog...");
+        printFilecount(fileInfo);
+
+
+
+        String catalog = fileInfo.getCatalogName();
+        System.out.println("Catalog: " + catalog);
+
+        ingest(fileInfo, options);
     }
 
     public void printFilecount(FileInfo fileInfo) {
