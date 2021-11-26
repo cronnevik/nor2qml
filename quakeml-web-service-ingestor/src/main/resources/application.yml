@@ -5,11 +5,7 @@ server:
 ingestor:
   input: ${input:false}
   source: ${source:sfile}
-  startdate: ${startdate:1900-01-01}
-  enddate: ${enddate:now}
   profile: ${profile:none}
-  clean: ${clean:false}
-  chunk: ${chunk:5000}
   dbname: ${dbname:nnsn_qml}
   force: ${force:false}
   catalog: ${catalog:default} # Override catalog name if other than "default" is specified
