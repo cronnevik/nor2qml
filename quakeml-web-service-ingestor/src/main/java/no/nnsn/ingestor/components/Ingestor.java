@@ -29,7 +29,6 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescrip
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -59,14 +58,9 @@ public class Ingestor {
 
     public void execute(FileInfo fileInfo, IngestorOptions options) throws Exception {
 
-
-        System.out.println("Scanning catalog...");
+        System.out.println("Scanning catalog: " + fileInfo.getCatalogName());
+        log.info("catalog: " + fileInfo.getCatalogName());
         printFilecount(fileInfo);
-
-
-
-        String catalog = fileInfo.getCatalogName();
-        System.out.println("Catalog: " + catalog);
 
         ingest(fileInfo, options);
     }
@@ -85,8 +79,6 @@ public class Ingestor {
         System.out.println("Checking S-files for new files or changes to existing...");
 
         final IngestLog ingestLog = new IngestLog();
-
-        System.out.println("catalog from arg name: " + options.getCatalogName());
 
         List<SfileCheck> sfileChecks = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
         Map<String, String> filesMap = new HashMap<>();

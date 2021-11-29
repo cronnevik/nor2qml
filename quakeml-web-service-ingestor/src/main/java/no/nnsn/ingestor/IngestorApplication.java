@@ -15,6 +15,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 
 @SpringBootApplication(scanBasePackages = {
         "no.nnsn.ingestor",
@@ -44,7 +46,10 @@ public class IngestorApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void EventListenerExecute() throws Exception{
-        execute();
+        // if scheduler is not enabled then execute manually, otherwise the scheduler is doing running the execute method
+        if (!arguments.isScheduled()) {
+            execute();
+        }
     }
 
     @EventListener(ApplicationFailedEvent.class)
@@ -52,38 +57,38 @@ public class IngestorApplication {
         System.out.println("Application Event Listener is Failed");
     }
 
-    public IngestorOptions getOptions(String pathInput, String sourceType, FileInfo fileInfo) {
-        IngestorOptions options = new IngestorOptions();
-        options.setInput(pathInput);
-        options.setCatalogName((arguments.catalogFromPath()) ? fileInfo.getCatalogName() : arguments.getCatalog());
-        options.setProfile(arguments.getProfile());
-        options.setForceIngestion(arguments.forceIngestion());
-        options.setSourceType(sourceType);
-        options.setQmlPrefix(arguments.getQmlPrefix());
-        options.setQmlAgency(arguments.getQmlAgency());
-        return options;
-    }
-
     @Scheduled(fixedDelayString = "${scheduler.interval}")
     public void execute() throws Exception {
-        String pathFolder = arguments.hasInputFolder() ? arguments.getInputFolder() : arguments.getCurrentPath();
+        String pathFolder = arguments.hasInputFolder() ? arguments.getInputFolder() : arguments.getCurrentPath() + "/catalogs";
         CatalogConfig[] catalogs = arguments.getCatalogsConfig();
+
+        ReentrantLock lock = new ReentrantLock();
+
         for (CatalogConfig catConf: catalogs) {
-            String catalogName = catConf.getName();
-            String authorityID = catConf.getAuthorityID();
-            String prefix = catConf.getPrefix();
+            lock.lock();
+            try {
+                String catalogName = catConf.getName();
 
-            System.out.println("catalogName: " + catalogName);
-            System.out.println("authorityID: " + authorityID);
-            System.out.println("prefix: " + prefix);
+                String pathInput = pathFolder + "/" + catalogName;
+                String sourceType = arguments.getSourceType();
 
-            String pathInput = pathFolder + "/" + catalogName;
-            String sourceType = arguments.getSourceType();
-            FileInfo fileInfo = ingestor.getNumOfFiles(pathInput, sourceType);
-            IngestorOptions options = getOptions(pathInput, sourceType, fileInfo);
-            ingestor.execute(fileInfo, options);
+                FileInfo fileInfo = ingestor.getNumOfFiles(pathInput, sourceType);
+
+                IngestorOptions options = new IngestorOptions();
+                options.setInput(pathInput);
+                options.setCatalogName(catalogName);
+                options.setProfile(arguments.getProfile());
+                options.setForceIngestion(arguments.forceIngestion());
+                options.setSourceType(sourceType);
+                options.setQmlPrefix(catConf.getPrefix());
+                options.setQmlAgency(catConf.getAuthorityID());
+
+                ingestor.execute(fileInfo, options);
+            } finally {
+                lock.unlock();
+            }
+
         }
-
         if (!arguments.isScheduled()) {
             System.exit(SpringApplication.exit(context));
         }

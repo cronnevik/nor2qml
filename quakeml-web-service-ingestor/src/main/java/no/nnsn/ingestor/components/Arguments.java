@@ -4,17 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.ingestor.dao.CatalogConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Arguments {
 
-    @Autowired
+    final
     Environment env;
 
     ObjectMapper mapper = new ObjectMapper();
+
+    public Arguments(Environment env) {
+        this.env = env;
+    }
 
     public String getCurrentPath() {
         return System.getProperty("user.dir");
@@ -33,11 +36,9 @@ public class Arguments {
     public String getQmlAgency() {
         return env.getProperty("quakeml.agency");
     }
-    public String getCatalog() { return env.getProperty("ingestor.catalog"); }
-    public Boolean catalogFromPath() {return env.getProperty("ingestor.catalog").equals("default");}
+    public String getCatalog() { return env.getProperty("ingestor.folder"); }
     public Boolean forceIngestion() { return env.getProperty("ingestor.force").equals("true"); }
     public Boolean isScheduled() { return env.getProperty("scheduler.enabled").equals("true"); }
-    public String getScheduledInterval() { return env.getProperty("scheduler.interval"); }
 
     // Profiles for specific mappings
     public ConverterProfile getProfile() {

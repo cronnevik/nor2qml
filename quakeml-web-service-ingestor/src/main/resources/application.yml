@@ -7,7 +7,6 @@ ingestor:
   catalogs: ${catalogs:default}
   source: ${source:sfile}
   profile: ${profile:none}
-  dbname: ${dbname:nnsn_qml}
   force: ${force:false}
 
 quakeml:

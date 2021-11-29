@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile-ingestor
     command: >
       bash -c '
-        java -jar ./ingestor.jar --folder="/app/catalogs" --catalog="${catalogs}"
+        java -jar ./ingestor.jar --folder="/app/catalogs" --catalog="${CATALOGS}" --scheduled="${INGEST_SCHEDULER_ENABLED}" --interval="${INGEST_SCHEDULER_INTERVAL}"
       '
     depends_on:
       - db
