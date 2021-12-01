@@ -52,15 +52,7 @@ services:
       dockerfile: Dockerfile-ingestor
     command: >
       bash -c '
-        if [ -z "${CATALOGS}" ]; then
-          java -jar ./ingestor.jar --input="/app/catalogs"
-        else
-          declare -a array=($${CATALOGS[@]})
-          for catalog in "$${array[@]}"
-          do
-              java -jar ./ingestor.jar --input="/app/catalogs/$${catalog}" --catalog="$${catalog}"
-          done
-        fi
+        java -jar ./ingestor.jar --folder="/app/catalogs" --catalog="${CATALOGS}" --scheduled="${INGEST_SCHEDULER_ENABLED}" --interval="${INGEST_SCHEDULER_INTERVAL}"
       '
     depends_on:
       - db

@@ -1,0 +1,56 @@
+server:
+  port: 8092
+
+# arguments
+ingestor:
+  folder: ${folder:false}
+  catalogs: ${catalogs:default}
+  source: ${source:sfile}
+  profile: ${profile:none}
+  force: ${force:false}
+
+quakeml:
+  prefix: ${prefix:smi}
+  agency: ${agency:no.uib.nnsn}
+
+scheduler:
+  enabled: ${scheduled:true}
+  interval: ${interval:PT02M}
+
+
+# logging level
+logging:
+  level:
+    org.springframework: ERROR
+    sql: ERROR
+    root: OFF
+    org.hibernate:
+      SQL: ERROR
+      stat: INFO
+    no.nnsn.ingestor.components: INFO
+    com.zaxxer.hikari: ERROR
+  pattern:
+    file: "%d{HH:mm:ss.SSS} %msg%n"
+  file:
+    name: logs/app.log
+
+spring:
+  profiles:
+    active: '@spring.profiles.active@'
+  main.banner-mode: off
+---
+spring.config.activate.on-profile: prod
+database:
+  address: localhost
+  port: 3306
+  name: ${env.DB_NAME}
+  username: ${env.DB_USER}
+  password: ${env.DB_PW}
+---
+spring.config.activate.on-profile: container
+database:
+  address: mysql-db
+  port: 3306
+  name: ${env.DB_NAME}
+  username: ${env.DB_USER}
+  password: ${env.DB_PW}

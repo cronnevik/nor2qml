@@ -14,6 +14,7 @@
     * [Edit HTML for web-service](#configure-html-document-for-the-web-service)
     * [Make custom profiles](#make-own-custom-profiles-for-html-documents)
     * [Running docker](#running-docker)
+    * [Monitoring](#running-the-monitoring-system-through-docker)
 * [Modules](#modules)
 * [Mapping](#mapping)
 
@@ -84,10 +85,27 @@ from one or multiple catalog(s).
 #### Configure Database, catalog path and Tomcat server
 A configuration file (.env) exists in the main project folder for configuring credentials and ports for the MySQL database, 
 tomcat server and monitoring data access. The application name can also be altered, whose name will be the end path of your hosting domain.
+The profile option is related to information presented within the query builder page.
+Please read the [make custom profiles](#make-own-custom-profiles-for-html-documents) section
+for adding your own markup.
+
 In addition, a path to REA folder (or alternative folder where catalogs are located) needs to
-be specified within the .env file. A catalogs options exists to select one or multiple catalogs
-to be accessible through the web-service. It is important to keep the quotes and separate each 
-catalog with a space.
+be specified within the .env file. A catalogs option exists to select one or multiple catalogs to be accessible through the 
+web-service. If left empty, no data will be loaded into the database.
+Each catalog should be represented in a JSON structure as demonstrated in the 
+example below. Specify the name of the catalog (the folder name of the catalog within REA), 
+the autorityID which represents you institution in the form of 
+*(top-level domain).(organisation/institution)[.(sub-unit of organisation)]*.
+This information is used for ID generation for each QuakeML entity. The ID is prefixed with a
+schema name, which should be either *smi* (seismological meta-information) or *quakeml* and 
+it is possible to choose the preferred option within the JSOn structure for each catalog.
+
+The ingestor component has a scheduler for regular checks of the catalog folder(s) and updating
+the MySQL database respectively. If *INGEST_SCHEDULER_ENABLED* is set to false, the ingestor
+will only insert the data once as a fixed dataset. For regular updates, set the
+*INGEST_SCHEDULER_INTERVAL* option with the preferred interval between each check.
+The interval of the scheduler is defined by the [ISO8601 Duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations).
+
 
 ``` 
 DB_NAME=dbname
@@ -101,9 +119,11 @@ TOMCAT_PORT=8090
 MONITOR_USER=username
 MONITOR_PASSWORD=password
 WS_APP_NAME=eqcat
-REA_FOLDER=C:/SEISAN/REA
-CATALOGS="CATALOG1_ CATALOG2_"
 PROFILE=default
+REA_FOLDER=C:/SEISAN/REA
+CATALOGS='[{"name":"NNSN_","authorityID":"no.uib.nnsn","prefix":"smi"}, {"name":"NNSN__","authorityID":"no.uib.nnsn","prefix":"smi"}]'
+INGEST_SCHEDULER_ENABLED=true
+INGEST_SCHEDULER_INTERVAL=PT02M
 ```
 
 #### Configure html document for the web-service

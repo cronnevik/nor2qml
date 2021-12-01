@@ -9,3 +9,5 @@ Changes since last release:
 - custom paths for monitoring of jersey endpoints
 - web security added for web-service to secure sensitive information generated from actuator monitoring
 - fixed bug of catalog list endpoint not working due to dependency (jersey-media-jaxb) issue
+- Scheduler added for ingestor component
+- additional properties added to configure the scheduling

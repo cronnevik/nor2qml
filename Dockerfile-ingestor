@@ -11,7 +11,7 @@ COPY .env .env
 COPY seisan-quakeml-commons-jpa ./seisan-quakeml-commons-jpa
 COPY converter-core ./converter-core
 COPY seisan-quakeml-commons-file ./seisan-quakeml-commons-file
-COPY quakeml-web-service-ingestor-executable ./quakeml-web-service-ingestor-executable
+COPY quakeml-web-service-ingestor ./quakeml-web-service-ingestor
 
 # Build the application with maven
 RUN mvn clean install -P ing-container -Dspring.profiles.active=container
@@ -21,4 +21,4 @@ RUN mvn clean install -P ing-container -Dspring.profiles.active=container
 FROM anapsix/alpine-java as production
 ARG CATALOG_PATH
 WORKDIR /app
-COPY --from=build /app/quakeml-web-service-ingestor-executable/target/quakeml-web-service-ingestor-executable-1.0.0-SNAPSHOT.jar /app/ingestor.jar
+COPY --from=build /app/quakeml-web-service-ingestor/target/quakeml-web-service-ingestor-1.0.0-SNAPSHOT.jar /app/ingestor.jar

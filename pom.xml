@@ -4,7 +4,7 @@
 	<groupId>no.nnsn</groupId>
     <artifactId>seisan-quakeml</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
     <name>seisan-quakeml</name>
     <description>Package for seisan-quakeml tools</description>
@@ -12,7 +12,7 @@
 	<parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.5</version>
+        <version>2.5.6</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -36,11 +36,8 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>converter-core</module>
-				<module>converter-standalone</module>
-				<module>quakeml-web-service</module>
-				<module>quakeml-web-service-ingestor-executable</module>
 				<module>seisan-quakeml-commons-jpa</module>
+				<module>converter-core</module>
 				<module>seisan-quakeml-commons-web</module>
 				<module>seisan-quakeml-commons-file</module>
 			</modules>
@@ -64,7 +61,7 @@
 				<module>seisan-quakeml-commons-jpa</module>
 				<module>converter-core</module>
 				<module>seisan-quakeml-commons-file</module>
-				<module>quakeml-web-service-ingestor-executable</module>
+				<module>quakeml-web-service-ingestor</module>
 			</modules>
 		</profile>
 		<profile>
@@ -76,7 +73,7 @@
 				<module>seisan-quakeml-commons-jpa</module>
 				<module>converter-core</module>
 				<module>seisan-quakeml-commons-file</module>
-				<module>quakeml-web-service-ingestor-executable</module>
+				<module>quakeml-web-service-ingestor</module>
 			</modules>
 		</profile>
 		<profile>
