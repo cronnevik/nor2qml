@@ -1,6 +1,7 @@
 # Nordic to QuakeML converter tool package
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/cronnevik/nor2qml)
+![Version](https://img.shields.io/badge/Dev%20Version-v1.1.0-orange)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/cronnevik/nor2qml?color=success&label=Latest%20Release)](https://github.com/cronnevik/nor2qml/releases/tag/v1.0.0)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 * [What is Nor2QML?](#what-is-nor2qml)
