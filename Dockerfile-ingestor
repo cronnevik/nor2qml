@@ -21,4 +21,4 @@ RUN mvn clean install -P ing-container -Dspring.profiles.active=container
 FROM anapsix/alpine-java as production
 ARG CATALOG_PATH
 WORKDIR /app
-COPY --from=build /app/quakeml-web-service-ingestor/target/quakeml-web-service-ingestor-1.0.0-SNAPSHOT.jar /app/ingestor.jar
+COPY --from=build /app/quakeml-web-service-ingestor/target/quakeml-web-service-ingestor-1.1.0-SNAPSHOT.jar /app/ingestor.jar

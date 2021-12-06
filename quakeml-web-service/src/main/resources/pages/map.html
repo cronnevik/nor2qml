@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Map view</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+</head>
+<body>
+    <h1>Map view</h1>
+    <p th:text="${query}"></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Depth</th>
+                <th>Magnitude</th>
+                <th>Event Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="ev : ${events}">
+                <td><span th:text="${ev.time}"></span></td>
+                <td><span th:text="${ev.latitude}"></span></td>
+                <td><span th:text="${ev.longitude}"></span></td>
+                <td><span th:text="${ev.depth}"></span></td>
+                <td><span th:text="${ev.magnitude}"></span></td>
+                <td><span th:text="${ev.eventType}"></span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="mapid" style="width: 100%; height: 750px;"></div>
+
+    <script th:inline="javascript">
+        const map = L.map('mapid').setView([60.3913, 5.3221], 5);
+        const mapLink =
+            '<a href="http://www.esri.com/">Esri</a>';
+        const wholink =
+            'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+        L.tileLayer(
+            'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; '+mapLink+', '+wholink,
+                maxZoom: 18,
+            }).addTo(map);
+
+        const eventData = [[${events}]]
+        for (let i = 0; i < eventData.length; i++) {
+            const event = eventData[i];
+            const marker = L.marker(L.latLng(event.latitude, event.longitude)).addTo(map);
+            marker.bindPopup(
+                '<dl class="row">' +
+                '<dt class="col-sm-3">time: </dt><dd class="col-sm-9">' + event.time +  '</dd>' +
+                '<dt class="col-sm-3">latitude: </dt><dd class="col-sm-9">' + event.latitude +  '</dd>' +
+                '<dt class="col-sm-3">longitude: </dt><dd class="col-sm-9">' + event.longitude +  '</dd>' +
+                '<dt class="col-sm-3">depth: </dt><dd class="col-sm-9">' + event.depth +  '</dd>' +
+                '<dt class="col-sm-3">magnitude: </dt><dd class="col-sm-9">' + event.magnitude +  '</dd>' +
+                '<dt class="col-sm-3">type: </dt><dd class="col-sm-9">' + event.eventType +  '</dd>' +
+                '</dl>'
+            , {minWidth: 250});
+        }
+
+    </script>
+</body>
+</html>

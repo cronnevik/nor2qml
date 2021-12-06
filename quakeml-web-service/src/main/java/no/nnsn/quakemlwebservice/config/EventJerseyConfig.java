@@ -3,18 +3,12 @@ package no.nnsn.quakemlwebservice.config;
 import no.nnsn.quakemlwebservice.controller.*;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.server.monitoring.MonitoringStatistics;
-import org.glassfish.jersey.server.monitoring.TimeWindowStatistics;
 import org.glassfish.jersey.server.mvc.freemarker.FreemarkerMvcFeature;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
 import org.springframework.context.annotation.Configuration;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 
 
 @Configuration
@@ -25,7 +19,7 @@ public class EventJerseyConfig extends ResourceConfig {
         packages("no.nnsn.quakemlwebservice");
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
 
-        register(EventController.class);
+        register(QueryController.class);
         register(VersionController.class);
         register(CatalogController.class);
         register(ContributorController.class);

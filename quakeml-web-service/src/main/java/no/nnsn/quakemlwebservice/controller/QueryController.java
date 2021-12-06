@@ -6,7 +6,9 @@ import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
+import no.nnsn.quakemlwebservice.dao.EventFormQuery;
 import no.nnsn.quakemlwebservice.dao.FormatType;
+import no.nnsn.quakemlwebservice.dao.MapEvent;
 import no.nnsn.quakemlwebservice.dao.OrderByType;
 import no.nnsn.quakemlwebservice.helper.TextOutput;
 import no.nnsn.quakemlwebservice.service.CatalogService;
@@ -23,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -36,7 +40,7 @@ import java.util.*;
 @Component
 @Path("/")
 @Endpoint(id = "event-query")
-public class EventController {
+public class QueryController {
 
     final QmlToSfile qmlToSfile;
     final NordicToQml nordicToQml;
@@ -45,7 +49,7 @@ public class EventController {
     final CatalogService catalogService;
 
     @Autowired
-    public EventController(SfileEventService sfileEventService, QmlToSfile qmlToSfile, NordicToQml nordicToQml, SfileService sfileService, CatalogService catalogService) {
+    public QueryController(SfileEventService sfileEventService, QmlToSfile qmlToSfile, NordicToQml nordicToQml, SfileService sfileService, CatalogService catalogService) {
         this.sfileEventService = sfileEventService;
         this.qmlToSfile = qmlToSfile;
         this.nordicToQml = nordicToQml;
@@ -58,8 +62,8 @@ public class EventController {
     @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
     @ReadOperation
     public Response getEvents(
-            @QueryParam("catalog") String catalog,
-            @QueryParam("eventtype") String eventTypes,
+            @QueryParam("catalog") String catalogParam,
+            @QueryParam("eventtype") String eventTypesParam,
             @QueryParam("starttime") String starttime,
             @QueryParam("endtime") String endtime,
             @DefaultValue("-90") @QueryParam("minlatitude") Double minlatitude,
@@ -78,8 +82,87 @@ public class EventController {
             @Context UriInfo uriInfo
             ) {
 
-        String url = uriInfo.getRequestUri().toString();
 
+        Catalog catalog = getCatalog(catalogParam);
+        List<EventType> types = getEventTypes(eventTypesParam);
+
+        if (catalog != null) {
+            IdGenerator idGenerator = IdGenerator.getInstance();
+            idGenerator.setPrefix(catalog.getPrefix());
+            idGenerator.setAuthorityID(catalog.getAuthorityID());
+        }
+
+        // First check if event ID is queried for providing a single event
+        if (eventid != null) {
+            SfileCheck sfileCheck = sfileEventService.getSfileFromEventId(eventid);
+
+            if (sfileCheck != null) {
+                EventOverview events = getEventsFromSfile(sfileCheck, eventid);
+                return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events.getEvents(), catalog)) // Return 200 OK
+                        .header("Content-Type", "application/xml")
+                        .build();
+            } else {
+                return Response.status(nodataCode).build();
+            }
+
+        }
+
+        // Start time and end time are mandatory
+        if (starttime == null && endtime == null) {
+            return Response.status(400).build();
+        }
+
+        String catalogName = catalog.getCatalogName();
+        List<String> sfileIDs = sfileEventService.getSfileIds(
+                starttime, endtime,
+                minlatitude, maxlatitude, minlongitude, maxlongitude,
+                types,
+                mindepth, maxdepth,
+                minmagnitude, maxmagnitude,
+                catalogName,
+                limit, orderby);
+
+        if (sfileIDs != null && sfileIDs.size() > 0) {
+            // Return specified format
+            if (format.equals(FormatType.XML)) {
+                List<Event> events = getEventsFromMultipleSfiles(sfileIDs);
+                return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events, catalog))
+                        .header("Content-Type", "application/xml")
+                        .build();
+            } else if (format.equals(FormatType.QUAKEML20)) {
+                List<Event> events = getEventsFromMultipleSfiles(sfileIDs);
+                return Response.ok(QuakemlUtils.getQuakeml20DocFromEvents(events, catalog))
+                        .header("Content-Type", "application/xml")
+                        .build();
+            } else if (format.equals(FormatType.NORDIC)) {
+                List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
+                String nordicText = "";
+                for (SfileCheck sf: sfileChecks) {
+                    byte[] sfile = sf.getFile();
+                    nordicText += new String((sfile));
+                }
+                return Response.ok(nordicText)
+                        .header("Content-Type", "text/plain")
+                        .build();
+            } else if (format.equals(FormatType.TEXT)) {
+                List<SfileEvent> sfileEvents = sfileEventService.getSfileEvents(starttime, endtime,
+                        minlatitude, maxlatitude, minlongitude, maxlongitude,
+                        types,
+                        mindepth, maxdepth,
+                        minmagnitude, maxmagnitude,
+                        catalogName,
+                        limit, orderby);
+                return Response.ok(TextOutput.getTextFormat(sfileEvents))
+                        .header("Content-Type", "text/plain")
+                        .build();
+            }
+            return Response.status(nodataCode).build();
+
+        }
+        return Response.status(nodataCode).build();
+    }
+
+    private Catalog getCatalog(String catalog) {
         Catalog cat;
         List<Catalog> catalogs;
         if (catalog == null) {
@@ -88,11 +171,14 @@ public class EventController {
         } else {
             cat = this.catalogService.getCatalogNyName(catalog);
         }
+
+        return cat;
+    }
+
+    private List<EventType> getEventTypes(String eventTypes) {
         List<EventType> types = new ArrayList<>();
 
         if (eventTypes != null && !eventTypes.isEmpty()) {
-            types = new ArrayList<>();
-
             if (eventTypes.contains(",")) {
                 String[] eventTypeSplit = eventTypes.split(",");
                 for (String ev: eventTypeSplit) {
@@ -111,117 +197,33 @@ public class EventController {
                 types.add(EventType.valueOf(eventTypes));
             }
         }
-
         if (types.size() == 0){
             types = sfileEventService.getUsedEventTypes();
         }
+        return types;
+    }
 
-        if (cat != null) {
-            IdGenerator idGenerator = IdGenerator.getInstance();
-            idGenerator.setPrefix(cat.getPrefix());
-            idGenerator.setAuthorityID(cat.getAuthorityID());
+    private EventOverview getEventsFromSfile(SfileCheck sfileCheck, String eventid) {
+        byte[] sfile = sfileCheck.getFile();
+        InputStream input = new ByteArrayInputStream(sfile);
+
+        List<Sfile> sfiles = nordicToQml.readSfile(input, sfileCheck.getSfileID(), CallerType.WEBSERVICE);
+        ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, eventid);
+        return nordicToQml.convertToQuakeml(sfiles, options);
+    }
+
+    private List<Event> getEventsFromMultipleSfiles(List<String> sfileIDs) {
+        List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
+        List<Event> events = new ArrayList<>();
+        for (SfileCheck sf: sfileChecks) {
+            byte[] sfile = sf.getFile();
+            InputStream input = new ByteArrayInputStream(sfile);
+            List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
+            ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, sf.getSfileID());
+            EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
+            events.addAll(eventOverview.getEvents());
         }
-
-        List<String> sfileIDs;
-
-        if (eventid != null) {
-            SfileCheck sfileCheck = sfileEventService.getSfileFromEventId(eventid);
-
-            if (sfileCheck != null) {
-
-                byte[] sfile = sfileCheck.getFile();
-                InputStream input = new ByteArrayInputStream(sfile);
-
-                List<Sfile> sfiles = nordicToQml.readSfile(input, sfileCheck.getSfileID(), CallerType.WEBSERVICE);
-                ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, eventid);
-                EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
-
-                return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events.getEvents(), cat)) // Return 200 OK
-                        .header("Content-Type", "application/xml")
-                        .build();
-            } else {
-                return Response.status(nodataCode).build();
-            }
-
-        } else {
-            if (starttime == null && endtime == null) {
-                return Response.status(400).build();
-            } else {
-                String catalogName = cat.getCatalogName();
-                sfileIDs = sfileEventService.getSfileIds(
-                        starttime, endtime,
-                        minlatitude, maxlatitude, minlongitude, maxlongitude,
-                        types,
-                        mindepth, maxdepth,
-                        minmagnitude, maxmagnitude,
-                        catalogName,
-                        limit, orderby);
-            }
-
-        }
-
-        if (sfileIDs != null && sfileIDs.size() > 0) {
-
-            // Return specified format
-            if (format.equals(FormatType.XML)) {
-                List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
-                List<Event> events = new ArrayList<>();
-                for (SfileCheck sf: sfileChecks) {
-                    byte[] sfile = sf.getFile();
-                    InputStream input = new ByteArrayInputStream(sfile);
-                    List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
-                    ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, sf.getSfileID());
-                    EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
-                    events.addAll(eventOverview.getEvents());
-                }
-                return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events, cat))
-                        .header("Content-Type", "application/xml")
-                        .build();
-            } else if (format.equals(FormatType.QUAKEML20)) {
-                List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
-                List<Event> events = new ArrayList<>();
-                for (SfileCheck sf: sfileChecks) {
-                    byte[] sfile = sf.getFile();
-                    InputStream input = new ByteArrayInputStream(sfile);
-                    List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
-                    ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, sf.getSfileID());
-                    EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
-                    events.addAll(eventOverview.getEvents());
-                }
-                return Response.ok(QuakemlUtils.getQuakeml20DocFromEvents(events, cat))
-                        .header("Content-Type", "application/xml")
-                        .build();
-            } else if (format.equals(FormatType.NORDIC)) {
-                List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
-                String nordicText = "";
-                for (SfileCheck sf: sfileChecks) {
-                    byte[] sfile = sf.getFile();
-                    nordicText += new String((sfile));
-                }
-
-                return Response.ok(nordicText)
-                        .header("Content-Type", "text/plain")
-                        .build();
-            } else if (format.equals(FormatType.TEXT)) {
-                String catalogName = cat.getCatalogName();
-                List<SfileEvent> sfileEvents = sfileEventService.getSfileEvents(starttime, endtime,
-                        minlatitude, maxlatitude, minlongitude, maxlongitude,
-                        types,
-                        mindepth, maxdepth,
-                        minmagnitude, maxmagnitude,
-                        catalogName,
-                        limit, orderby);
-                return Response.ok(TextOutput.getTextFormat(sfileEvents))
-                        .header("Content-Type", "text/plain")
-                        .build();
-            } else {
-                return Response.status(nodataCode).build();
-            }
-
-        } else {
-            return Response.status(nodataCode).build();
-        }
-
+        return events;
     }
 
 }

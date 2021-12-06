@@ -11,6 +11,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring()
                 .antMatchers("/fdsnws/event/1/**")
                 .antMatchers("/dataform")
+                .antMatchers("/events-map")
+                .antMatchers("/error")
                 .antMatchers("/");
     }
 }
