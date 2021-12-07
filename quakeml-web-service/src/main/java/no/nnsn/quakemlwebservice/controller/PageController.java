@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,10 +73,12 @@ public class PageController {
     }
 
     @RequestMapping(value = "/events-map", method = RequestMethod.GET)
-    public ModelAndView mapView(@ModelAttribute("form") EventFormQuery formQuery) {
+    public ModelAndView mapView(@ModelAttribute("form") EventFormQuery formQuery, HttpServletRequest request) {
         String queryString = getQueryString(formQuery);
 
+        String referer = request.getHeader("referer");
         ModelAndView model = new ModelAndView("map");
+        model.addObject("requrl", referer.substring(0, referer.length() - 1));
         model.addObject("query", queryString);
 
         List<SfileEvent> sfileEvents = sfileEventService.getSfileEvents(
