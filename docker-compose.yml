@@ -56,7 +56,7 @@ services:
       '
     depends_on:
       - db
-      - tomcat-server
+#      - tomcat-server
     environment:
       SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
       SPRING_DATASOURCE_USERNAME: "${DB_USER}"
