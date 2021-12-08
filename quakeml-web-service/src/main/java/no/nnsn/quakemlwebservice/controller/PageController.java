@@ -7,9 +7,7 @@ import no.nnsn.quakemlwebservice.service.CatalogService;
 import no.nnsn.quakemlwebservice.service.SfileEventService;
 import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,17 +65,17 @@ public class PageController {
 
     @RequestMapping(value = "/dataform", method = RequestMethod.POST, params = "action=map")
     public ModelAndView mapViewRedirect(@ModelAttribute("form") EventFormQuery formQuery, final RedirectAttributes redirectAttributes) {
-        ModelAndView model = new ModelAndView("redirect:/events-map");
+        ModelAndView model = new ModelAndView("redirect:/events-preview");
         redirectAttributes.addFlashAttribute("form", formQuery);
         return model;
     }
 
-    @RequestMapping(value = "/events-map", method = RequestMethod.GET)
+    @RequestMapping(value = "/events-preview", method = RequestMethod.GET)
     public ModelAndView mapView(@ModelAttribute("form") EventFormQuery formQuery, HttpServletRequest request) {
         String queryString = getQueryString(formQuery);
 
         String referer = request.getHeader("referer");
-        ModelAndView model = new ModelAndView("map");
+        ModelAndView model = new ModelAndView("preview");
         model.addObject("requrl", referer.substring(0, referer.length() - 1));
         model.addObject("query", queryString);
 
