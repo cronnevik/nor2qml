@@ -1,5 +1,6 @@
 package no.nnsn.ingestor.service;
 
+import no.nnsn.ingestor.dao.SfileChecksum;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
 
@@ -11,5 +12,5 @@ public interface SfileEventService {
     SfileEvent getEventByID(String eventID);
     List<SfileEvent> getAllEvents();
     void deleteEventByID(String eventID);
-    List<SfileCheck> getSfileListByCatalogName(String name);
+    List<SfileChecksum> getSfileListByCatalogName(String name);
 }

@@ -11,6 +11,7 @@ import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.ingestor.dao.IngestorOptions;
+import no.nnsn.ingestor.dao.SfileChecksum;
 import no.nnsn.ingestor.service.CatalogService;
 import no.nnsn.ingestor.service.SfileEventService;
 import no.nnsn.ingestor.service.SfileCheckerService;
@@ -31,6 +32,8 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventT
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -43,17 +46,19 @@ import java.util.*;
 @Component
 public class Ingestor {
 
+    private final EntityManager entityManager;
     final CatalogService catalogService;
     final SfileEventService sfileEventService;
     final SfileCheckerService sfileCheckerService;
     final Converter converter;
 
     @Autowired
-    public Ingestor(CatalogService catalogService, SfileEventService sfileEventService, SfileCheckerService sfileCheckerService, Converter converter) {
+    public Ingestor(CatalogService catalogService, SfileEventService sfileEventService, SfileCheckerService sfileCheckerService, Converter converter, EntityManager entityManager) {
         this.catalogService = catalogService;
         this.sfileEventService = sfileEventService;
         this.sfileCheckerService = sfileCheckerService;
         this.converter = converter;
+        this.entityManager = entityManager;
     }
 
     public void execute(FileInfo fileInfo, IngestorOptions options) throws Exception {
@@ -69,10 +74,8 @@ public class Ingestor {
         log.info("Number of S-files found: " + fileInfo.getsFileCount());
     }
 
-    public List<SfileCheck> getSfileListFromDB() {
-        return sfileCheckerService.getSfileListAll();
-    }
 
+    @Transactional
     public void ingest(FileInfo fileInfo, IngestorOptions options) throws Exception {
 
         Instant start = Instant.now();
@@ -80,50 +83,49 @@ public class Ingestor {
 
         final IngestLog ingestLog = new IngestLog();
 
-        List<SfileCheck> sfileChecks = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
+        List<SfileChecksum> sfileCheckSums = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
+        log.info("S-files within database: " + sfileCheckSums.size());
+
         Map<String, String> filesMap = new HashMap<>();
 
         fileInfo.getFilePaths().forEach(p -> {
             filesMap.put(p.getFileName().toString(), p.toString());
         });
-
+        
         int mapSizeBeforeCheck = filesMap.size();
-        log.info("S-files within database: " + sfileChecks.size());
         log.info("S-files within catalog: " + mapSizeBeforeCheck);
 
         // Check if files has been modified since last update
         Map<String, String> modFilesMap = new HashMap<>(); // map for keeping record of modified files
-        Map<String, String> newFilesMap = new HashMap<>();
         Set<String> delFilesSet = new HashSet<>();
 
-        if (sfileChecks.size() > 0) {
-            for (SfileCheck sCheck: sfileChecks) {
-                final String dbSffileID = sCheck.getSfileID();
-                final String dbSfileChecksum = sCheck.getChecksum();
+        if (sfileCheckSums.size() > 0) {
+            sfileCheckSums.forEach(sCheck -> {
+                final String dbSfileID = sCheck.getSfileID();
 
-                if (filesMap.containsKey(dbSffileID)) {
-                    String p = filesMap.get(dbSffileID);
-                    if (FileChecker.fileUnchanged(p, dbSfileChecksum)) {
+                if (filesMap.containsKey(dbSfileID)) {
+                    String p = filesMap.get(dbSfileID);
+                    if (FileChecker.fileUnchanged(p, sCheck.getChecksum())) {
                         fileInfo.addSfileEqual();
 
                         // If force then unchanged files should be updated
                         if (options.getForceIngestion()) {
-                            modFilesMap.put(dbSffileID, p);
+                            modFilesMap.put(dbSfileID, p);
                         }
-                        filesMap.remove(dbSffileID);
 
                     } else {
-                        modFilesMap.put(dbSffileID, p);
-                        filesMap.remove(dbSffileID);
+                        modFilesMap.put(dbSfileID, p);
                     }
+                    filesMap.remove(dbSfileID);
                 } else {
-                    delFilesSet.add(dbSffileID);
+                    delFilesSet.add(dbSfileID);
                 }
-            }
+            });
+
         }
 
         // Remaining files should be new
-        newFilesMap = filesMap;
+        Map<String, String> newFilesMap = filesMap;
         log.info("New files: " + filesMap.size());
         log.info("Modified files: " + modFilesMap.size());
         log.info("Deleted files: " + delFilesSet.size());
@@ -169,6 +171,8 @@ public class Ingestor {
         Instant finish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, finish, "Total time used: "));
 
+        entityManager.clear();
+
     }
 
     public FileInfo getNumOfFiles(String path, String sourceType) throws Exception {
@@ -211,13 +215,16 @@ public class Ingestor {
         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
         df.applyPattern("0.0");
 
+        byte[] sfileBytes;
+        SfileCheck sfileCheck;
+
         // Read and create objects
         for (Map.Entry<String, String> entry: filePaths.entrySet()) {
             try {
 
-                byte[] sfileBytes = Files.readAllBytes(Paths.get(entry.getValue()));
+                sfileBytes = Files.readAllBytes(Paths.get(entry.getValue()));
 
-                SfileCheck sfileCheck =
+                sfileCheck =
                         new SfileCheck(
                                 entry.getKey(),
                                 sfileBytes,
@@ -348,6 +355,9 @@ public class Ingestor {
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Filename: " + entry);
+            } finally {
+                sfileBytes = null;
+                sfileCheck = null;
             }
 
         };
