@@ -3,8 +3,8 @@ server:
 
 # arguments
 ingestor:
-  folder: ${folder:false}
-  catalogs: ${catalogs:default}
+  folder: ${folder:C:/SEISAN/REA}
+  catalogs: ${catalogs:[{"name":"NNSN_","authorityID":"no.uib.nnsn","prefix":"smi"}]}
   source: ${source:sfile}
   profile: ${profile:none}
   force: ${force:false}

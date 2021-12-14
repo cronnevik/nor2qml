@@ -11,3 +11,5 @@ Changes since last release:
 - fixed bug of catalog list endpoint not working due to dependency (jersey-media-jaxb) issue
 - Scheduler added for ingestor component
 - additional properties added to configure the scheduling
+- Reduced memory consuption of ingestor component
+- Added preview of data (map, table and graph) page to the query builder

@@ -43,29 +43,29 @@ services:
     networks:
       - ws-network
   # Service 3 . Ingestor for catalog data
-  ingestor:
-    container_name: ingestor-app
-    env_file:
-      - .env
-    build:
-      context: .
-      dockerfile: Dockerfile-ingestor
-    command: >
-      bash -c '
-        java -jar ./ingestor.jar --folder="/app/catalogs" --catalog="${CATALOGS}" --scheduled="${INGEST_SCHEDULER_ENABLED}" --interval="${INGEST_SCHEDULER_INTERVAL}"
-      '
-    depends_on:
-      - db
-#      - tomcat-server
-    environment:
-      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
-      SPRING_DATASOURCE_USERNAME: "${DB_USER}"
-      SPRING_DATASOURCE_PASSWORD: "${DB_PW}"
-      CATALOGS: "${CATALOGS}"
-    volumes:
-      - catalog-data:/app/catalogs
-    networks:
-      - ws-network
+#  ingestor:
+#    container_name: ingestor-app
+#    env_file:
+#      - .env
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-ingestor
+#    command: >
+#      bash -c '
+#        java -jar ./ingestor.jar --folder="/app/catalogs" --catalog="${CATALOGS}" --scheduled="${INGEST_SCHEDULER_ENABLED}" --interval="${INGEST_SCHEDULER_INTERVAL}"
+#      '
+#    depends_on:
+#      - db
+##      - tomcat-server
+#    environment:
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
+#      SPRING_DATASOURCE_USERNAME: "${DB_USER}"
+#      SPRING_DATASOURCE_PASSWORD: "${DB_PW}"
+#      CATALOGS: "${CATALOGS}"
+#    volumes:
+#      - catalog-data:/app/catalogs
+#    networks:
+#      - ws-network
 
 networks:
   ws-network:

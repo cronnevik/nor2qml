@@ -27,12 +27,14 @@ public class IngestorApplication {
     final Ingestor ingestor;
     final Arguments arguments;
     final ApplicationContext context;
+    private final ReentrantLock lock;
 
     @Autowired
     public IngestorApplication(Ingestor ingestor, Arguments arguments, ApplicationContext context) {
         this.ingestor = ingestor;
         this.arguments = arguments;
         this.context = context;
+        lock = new ReentrantLock();
     }
 
     public static void main(String[] args) {
@@ -61,8 +63,6 @@ public class IngestorApplication {
     public void execute() throws Exception {
         String pathFolder = arguments.hasInputFolder() ? arguments.getInputFolder() : arguments.getCurrentPath() + "/catalogs";
         CatalogConfig[] catalogs = arguments.getCatalogsConfig();
-
-        ReentrantLock lock = new ReentrantLock();
 
         for (CatalogConfig catConf: catalogs) {
             lock.lock();
