@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 
 # Services
 services:
@@ -17,8 +17,6 @@ services:
       MYSQL_ROOT_HOST: '%'
     volumes:
       - db-data:/var/lib/mysql
-    networks:
-      - ws-network
   # Service 2 - Spring boot applciation
   tomcat-server:
     container_name: spring-boot-app
@@ -40,8 +38,6 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/${DB_NAME}?autoReconnect=true&useSSL=false"
       SPRING_DATASOURCE_USERNAME: "${DB_USER}"
       SPRING_DATASOURCE_PASSWORD: "${DB_PW}"
-    networks:
-      - ws-network
   # Service 3 . Ingestor for catalog data
   ingestor:
     container_name: ingestor-app
@@ -64,13 +60,6 @@ services:
       CATALOGS: "${CATALOGS}"
     volumes:
       - catalog-data:/app/catalogs
-    networks:
-      - ws-network
-
-networks:
-  ws-network:
-    name: nor2qml-network
-
 #Volumes
 volumes:
   db-data:
