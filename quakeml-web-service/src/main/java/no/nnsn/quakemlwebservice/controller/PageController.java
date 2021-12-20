@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -64,10 +65,9 @@ public class PageController {
     }
 
     @RequestMapping(value = "/dataform", method = RequestMethod.POST, params = "action=map")
-    public ModelAndView mapViewRedirect(@ModelAttribute("form") EventFormQuery formQuery, final RedirectAttributes redirectAttributes) {
-        ModelAndView model = new ModelAndView("redirect:/events-preview");
+    public RedirectView mapViewRedirect(@ModelAttribute("form") EventFormQuery formQuery, final RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("form", formQuery);
-        return model;
+        return new RedirectView("events-preview");
     }
 
     @RequestMapping(value = "/events-preview", method = RequestMethod.GET)

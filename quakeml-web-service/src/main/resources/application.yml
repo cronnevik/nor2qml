@@ -1,6 +1,10 @@
 spring:jpa.open-in-view: false
-server.error.whitelabel.enabled: false
-page.profile: ${profile:nnsn}
+server:
+  error.whitelabel.enabled: false
+  servlet:
+    session:
+      tracking-modes: cookie
+page.profile: ${env.PROFILE}
 
 management:
   endpoints:
@@ -19,8 +23,8 @@ spring:
             enabled: true
   security:
     user:
-      name: ${MONITOR_USER}
-      password: ${MONITOR_PASSWORD}
+      name: ${env.MONITOR_USER}
+      password: ${env.MONITOR_PASSWORD}
   profiles:
     active: '@spring.profiles.active@'
 ---
