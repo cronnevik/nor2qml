@@ -121,11 +121,14 @@ MONITOR_USER=username
 MONITOR_PASSWORD=password
 WS_APP_NAME=eqcat
 PROFILE=default
-REA_FOLDER=C:/SEISAN/REA
+REA_FOLDER='C:/SEISAN/REA'
 CATALOGS='[{"name":"NNSN_","authorityID":"no.uib.nnsn","prefix":"smi"}, {"name":"NNSN__","authorityID":"no.uib.nnsn","prefix":"smi"}]'
 INGEST_SCHEDULER_ENABLED=true
 INGEST_SCHEDULER_INTERVAL=PT02M
 ```
+
+*Important note:* For running docker on Windows, the values for REA_FOLDER and CATALOGS needs to be in single quotes,
+as given within the example above. For Linux users, the single quotes have to be removed.
 
 #### Configure html document for the web-service
 The query builder page can be customised to your needs. The application has build
