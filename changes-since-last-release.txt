@@ -13,3 +13,4 @@ Changes since last release:
 - additional properties added to configure the scheduling
 - Reduced memory consuption of ingestor component
 - Added preview of data (map, table and graph) page to the query builder
+- Abbreviation params added for ws, which include: minlat, maxlat, minlon, maxlon, minmag, maxmag
