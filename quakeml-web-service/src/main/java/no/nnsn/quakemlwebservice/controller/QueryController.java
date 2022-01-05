@@ -66,15 +66,21 @@ public class QueryController {
             @QueryParam("eventtype") String eventTypesParam,
             @QueryParam("starttime") String starttime,
             @QueryParam("endtime") String endtime,
+            @QueryParam("eventid") String eventid,
             @DefaultValue("-90") @QueryParam("minlatitude") Double minlatitude,
             @DefaultValue("90") @QueryParam("maxlatitude") Double maxlatitude,
             @DefaultValue("-180") @QueryParam("minlongitude") Double minlongitude,
             @DefaultValue("180") @QueryParam("maxlongitude") Double maxlongitude,
+            @QueryParam("minlat") Double minlat,
+            @QueryParam("maxlat") Double maxlat,
+            @QueryParam("minlon") Double minlon,
+            @QueryParam("maxlon") Double maxlon,
             @DefaultValue("0") @QueryParam("mindepth") Double mindepth,
             @DefaultValue("700") @QueryParam("maxdepth") Double maxdepth,
             @DefaultValue("-2") @QueryParam("minmagnitude") Double minmagnitude,
             @DefaultValue("10") @QueryParam("maxmagnitude") Double maxmagnitude,
-            @QueryParam("eventid") String eventid,
+            @QueryParam("minmag") Double minmag,
+            @QueryParam("maxmag") Double maxmag,
             @DefaultValue("time") @QueryParam("orderby") OrderByType orderby,
             @DefaultValue("1000") @QueryParam("limit") int limit,
             @DefaultValue("xml") @QueryParam("format") FormatType format,
@@ -111,6 +117,14 @@ public class QueryController {
         if (starttime == null && endtime == null) {
             return Response.status(400).build();
         }
+
+        // Check if abbreviation params is used
+        if (minlat != null) minlatitude = minlat;
+        if (maxlat != null) maxlatitude = maxlat;
+        if (minlon != null) minlongitude = minlon;
+        if (maxlon != null) maxlongitude = maxlon;
+        if (maxmag != null) maxmagnitude = maxmag;
+        if (minmag != null) minmagnitude = minmag;
 
         String catalogName = catalog.getCatalogName();
         List<String> sfileIDs = sfileEventService.getSfileIds(
