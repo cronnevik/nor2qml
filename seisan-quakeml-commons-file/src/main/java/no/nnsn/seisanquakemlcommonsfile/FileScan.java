@@ -36,7 +36,7 @@ public class FileScan implements FileVisitor<Path> {
 
         if (dirName.equals("CAT") || dirName.equals("LOG")) {
             skippedFolders.add(dir);
-            return FileVisitResult.SKIP_SIBLINGS;
+            return FileVisitResult.SKIP_SUBTREE;
         } else {
             return FileVisitResult.CONTINUE;
         }
