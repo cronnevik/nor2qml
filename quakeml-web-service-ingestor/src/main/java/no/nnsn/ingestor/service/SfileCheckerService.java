@@ -1,6 +1,6 @@
 package no.nnsn.ingestor.service;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.Set;
 
 @Transactional
 public interface SfileCheckerService {
-    List<SfileCheck> getSfileListAll();
-    SfileCheck getSfileById(String id);
-    void addSfile(SfileCheck sfileCheck);
-    void addCollection(List<SfileCheck> sfileChecks);
+    List<SfileInformation> getSfileListAll();
+    SfileInformation getSfileById(String id);
+    void addSfile(SfileInformation sfileInformation);
+    void addCollection(List<SfileInformation> sfileInformations);
     void deleteSfile(String id);
-    void deleteCollection(Set<SfileCheck> filePaths);
+    void deleteCollection(Set<SfileInformation> filePaths);
 }

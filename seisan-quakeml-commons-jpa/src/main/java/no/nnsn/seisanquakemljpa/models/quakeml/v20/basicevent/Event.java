@@ -1,11 +1,7 @@
 package no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent;
 
-import com.fasterxml.jackson.annotation.JsonMerge;
-import com.fasterxml.jackson.annotation.OptBoolean;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventTypeCertainty;
@@ -22,7 +18,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

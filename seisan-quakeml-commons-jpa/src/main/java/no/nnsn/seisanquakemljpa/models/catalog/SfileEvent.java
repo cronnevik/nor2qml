@@ -26,7 +26,7 @@ public class SfileEvent implements Serializable {
 
     @ManyToOne(fetch=FetchType.LAZY)
     @XmlTransient
-    private SfileCheck sfile;
+    private SfileInformation sfile;
 
     private String time;
 

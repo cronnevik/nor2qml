@@ -1,7 +1,7 @@
 package no.nnsn.ingestor.service;
 
 import no.nnsn.ingestor.repo.SfileCheckerRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -24,25 +24,25 @@ public class SfileCheckerServiceImpl implements SfileCheckerService {
 
     @Override
     @Async
-    public List<SfileCheck> getSfileListAll() {
-        List<SfileCheck> checks = new ArrayList<>();
+    public List<SfileInformation> getSfileListAll() {
+        List<SfileInformation> checks = new ArrayList<>();
         repo.findAll().forEach(s -> checks.add(s));
         return checks;
     }
 
     @Override
-    public SfileCheck getSfileById(String id) {
+    public SfileInformation getSfileById(String id) {
         return repo.findById(id).get();
     }
 
     @Override
-    public void addSfile(SfileCheck sfileCheck) {
-        repo.save(sfileCheck);
+    public void addSfile(SfileInformation sfileInformation) {
+        repo.save(sfileInformation);
     }
 
     @Override
-    public void addCollection(List<SfileCheck> sfileChecks) {
-        repo.saveAll(sfileChecks);
+    public void addCollection(List<SfileInformation> sfileInformations) {
+        repo.saveAll(sfileInformations);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class SfileCheckerServiceImpl implements SfileCheckerService {
     }
 
     @Override
-    public void deleteCollection(Set<SfileCheck> filePaths) {
+    public void deleteCollection(Set<SfileInformation> filePaths) {
         repo.deleteAll();
     }
 }

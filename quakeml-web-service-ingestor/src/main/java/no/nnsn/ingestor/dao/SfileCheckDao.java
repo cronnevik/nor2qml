@@ -1,10 +1,10 @@
 package no.nnsn.ingestor.dao;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 
 import java.util.List;
 
 public interface SfileCheckDao {
-    void addSfile(SfileCheck sfileCheck);
-    List<SfileCheck> getSfiles();
+    void addSfile(SfileInformation sfileInformation);
+    List<SfileInformation> getSfiles();
 }
