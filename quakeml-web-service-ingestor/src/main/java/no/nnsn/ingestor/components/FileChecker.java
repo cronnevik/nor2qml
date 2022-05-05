@@ -1,5 +1,6 @@
 package no.nnsn.ingestor.components;
 
+import no.nnsn.ingestor.dao.CatalogChange;
 import no.nnsn.ingestor.dao.IngestorOptions;
 import no.nnsn.ingestor.dao.SfileCheckInfo;
 import no.nnsn.seisanquakemlcommonsfile.FileInfo;
@@ -11,6 +12,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class FileChecker {
 
     public FileChecker() {}
 
-    private Map<String, String> getFiles(FileInfo fileInfo) {
+    private static Map<String, String> getFiles(FileInfo fileInfo) {
         Map<String, String> filesMap = new HashMap<>();
         fileInfo.getFilePaths().forEach(p -> {
             filesMap.put(p.getFileName().toString(), p.toString());
@@ -27,7 +29,7 @@ public class FileChecker {
         return filesMap;
     }
 
-    private Boolean fileHasChanged(String path, String filename, SfileCheckInfo sfileInfoDB) {
+    private static Boolean fileHasChanged(String path, String filename, SfileCheckInfo sfileInfoDB) {
         Path file = Paths.get(path);
         try {
             BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
@@ -49,45 +51,33 @@ public class FileChecker {
     }
 
 
-    public void check(List<SfileCheckInfo> sfilesInDatabase, FileInfo fileInfo, IngestorOptions options) {
+    public static CatalogChange check(List<SfileCheckInfo> sfilesInDatabase, FileInfo fileInfo, IngestorOptions options) {
         Map<String, String> sfilesInCatalog = getFiles(fileInfo);
+        Map<String, String> sfilesInCatalogCopy = new HashMap<>(sfilesInCatalog);
         if (sfilesInDatabase.size() > 0) {
+            CatalogChange catalogChange = new CatalogChange();
             sfilesInDatabase.forEach(sfileInfoDB -> {
                 final String dbSfileID = sfileInfoDB.getSfileID();
                 if (sfilesInCatalog.containsKey(dbSfileID)) {
                     String path = sfilesInCatalog.get(dbSfileID);
                     if (fileHasChanged(path, dbSfileID, sfileInfoDB)) {
-
-                    }
-                }
-            });
-        }
-
-
-        if (sfileCheckSums.size() > 0) {
-            sfileCheckSums.forEach(sCheck -> {
-                final String dbSfileID = sCheck.getSfileID();
-
-                if (filesMap.containsKey(dbSfileID)) {
-                    String p = filesMap.get(dbSfileID);
-                    if (no.nnsn.ingestor.utils.FileChecker.fileUnchanged(p, sCheck.getChecksum())) {
-                        fileInfo.addSfileEqual();
-
-                        // If force then unchanged files should be updated
-                        if (options.getForceIngestion()) {
-                            modFilesMap.put(dbSfileID, p);
-                        }
-
+                        catalogChange.addModified(dbSfileID, path);
                     } else {
-                        modFilesMap.put(dbSfileID, p);
+                        if (options.getForceIngestion()) {
+                            catalogChange.addModified(dbSfileID, path);
+                        } else {
+                            fileInfo.addSfileEqual();
+                        }
                     }
-                    filesMap.remove(dbSfileID);
+                    sfilesInCatalogCopy.remove(dbSfileID);
                 } else {
-                    delFilesSet.add(dbSfileID);
+                    catalogChange.addDeleted(dbSfileID);
                 }
             });
-
+            catalogChange.addNewFiles(sfilesInCatalogCopy);
+            return catalogChange;
         }
+        return null;
     }
 
 }

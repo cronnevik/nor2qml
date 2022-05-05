@@ -10,12 +10,12 @@ import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
+import no.nnsn.ingestor.dao.CatalogChange;
 import no.nnsn.ingestor.dao.IngestorOptions;
 import no.nnsn.ingestor.dao.SfileCheckInfo;
 import no.nnsn.ingestor.service.CatalogService;
 import no.nnsn.ingestor.service.SfileEventService;
 import no.nnsn.ingestor.service.SfileCheckerService;
-import no.nnsn.ingestor.utils.FileChecker;
 import no.nnsn.ingestor.utils.IngestLog;
 import no.nnsn.ingestor.utils.TimeLogger;
 import no.nnsn.seisanquakemlcommonsfile.FileInfo;
@@ -93,6 +93,8 @@ public class Ingestor {
         List<SfileCheckInfo> sfilesInDatabase = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
         log.info("S-files within database: " + sfilesInDatabase.size());
 
+        CatalogChange catalogChange = FileChecker.check(sfilesInDatabase, fileInfo, options);
+
         /*Map<String, String> filesMap = new HashMap<>();
 
         fileInfo.getFilePaths().forEach(p -> {
@@ -129,25 +131,28 @@ public class Ingestor {
         }*/
 
         // Remaining files should be new
-        Map<String, String> newFilesMap = filesMap;
-        log.info("New files: " + filesMap.size());
-        log.info("Modified files: " + modFilesMap.size());
-        log.info("Deleted files: " + delFilesSet.size());
+        Map<String, String> newFiles = catalogChange.getNewFiles();
+        Map<String, String> modifiedFiles = catalogChange.getModifiedFiles();
+        Set<String> deletedFiles = catalogChange.getDeletedFiles();
+
+        log.info("New files: " + newFiles.size());
+        log.info("Modified files: " + modifiedFiles.size());
+        log.info("Deleted files: " + deletedFiles.size());
 
         Instant fileCheckFinish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, fileCheckFinish, "File check time used: "));
 
         // Delete removed s-files
-        deleteFiles(delFilesSet);
+        deleteFiles(catalogChange.getDeletedFiles());
 
         // Start reading files and ingest
         List<IgnoredLineError> convErrors = new ArrayList<>();
         Catalog catalog = catalogInfoHandler(options);
-        if (newFilesMap != null && newFilesMap.size() > 0) {
-            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, newFilesMap, options.getProfile()));
+        if (newFiles != null && newFiles.size() > 0) {
+            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, newFiles, options.getProfile()));
         }
-        if (modFilesMap != null && modFilesMap.size() > 0) {
-            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, modFilesMap, options.getProfile()));
+        if (modifiedFiles != null && modifiedFiles.size() > 0) {
+            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile()));
         }
 
         if (convErrors != null && convErrors.size() > 0) {

@@ -3,10 +3,7 @@ package no.nnsn.ingestor.dao;
 
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CatalogChange {
     @Getter Map<String, String> newFiles;
@@ -19,7 +16,11 @@ public class CatalogChange {
         this.deletedFiles = new HashSet<>();
     }
 
-    public void addNew(String sfileID, String path) {newFiles.put(sfileID, path);}
+    public void addNewFiles(Map<String, String> sfiles) {
+        for (Map.Entry<String, String> sfile : sfiles.entrySet()) {
+            newFiles.put(sfile.getKey(), sfile.getValue());
+        }
+    }
     public void addModified(String dbSfileID, String path) {modifiedFiles.put(dbSfileID, path);}
     public void addDeleted(String dbSfileID) {deletedFiles.add(dbSfileID);}
 }
