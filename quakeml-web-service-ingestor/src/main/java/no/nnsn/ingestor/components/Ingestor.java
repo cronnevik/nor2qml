@@ -83,54 +83,19 @@ public class Ingestor {
     public void ingest(FileInfo fileInfo, IngestorOptions options) throws Exception {
 
         Instant start = Instant.now();
-        System.out.println("Checking S-files for new files or changes to existing...");
 
         final IngestLog ingestLog = new IngestLog();
 
         Set<Path> catalogFilePaths = fileInfo.getFilePaths();
-        log.info("S-files within catalog: " + catalogFilePaths.size());
+        log.info("S-files identified within catalog: " + catalogFilePaths.size());
+        log.info("Other type of files within catalog: " + fileInfo.getSkippedFiles().size());
 
         List<SfileCheckInfo> sfilesInDatabase = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
         log.info("S-files within database: " + sfilesInDatabase.size());
 
+        System.out.println("Checking s-files in catalog against database for new, change of existing or deleted");
         CatalogChange catalogChange = FileChecker.check(sfilesInDatabase, fileInfo, options);
 
-        /*Map<String, String> filesMap = new HashMap<>();
-
-        fileInfo.getFilePaths().forEach(p -> {
-            filesMap.put(p.getFileName().toString(), p.toString());
-        });*/
-
-        // Check if files has been modified since last update
-        /*Map<String, String> modFilesMap = new HashMap<>(); // map for keeping record of modified files
-        Set<String> delFilesSet = new HashSet<>();*/
-
-        /*if (sfileCheckSums.size() > 0) {
-            sfileCheckSums.forEach(sCheck -> {
-                final String dbSfileID = sCheck.getSfileID();
-
-                if (filesMap.containsKey(dbSfileID)) {
-                    String p = filesMap.get(dbSfileID);
-                    if (FileChecker.fileUnchanged(p, sCheck.getChecksum())) {
-                        fileInfo.addSfileEqual();
-
-                        // If force then unchanged files should be updated
-                        if (options.getForceIngestion()) {
-                            modFilesMap.put(dbSfileID, p);
-                        }
-
-                    } else {
-                        modFilesMap.put(dbSfileID, p);
-                    }
-                    filesMap.remove(dbSfileID);
-                } else {
-                    delFilesSet.add(dbSfileID);
-                }
-            });
-
-        }*/
-
-        // Remaining files should be new
         Map<String, String> newFiles = catalogChange.getNewFiles();
         Map<String, String> modifiedFiles = catalogChange.getModifiedFiles();
         Set<String> deletedFiles = catalogChange.getDeletedFiles();
@@ -143,21 +108,28 @@ public class Ingestor {
         log.info(TimeLogger.getTimeUsed(start, fileCheckFinish, "File check time used: "));
 
         // Delete removed s-files
-        deleteFiles(catalogChange.getDeletedFiles());
+        if (deletedFiles != null && deletedFiles.size() > 0) {
+            System.out.println("Deleting files");
+            deleteFiles(catalogChange.getDeletedFiles());
+        }
 
         // Start reading files and ingest
         List<IgnoredLineError> convErrors = new ArrayList<>();
         Catalog catalog = catalogInfoHandler(options);
+
         if (newFiles != null && newFiles.size() > 0) {
+            System.out.println("Ingesting new files");
             convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, newFiles, options.getProfile()));
         }
+
         if (modifiedFiles != null && modifiedFiles.size() > 0) {
+            System.out.println("Updating modified files");
             convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile()));
         }
 
         if (convErrors != null && convErrors.size() > 0) {
             log.info("-------------------------------------");
-            log.info("Errors found in file and are ignored:");
+            log.info("Errors found in file and the lines are ignored during conversion to QuakeML format:");
             convErrors.forEach(er -> {
                 log.info(
                         "File: " + er.getFilename() +
@@ -167,18 +139,11 @@ public class Ingestor {
                 );
             });
             log.info("-------------------------------------");
-        } else {
-            log.info("No errors found");
         }
 
 
-        log.info("Number of unchanged files: " + fileInfo.getSFileEqualCount());
-
-        // System.out.println("Number of events ingested: " + ingestLog.getEvents());
-        log.info("Number of files ingested: " + ingestLog.getFiles());
-
         Instant finish = Instant.now();
-        log.info(TimeLogger.getTimeUsed(start, finish, "Total time used: "));
+        log.info(TimeLogger.getTimeUsed(start, finish, "All operations finished. Total time used: "));
 
         entityManager.clear();
 
@@ -232,13 +197,7 @@ public class Ingestor {
             try {
 
                 sfileBytes = Files.readAllBytes(Paths.get(entry.getValue()));
-/*
-                sfileCheck =
-                        new SfileCheck(
-                                entry.getKey(),
-                                sfileBytes,
-                                FileChecker.getChecksumString(entry.getValue())
-                        );*/
+
                 Path file = Paths.get(entry.getValue());
                 BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
 
@@ -360,7 +319,12 @@ public class Ingestor {
                                 }
                             }
 
-                            sfileEventService.addOrUpdateEvent(sfileEvent);
+                            try {
+                                sfileEventService.addOrUpdateEvent(sfileEvent);
+                            } catch (Exception exception) {
+                                System.out.println(exception.getMessage());
+                            }
+
                         }
                         ingestLog.increaseFiles(1);
                     }
@@ -372,7 +336,7 @@ public class Ingestor {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Filename: " + entry);
+                System.out.println("Filename error: " + entry);
             } finally {
                 sfileBytes = null;
                 sfileInformation = null;

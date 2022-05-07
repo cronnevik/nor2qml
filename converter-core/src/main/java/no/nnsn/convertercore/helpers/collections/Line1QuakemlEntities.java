@@ -22,8 +22,9 @@ public class Line1QuakemlEntities {
 
     Boolean errorInFirstLine1;
 
-    public Line1QuakemlEntities(Boolean errorInFirstLine1) {
+    public Line1QuakemlEntities(Boolean errorInFirstLine1, List<IgnoredLineError> errors) {
         this.errorInFirstLine1 = errorInFirstLine1;
+        this.errors = errors;
     }
 
     public Boolean hasErrorInFirstLine1() {

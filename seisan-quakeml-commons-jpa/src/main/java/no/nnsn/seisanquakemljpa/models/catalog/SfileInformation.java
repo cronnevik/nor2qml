@@ -18,7 +18,7 @@ import java.util.*;
 @Data
 @EqualsAndHashCode(exclude = "sfileEvents")
 @Entity
-@Table(name = "sfile_checksum")
+@Table(name = "sfile_information")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SfileInformation implements Serializable {
 
@@ -36,10 +36,10 @@ public class SfileInformation implements Serializable {
     @UpdateTimestamp
     private Date updatedAt;
 
-    @Column(name = "creationTime", columnDefinition = "timestamp")
+    @Column(name = "creationTime")
     private LocalDateTime creationTime;
 
-    @Column(name = "lastModifiedTime", columnDefinition = "timestamp")
+    @Column(name = "lastModifiedTime")
     private LocalDateTime lastModifiedTime;
 
     @OneToMany(mappedBy = "sfile", orphanRemoval = true, cascade = CascadeType.ALL)

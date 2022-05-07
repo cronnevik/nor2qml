@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +53,8 @@ public class FileChecker {
     public static CatalogChange check(List<SfileCheckInfo> sfilesInDatabase, FileInfo fileInfo, IngestorOptions options) {
         Map<String, String> sfilesInCatalog = getFiles(fileInfo);
         Map<String, String> sfilesInCatalogCopy = new HashMap<>(sfilesInCatalog);
+        CatalogChange catalogChange = new CatalogChange();
         if (sfilesInDatabase.size() > 0) {
-            CatalogChange catalogChange = new CatalogChange();
             sfilesInDatabase.forEach(sfileInfoDB -> {
                 final String dbSfileID = sfileInfoDB.getSfileID();
                 if (sfilesInCatalog.containsKey(dbSfileID)) {
@@ -74,10 +73,9 @@ public class FileChecker {
                     catalogChange.addDeleted(dbSfileID);
                 }
             });
-            catalogChange.addNewFiles(sfilesInCatalogCopy);
-            return catalogChange;
         }
-        return null;
+        catalogChange.addNewFiles(sfilesInCatalogCopy);
+        return catalogChange;
     }
 
 }
