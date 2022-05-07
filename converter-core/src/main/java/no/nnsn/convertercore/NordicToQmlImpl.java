@@ -66,21 +66,54 @@ public class NordicToQmlImpl implements NordicToQml {
                 printFirstLine1ForStandaloneConverter(data.getLine1s().get(0));
             }
 
-            List<Line1> l1s = data.getLine1s();
-            List<Line3> l3s = data.getLine3s();
-            List<Line> l4s = data.getLine4s();
-            List<Line5> l5s = data.getLine5s();
-            List<Line6> l6s = data.getLine6s();
-            List<LineE> les = data.getLineEs();
-            List<LineF> lfs = data.getLineFs();
-            List<LineH> lhs = data.getLineHs(); // currently no mapping for LineH - used for creationInfo in Event Object
-            List<LineI> lis = data.getLineIs();
-            List<LineM1> lm1s = data.getLineM1s();
-            List<LineM2> lm2s = data.getLineM2s();
-            List<LineS> lSs = data.getLineSs();
+            List<Line1> l1s = new ArrayList<>();
+            List<Line3> l3s = new ArrayList<>();
+            List<Line> l4s = new ArrayList<>();
+            List<Line5> l5s = new ArrayList<>();
+            List<Line6> l6s = new ArrayList<>();
+            List<LineE> les = new ArrayList<>();
+            List<LineF> lfs = new ArrayList<>();
+            List<LineH> lhs = new ArrayList<>();
+            List<LineI> lis = new ArrayList<>();
+            List<LineM1> lm1s = new ArrayList<>();
+            List<LineM2> lm2s = new ArrayList<>();
+            List<LineS> lSs = new ArrayList<>();
 
-            Line1QuakemlEntities line1Entities = convertLine1(l1s, les, sfileInfo);
-            if (line1Entities.hasErrorInFirstLine1()) continue sFileLoop; // skip event
+            try {
+                l1s = data.getLine1s();
+                l3s = data.getLine3s();
+                l4s = data.getLine4s();
+                l5s = data.getLine5s();
+                l6s = data.getLine6s();
+                les = data.getLineEs();
+                lfs = data.getLineFs();
+                lhs = data.getLineHs(); // currently no mapping for LineH - used for creationInfo in Event Object
+                lis = data.getLineIs();
+                lm1s = data.getLineM1s();
+                lm2s = data.getLineM2s();
+                lSs = data.getLineSs();
+            } catch (Exception e) {
+                System.out.println("error in getting data lines from sfile");
+            }
+
+            Line1QuakemlEntities line1Entities = null;
+            try {
+                line1Entities = convertLine1(l1s, les, sfileInfo);
+                if (line1Entities.hasErrorInFirstLine1()) {
+                    line1Entities.getErrors().forEach(er -> {
+                        System.out.println(
+                            "File skipped due to error in first Line 1: "
+                            + er.getFilename()
+                            + ", Error message: " + er.getMessage()
+                        );
+                    });
+                    continue sFileLoop; // skip event
+                }
+            } catch (Exception e) {
+                System.out.println("Error in converting line 1");
+            }
+
+
             LineFQuakemlEntities lineFEntities = convertLineF(l1s, lfs, lm2s, sfileInfo);
             Line3QuakemlEntities line3Entities = convertLine3(l3s, sfileInfo);
             Line4QuakemlEntities line4Entities = convertLine4(l1s, l4s, sfileInfo);
@@ -221,7 +254,7 @@ public class NordicToQmlImpl implements NordicToQml {
                         if (i == 0) { // Only remove Event if it is the first Line1
                             error.setEventRemoved(true); // Removing Event
                             errors.add(error);
-                            return new Line1QuakemlEntities(true);
+                            return new Line1QuakemlEntities(true, errors);
                         } else {
                             errors.add(error);
                             continue line1Loop;

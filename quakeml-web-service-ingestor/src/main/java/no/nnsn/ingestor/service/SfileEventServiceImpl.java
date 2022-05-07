@@ -1,8 +1,7 @@
 package no.nnsn.ingestor.service;
 
-import no.nnsn.ingestor.dao.SfileChecksum;
+import no.nnsn.ingestor.dao.SfileCheckInfo;
 import no.nnsn.ingestor.repo.SfileEventRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +47,7 @@ public class SfileEventServiceImpl implements SfileEventService {
     }
 
     @Override
-    public List<SfileChecksum> getSfileListByCatalogName(String name) {
+    public List<SfileCheckInfo> getSfileListByCatalogName(String name) {
         return repo.getSfilesByCatalog(name);
     }
 }

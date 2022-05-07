@@ -14,6 +14,7 @@ public class FileInfo {
     private String catalogName;
     private int qmlFileEqualCount;
     private int sFileEqualCount;
+    private Set<Path> skippedFiles;
 
     public FileInfo(String path, String fileType) throws IOException {
         this.filePaths = new HashSet<>();
@@ -56,19 +57,14 @@ public class FileInfo {
                 Files.walkFileTree(Paths.get(path), fileScan);
                 this.filePaths = fileScan.getFilePaths();
                 this.catalogName = fileScan.getCatalogName();
+                this.skippedFiles = fileScan.getSkippedFiles();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getStackTrace());
+                System.out.println("Could not scan through the catalog");
             }
 
-
-            Set<Path> skippedFolders = fileScan.getSkippedFolders();
-            if (skippedFolders.size() > 0) {
-                skippedFolders.forEach(f -> System.out.println("Skipped folder: " + f.getFileName()));
-            }
             Set<Path> failedFileVisit = fileScan.getFailedFileVisit();
             if (failedFileVisit.size() > 0) {
-                failedFileVisit.forEach(p -> System.out.println("Skipped file: " + p.getFileName()));
+                failedFileVisit.forEach(p -> System.out.println("Could not access file: " + p.getFileName()));
             }
         }
     }

@@ -11,15 +11,16 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
 @Data
 @EqualsAndHashCode(exclude = "sfileEvents")
 @Entity
-@Table(name = "sfile_checksum")
+@Table(name = "sfile_information")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SfileCheck implements Serializable {
+public class SfileInformation implements Serializable {
 
     @Id
     @Column(name = "sfileID", nullable=false, length=128)
@@ -29,24 +30,28 @@ public class SfileCheck implements Serializable {
     @Column(name = "file", columnDefinition = "MEDIUMBLOB")
     private byte[] file;
 
-    @Column(name = "checksum", columnDefinition = "CHAR(32)", length = 32)
-    private String checksum;
-
     @CreationTimestamp
     private Date createdAt;
 
     @UpdateTimestamp
     private Date updatedAt;
 
+    @Column(name = "creationTime")
+    private LocalDateTime creationTime;
+
+    @Column(name = "lastModifiedTime")
+    private LocalDateTime lastModifiedTime;
+
     @OneToMany(mappedBy = "sfile", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<SfileEvent> sfileEvents = new HashSet<>();
 
-    public SfileCheck() {}
+    public SfileInformation() {}
 
-    public SfileCheck(String sfileID, byte[] file, String checksum) {
+    public SfileInformation(String sfileID, byte[] file, LocalDateTime creationTime, LocalDateTime lastModifiedTime) {
         this.sfileID = sfileID;
         this.file = file;
-        this.checksum = checksum;
+        this.creationTime = creationTime;
+        this.lastModifiedTime = lastModifiedTime;
     }
 
     public void addEvent(SfileEvent event) {

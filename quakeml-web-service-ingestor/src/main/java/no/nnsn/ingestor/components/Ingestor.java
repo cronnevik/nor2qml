@@ -10,12 +10,12 @@ import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
+import no.nnsn.ingestor.dao.CatalogChange;
 import no.nnsn.ingestor.dao.IngestorOptions;
-import no.nnsn.ingestor.dao.SfileChecksum;
+import no.nnsn.ingestor.dao.SfileCheckInfo;
 import no.nnsn.ingestor.service.CatalogService;
 import no.nnsn.ingestor.service.SfileEventService;
 import no.nnsn.ingestor.service.SfileCheckerService;
-import no.nnsn.ingestor.utils.FileChecker;
 import no.nnsn.ingestor.utils.IngestLog;
 import no.nnsn.ingestor.utils.TimeLogger;
 import no.nnsn.seisanquakemlcommonsfile.FileInfo;
@@ -23,7 +23,7 @@ import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.QuakeML;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
@@ -36,10 +36,14 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -79,76 +83,53 @@ public class Ingestor {
     public void ingest(FileInfo fileInfo, IngestorOptions options) throws Exception {
 
         Instant start = Instant.now();
-        System.out.println("Checking S-files for new files or changes to existing...");
 
         final IngestLog ingestLog = new IngestLog();
 
-        List<SfileChecksum> sfileCheckSums = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
-        log.info("S-files within database: " + sfileCheckSums.size());
+        Set<Path> catalogFilePaths = fileInfo.getFilePaths();
+        log.info("S-files identified within catalog: " + catalogFilePaths.size());
+        log.info("Other type of files within catalog: " + fileInfo.getSkippedFiles().size());
 
-        Map<String, String> filesMap = new HashMap<>();
+        List<SfileCheckInfo> sfilesInDatabase = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
+        log.info("S-files within database: " + sfilesInDatabase.size());
 
-        fileInfo.getFilePaths().forEach(p -> {
-            filesMap.put(p.getFileName().toString(), p.toString());
-        });
-        
-        int mapSizeBeforeCheck = filesMap.size();
-        log.info("S-files within catalog: " + mapSizeBeforeCheck);
+        System.out.println("Checking s-files in catalog against database for new, change of existing or deleted");
+        CatalogChange catalogChange = FileChecker.check(sfilesInDatabase, fileInfo, options);
 
-        // Check if files has been modified since last update
-        Map<String, String> modFilesMap = new HashMap<>(); // map for keeping record of modified files
-        Set<String> delFilesSet = new HashSet<>();
+        Map<String, String> newFiles = catalogChange.getNewFiles();
+        Map<String, String> modifiedFiles = catalogChange.getModifiedFiles();
+        Set<String> deletedFiles = catalogChange.getDeletedFiles();
 
-        if (sfileCheckSums.size() > 0) {
-            sfileCheckSums.forEach(sCheck -> {
-                final String dbSfileID = sCheck.getSfileID();
-
-                if (filesMap.containsKey(dbSfileID)) {
-                    String p = filesMap.get(dbSfileID);
-                    if (FileChecker.fileUnchanged(p, sCheck.getChecksum())) {
-                        fileInfo.addSfileEqual();
-
-                        // If force then unchanged files should be updated
-                        if (options.getForceIngestion()) {
-                            modFilesMap.put(dbSfileID, p);
-                        }
-
-                    } else {
-                        modFilesMap.put(dbSfileID, p);
-                    }
-                    filesMap.remove(dbSfileID);
-                } else {
-                    delFilesSet.add(dbSfileID);
-                }
-            });
-
-        }
-
-        // Remaining files should be new
-        Map<String, String> newFilesMap = filesMap;
-        log.info("New files: " + filesMap.size());
-        log.info("Modified files: " + modFilesMap.size());
-        log.info("Deleted files: " + delFilesSet.size());
+        log.info("New files: " + newFiles.size());
+        log.info("Modified files: " + modifiedFiles.size());
+        log.info("Deleted files: " + deletedFiles.size());
 
         Instant fileCheckFinish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, fileCheckFinish, "File check time used: "));
 
         // Delete removed s-files
-        deleteFiles(delFilesSet);
+        if (deletedFiles != null && deletedFiles.size() > 0) {
+            System.out.println("Deleting files");
+            deleteFiles(catalogChange.getDeletedFiles());
+        }
 
         // Start reading files and ingest
         List<IgnoredLineError> convErrors = new ArrayList<>();
         Catalog catalog = catalogInfoHandler(options);
-        if (newFilesMap != null && newFilesMap.size() > 0) {
-            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, newFilesMap, options.getProfile()));
+
+        if (newFiles != null && newFiles.size() > 0) {
+            System.out.println("Ingesting new files");
+            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, newFiles, options.getProfile()));
         }
-        if (modFilesMap != null && modFilesMap.size() > 0) {
-            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, modFilesMap, options.getProfile()));
+
+        if (modifiedFiles != null && modifiedFiles.size() > 0) {
+            System.out.println("Updating modified files");
+            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile()));
         }
 
         if (convErrors != null && convErrors.size() > 0) {
             log.info("-------------------------------------");
-            log.info("Errors found in file and are ignored:");
+            log.info("Errors found in file and the lines are ignored during conversion to QuakeML format:");
             convErrors.forEach(er -> {
                 log.info(
                         "File: " + er.getFilename() +
@@ -158,18 +139,11 @@ public class Ingestor {
                 );
             });
             log.info("-------------------------------------");
-        } else {
-            log.info("No errors found");
         }
 
 
-        log.info("Number of unchanged files: " + fileInfo.getSFileEqualCount());
-
-        // System.out.println("Number of events ingested: " + ingestLog.getEvents());
-        log.info("Number of files ingested: " + ingestLog.getFiles());
-
         Instant finish = Instant.now();
-        log.info(TimeLogger.getTimeUsed(start, finish, "Total time used: "));
+        log.info(TimeLogger.getTimeUsed(start, finish, "All operations finished. Total time used: "));
 
         entityManager.clear();
 
@@ -216,7 +190,7 @@ public class Ingestor {
         df.applyPattern("0.0");
 
         byte[] sfileBytes;
-        SfileCheck sfileCheck;
+        SfileInformation sfileInformation;
 
         // Read and create objects
         for (Map.Entry<String, String> entry: filePaths.entrySet()) {
@@ -224,14 +198,17 @@ public class Ingestor {
 
                 sfileBytes = Files.readAllBytes(Paths.get(entry.getValue()));
 
-                sfileCheck =
-                        new SfileCheck(
-                                entry.getKey(),
-                                sfileBytes,
-                                FileChecker.getChecksumString(entry.getValue())
-                        );
+                Path file = Paths.get(entry.getValue());
+                BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
 
-                sfileCheckerService.addSfile(sfileCheck);
+                sfileInformation = new SfileInformation(
+                        entry.getKey(),
+                        sfileBytes,
+                        LocalDateTime.ofInstant(attr.creationTime().toInstant(), ZoneId.of("Europe/Paris")),
+                        LocalDateTime.ofInstant(attr.lastModifiedTime().toInstant(), ZoneId.of("Europe/Paris"))
+                );
+
+                sfileCheckerService.addSfile(sfileInformation);
 
                 EventOverview eventOverview = genQuakemlFromSfiles(entry.getValue(), profile);
                 if (eventOverview != null) {
@@ -330,7 +307,7 @@ public class Ingestor {
                             ingestLog.increaseEvents(1);
 
                             sfileEvent.setCatalog(catalog);
-                            sfileEvent.setSfile(sfileCheck);
+                            sfileEvent.setSfile(sfileInformation);
 
                             if (e.getCreationInfo() != null) {
                                 if (e.getCreationInfo().getAuthor() != null) {
@@ -342,7 +319,12 @@ public class Ingestor {
                                 }
                             }
 
-                            sfileEventService.addOrUpdateEvent(sfileEvent);
+                            try {
+                                sfileEventService.addOrUpdateEvent(sfileEvent);
+                            } catch (Exception exception) {
+                                System.out.println(exception.getMessage());
+                            }
+
                         }
                         ingestLog.increaseFiles(1);
                     }
@@ -354,10 +336,10 @@ public class Ingestor {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Filename: " + entry);
+                System.out.println("Filename error: " + entry);
             } finally {
                 sfileBytes = null;
-                sfileCheck = null;
+                sfileInformation = null;
             }
 
         };

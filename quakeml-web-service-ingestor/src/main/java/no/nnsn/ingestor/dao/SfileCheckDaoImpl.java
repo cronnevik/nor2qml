@@ -1,6 +1,6 @@
 package no.nnsn.ingestor.dao;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,14 +13,14 @@ public class SfileCheckDaoImpl implements SfileCheckDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public void addSfile(SfileCheck sfileCheck) {
-        sessionFactory.getCurrentSession().save(sfileCheck);
+    public void addSfile(SfileInformation sfileInformation) {
+        sessionFactory.getCurrentSession().save(sfileInformation);
     }
 
     @Override
-    public List<SfileCheck> getSfiles() {
+    public List<SfileInformation> getSfiles() {
         @SuppressWarnings("unchecked")
-        TypedQuery<SfileCheck> query=sessionFactory.getCurrentSession().createQuery("from SfileCheck");
+        TypedQuery<SfileInformation> query=sessionFactory.getCurrentSession().createQuery("from SfileInformation");
         return query.getResultList();
     }
 }

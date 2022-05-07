@@ -1,7 +1,7 @@
 package no.nnsn.quakemlwebservice.service;
 
 import no.nnsn.quakemlwebservice.repository.SfileRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ public class SfileServiceImpl implements SfileService {
     SfileRepository repo;
 
     @Override
-    public SfileCheck getSfileById(String id) {
+    public SfileInformation getSfileById(String id) {
         return repo.findById(id).get();
     }
 
     @Override
-    public List<SfileCheck> getSfiles(List<String> sfileIds) {
+    public List<SfileInformation> getSfiles(List<String> sfileIds) {
         return repo.getSfiles(sfileIds);
     }
 

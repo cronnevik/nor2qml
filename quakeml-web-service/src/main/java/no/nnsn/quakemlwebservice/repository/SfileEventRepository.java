@@ -1,7 +1,6 @@
 package no.nnsn.quakemlwebservice.repository;
 
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import org.springframework.data.domain.Page;
@@ -10,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 
 @Repository
@@ -20,7 +17,7 @@ public interface SfileEventRepository extends PagingAndSortingRepository<SfileEv
     // Queries by SfileCheck
 
     @Query("SELECT se.sfile FROM SfileEvent se WHERE se.eventID = ?1")
-    SfileCheck findSfileByEventId(String eventID);
+    SfileInformation findSfileByEventId(String eventID);
 
     // Queries by SfileEvent
 

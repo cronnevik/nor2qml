@@ -1,11 +1,10 @@
 package no.nnsn.quakemlwebservice.service;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 
 import java.util.List;
-import java.util.Set;
 
 public interface SfileService {
-    SfileCheck getSfileById(String id);
-    List<SfileCheck> getSfiles(List<String> sfileIds);
+    SfileInformation getSfileById(String id);
+    List<SfileInformation> getSfiles(List<String> sfileIds);
 }

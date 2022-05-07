@@ -6,9 +6,7 @@ import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.quakemlwebservice.dao.EventFormQuery;
 import no.nnsn.quakemlwebservice.dao.FormatType;
-import no.nnsn.quakemlwebservice.dao.MapEvent;
 import no.nnsn.quakemlwebservice.dao.OrderByType;
 import no.nnsn.quakemlwebservice.helper.TextOutput;
 import no.nnsn.quakemlwebservice.service.CatalogService;
@@ -16,7 +14,7 @@ import no.nnsn.quakemlwebservice.service.SfileEventService;
 import no.nnsn.quakemlwebservice.service.SfileService;
 import no.nnsn.seisanquakeml.seisanquakemlcommonsweb.utils.QuakemlUtils;
 import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileCheck;
+import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
 import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
@@ -25,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -100,10 +96,10 @@ public class QueryController {
 
         // First check if event ID is queried for providing a single event
         if (eventid != null) {
-            SfileCheck sfileCheck = sfileEventService.getSfileFromEventId(eventid);
+            SfileInformation sfileInformation = sfileEventService.getSfileFromEventId(eventid);
 
-            if (sfileCheck != null) {
-                EventOverview events = getEventsFromSfile(sfileCheck, eventid);
+            if (sfileInformation != null) {
+                EventOverview events = getEventsFromSfile(sfileInformation, eventid);
                 return Response.ok(QuakemlUtils.getQuakeml12DocFromEvents(events.getEvents(), catalog)) // Return 200 OK
                         .header("Content-Type", "application/xml")
                         .build();
@@ -149,9 +145,9 @@ public class QueryController {
                         .header("Content-Type", "application/xml")
                         .build();
             } else if (format.equals(FormatType.NORDIC)) {
-                List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
+                List<SfileInformation> sfileInformations = sfileService.getSfiles(sfileIDs);
                 String nordicText = "";
-                for (SfileCheck sf: sfileChecks) {
+                for (SfileInformation sf: sfileInformations) {
                     byte[] sfile = sf.getFile();
                     nordicText += new String((sfile));
                 }
@@ -217,19 +213,19 @@ public class QueryController {
         return types;
     }
 
-    private EventOverview getEventsFromSfile(SfileCheck sfileCheck, String eventid) {
-        byte[] sfile = sfileCheck.getFile();
+    private EventOverview getEventsFromSfile(SfileInformation sfileInformation, String eventid) {
+        byte[] sfile = sfileInformation.getFile();
         InputStream input = new ByteArrayInputStream(sfile);
 
-        List<Sfile> sfiles = nordicToQml.readSfile(input, sfileCheck.getSfileID(), CallerType.WEBSERVICE);
+        List<Sfile> sfiles = nordicToQml.readSfile(input, sfileInformation.getSfileID(), CallerType.WEBSERVICE);
         ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, eventid);
         return nordicToQml.convertToQuakeml(sfiles, options);
     }
 
     private List<Event> getEventsFromMultipleSfiles(List<String> sfileIDs) {
-        List<SfileCheck> sfileChecks = sfileService.getSfiles(sfileIDs);
+        List<SfileInformation> sfileInformations = sfileService.getSfiles(sfileIDs);
         List<Event> events = new ArrayList<>();
-        for (SfileCheck sf: sfileChecks) {
+        for (SfileInformation sf: sfileInformations) {
             byte[] sfile = sf.getFile();
             InputStream input = new ByteArrayInputStream(sfile);
             List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
