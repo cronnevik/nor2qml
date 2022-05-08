@@ -1,6 +1,7 @@
 package no.nnsn.seisanquakemlcommonsfile;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
@@ -9,7 +10,9 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FileScan implements FileVisitor<Path> {
@@ -20,6 +23,7 @@ public class FileScan implements FileVisitor<Path> {
     @Getter private Set<Path> skippedFolders = new HashSet<>();
     @Getter private Set<Path> skippedFiles = new HashSet<>();
     @Getter private Set<Path> failedFileVisit = new HashSet<>();
+    @Setter private List<String> ignoreFolders = new ArrayList<>();
 
     public FileScan(String parentPath) {
         this.parentPath = Paths.get(parentPath).getFileName().toString();
@@ -34,13 +38,16 @@ public class FileScan implements FileVisitor<Path> {
             return FileVisitResult.CONTINUE;
         }
 
-        if (dirName.equals("CAT") || dirName.equals("LOG")) {
-            skippedFolders.add(dir);
-            return FileVisitResult.SKIP_SUBTREE;
+        if (ignoreFolders != null && ignoreFolders.size() > 0) {
+            if (ignoreFolders.contains(dirName)) {
+                skippedFolders.add(dir);
+                return FileVisitResult.SKIP_SUBTREE;
+            } else {
+                return FileVisitResult.CONTINUE;
+            }
         } else {
             return FileVisitResult.CONTINUE;
         }
-
     }
 
     @Override

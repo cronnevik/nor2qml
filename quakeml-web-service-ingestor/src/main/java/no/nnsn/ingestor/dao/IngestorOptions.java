@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class IngestorOptions {
     String dbName;
     Boolean forceIngestion;
     String catalogName;
+    List<String> ignoreFolders;
 
     String qmlPrefix;
     String qmlAgency;
