@@ -149,8 +149,8 @@ public class Ingestor {
 
     }
 
-    public FileInfo getNumOfFiles(String path, String sourceType) throws Exception {
-        FileInfo fileInfo = new FileInfo(path, sourceType);
+    public FileInfo getNumOfFiles(String path, String sourceType, List<String> ignoreFolders) throws Exception {
+        FileInfo fileInfo = new FileInfo(path, sourceType, ignoreFolders);
         return fileInfo;
     }
 

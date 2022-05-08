@@ -72,8 +72,6 @@ public class IngestorApplication {
                 String pathInput = pathFolder + "/" + catalogName;
                 String sourceType = arguments.getSourceType();
 
-                FileInfo fileInfo = ingestor.getNumOfFiles(pathInput, sourceType);
-
                 IngestorOptions options = new IngestorOptions();
                 options.setInput(pathInput);
                 options.setCatalogName(catalogName);
@@ -82,6 +80,9 @@ public class IngestorApplication {
                 options.setSourceType(sourceType);
                 options.setQmlPrefix(catConf.getPrefix());
                 options.setQmlAgency(catConf.getAuthorityID());
+                options.setIgnoreFolders(arguments.getIgnoreFolders());
+
+                FileInfo fileInfo = ingestor.getNumOfFiles(pathInput, sourceType, options.getIgnoreFolders());
 
                 ingestor.execute(fileInfo, options);
             } finally {

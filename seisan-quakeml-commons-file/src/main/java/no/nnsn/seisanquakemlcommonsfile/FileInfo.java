@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,12 +16,14 @@ public class FileInfo {
     private int qmlFileEqualCount;
     private int sFileEqualCount;
     private Set<Path> skippedFiles;
+    private List<String> ignoreFolders;
 
-    public FileInfo(String path, String fileType) throws IOException {
+    public FileInfo(String path, String fileType, List<String> ignoreFolders) throws IOException {
         this.filePaths = new HashSet<>();
-        this.setFilePath(path, fileType);
         this.qmlFileEqualCount = 0;
         this.sFileEqualCount = 0;
+        this.ignoreFolders = ignoreFolders;
+        this.setFilePath(path, fileType);
     }
 
     public void addQml(Path path) {
@@ -53,6 +56,7 @@ public class FileInfo {
         } else if (Files.isDirectory(filePath)) { // is directory
 
             FileScan fileScan = new FileScan(path);
+            fileScan.setIgnoreFolders(this.ignoreFolders);
             try {
                 Files.walkFileTree(Paths.get(path), fileScan);
                 this.filePaths = fileScan.getFilePaths();

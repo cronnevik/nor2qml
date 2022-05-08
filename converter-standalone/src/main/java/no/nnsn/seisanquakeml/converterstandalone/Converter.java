@@ -119,7 +119,7 @@ public class Converter {
         path = arguments.hasInput() ? arguments.getInput() : arguments.getCurrentPath();
         FileInfo fileInfo = null;
         try {
-            fileInfo = new FileInfo(path, "sfile");
+            fileInfo = new FileInfo(path, "sfile", null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -193,7 +193,7 @@ public class Converter {
 
             FileInfo fileInfo = null;
             try {
-                fileInfo = new FileInfo(path, "qml");
+                fileInfo = new FileInfo(path, "qml", null);
             } catch (IOException e) {
                 e.printStackTrace();
             }

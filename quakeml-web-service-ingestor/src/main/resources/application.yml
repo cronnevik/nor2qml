@@ -9,6 +9,9 @@ ingestor:
   profile: ${profile:none}
   force: ${force:false}
 
+scanner:
+  ignore_folders: ${ignore_folders:[]}
+
 quakeml:
   prefix: ${prefix:smi}
   agency: ${agency:no.uib.nnsn}
