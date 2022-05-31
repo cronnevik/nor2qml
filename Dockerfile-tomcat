@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.6.1-jdk-8-alpine as build
+FROM maven:3.8.5-jdk-11 as build
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ COPY quakeml-web-service ./quakeml-web-service
 RUN mvn clean install -P ws-container -Dspring.profiles.active=container
 
 # Deployment stage
-FROM tomcat:9.0.12-jre8 as production
+FROM tomcat:9.0.63-jre11 as production
 ARG APP_NAME
 ARG TOMCAT_USER
 ARG TOMCAT_PASSWORD
