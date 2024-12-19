@@ -54,7 +54,14 @@ public class MappingEntityTests {
             List<Line4Dto> line4s = sfiles.get(0).getData().getLine4s();
 
             // Nordic ==> QuakeML conversion
-            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    "report",
+                    CallerType.CONVERTER,
+                    null,
+                    "",
+                    "earthquake",
+                    "suspected"
+            );
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
             List<Event> eventList = events.getEvents();
 
@@ -124,7 +131,14 @@ public class MappingEntityTests {
             LineF lf2 = lfs.get(1);
 
             // Nordic ==> QuakeML conversion
-            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    "report",
+                    CallerType.CONVERTER,
+                    null,
+                    "",
+                    "earthquake",
+                    "suspected"
+            );
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
             List<Event> eventList = events.getEvents();
 

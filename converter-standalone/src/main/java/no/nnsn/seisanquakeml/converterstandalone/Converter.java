@@ -139,7 +139,14 @@ public class Converter {
 
         EventOverview eventOverview = null;
         try {
-            ConverterOptions options = new ConverterOptions(null, CallerType.STANDALONE, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    null,
+                    CallerType.STANDALONE,
+                    null,
+                    "",
+                    arguments.getBlankEventType(),
+                    arguments.getBlankEventCertainty()
+            );
             eventOverview = nordicToQml.convertToQuakeml(sFileEvents, options);
             System.out.println("Number of events: " + eventOverview.getEventSize());
         } catch (Exception ex) {

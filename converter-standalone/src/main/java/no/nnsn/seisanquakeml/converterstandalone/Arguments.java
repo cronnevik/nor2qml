@@ -68,4 +68,7 @@ public class Arguments {
         return env.getProperty("quakeml.agency");
     }
 
+    public String getBlankEventType() { return env.getProperty("converter.eventtype.blank"); }
+
+    public String getBlankEventCertainty() { return env.getProperty("converter.eventcertainty.blank"); }
 }

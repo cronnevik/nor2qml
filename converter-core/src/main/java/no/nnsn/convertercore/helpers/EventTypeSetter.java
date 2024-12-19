@@ -6,7 +6,7 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventT
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
 
 public class EventTypeSetter {
-    public static void setEventTypeAndUncertainty(Event event, Line1 line1) {
+    public static void setEventTypeAndUncertainty(Event event, Line1 line1, String blankEvent, String blankCertainty) {
 
         String eventId;
 
@@ -59,8 +59,12 @@ public class EventTypeSetter {
                 break;
             case "":
             case " ":
-                event.setType(EventType.EARTHQUAKE);
-                event.setTypeCertainty(EventTypeCertainty.SUSPECTED);
+                if(EventType.fromValue(blankEvent) != null) {
+                    event.setType(EventType.EARTHQUAKE);
+                }
+                if(EventTypeCertainty.fromValue(blankCertainty) != null) {
+                    event.setTypeCertainty(EventTypeCertainty.SUSPECTED);
+                }
                 break;
             default:
                 // All other nordic codes become not_reported

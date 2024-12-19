@@ -85,7 +85,14 @@ public class Line1Tests {
         sfiles.add(sfile);
 
         // Convert to QuakeML
-        ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+        ConverterOptions options = new ConverterOptions(
+                "report",
+                CallerType.CONVERTER,
+                null,
+                "",
+                "earthquake",
+                "suspected"
+        );
         EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
         List<Event> events = eventOverview.getEvents();
         Event event = events.get(0);

@@ -44,7 +44,14 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    "report",
+                    CallerType.CONVERTER,
+                    null,
+                    "",
+                    "earthquake",
+                    "suspected"
+            );
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
@@ -69,7 +76,14 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    "report",
+                    CallerType.CONVERTER,
+                    null,
+                    "",
+                    "earthquake",
+                    "suspected"
+            );
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
@@ -103,7 +117,14 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    "report",
+                    CallerType.CONVERTER,
+                    null,
+                    "",
+                    "earthquake",
+                    "suspected"
+            );
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
@@ -123,7 +144,14 @@ public class ConvFromFiles {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            ConverterOptions options = new ConverterOptions("report", CallerType.CONVERTER, null, "");
+            ConverterOptions options = new ConverterOptions(
+                    "report",
+                    CallerType.CONVERTER,
+                    null,
+                    "",
+                    "earthquake",
+                    "suspected"
+            );
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
