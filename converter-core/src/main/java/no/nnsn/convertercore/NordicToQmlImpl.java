@@ -205,7 +205,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
 
             // Set EventType and EventTypeCertainty
-            EventTypeSetter.setEventTypeAndUncertainty(ev, l1s.get(0), options.getBlankEventType(), options.getBlankEventCertainty());
+            EventTypeSetter.setEventTypeAndUncertainty(ev, l1s.get(0), options.getDefaultEventType(), options.getDefaultEventCertainty());
 
             // Set CreationInfo based on profile
             if (options.getProfile() == ConverterProfile.INTAROS) {

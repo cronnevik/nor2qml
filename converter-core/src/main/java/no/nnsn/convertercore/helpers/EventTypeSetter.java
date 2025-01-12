@@ -6,7 +6,7 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventT
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
 
 public class EventTypeSetter {
-    public static void setEventTypeAndUncertainty(Event event, Line1 line1, String blankEvent, String blankCertainty) {
+    public static void setEventTypeAndUncertainty(Event event, Line1 line1, String defaultEvent, String defaultCertainty) {
 
         String eventId;
 
@@ -59,11 +59,13 @@ public class EventTypeSetter {
                 break;
             case "":
             case " ":
-                if(EventType.fromValue(blankEvent) != null) {
-                    event.setType(EventType.EARTHQUAKE);
+                EventType eventType = EventType.fromValue(defaultEvent);
+                if(eventType != null) {
+                    event.setType(eventType);
                 }
-                if(EventTypeCertainty.fromValue(blankCertainty) != null) {
-                    event.setTypeCertainty(EventTypeCertainty.SUSPECTED);
+                EventTypeCertainty eventTypeCertainty = EventTypeCertainty.fromValue(defaultCertainty);
+                if(eventTypeCertainty != null) {
+                    event.setTypeCertainty(eventTypeCertainty);
                 }
                 break;
             default:

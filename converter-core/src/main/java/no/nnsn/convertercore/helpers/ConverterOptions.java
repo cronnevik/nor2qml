@@ -10,6 +10,6 @@ public class ConverterOptions {
     CallerType caller;
     ConverterProfile profile;
     String idSuffix;
-    String blankEventType;
-    String blankEventCertainty;
+    String defaultEventType;
+    String defaultEventCertainty;
 }
