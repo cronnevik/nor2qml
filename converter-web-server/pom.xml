@@ -5,11 +5,10 @@
     <parent>
         <groupId>no.nnsn</groupId>
         <artifactId>seisan-quakeml</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
-    <groupId>no.nnsn</groupId>
     <artifactId>converter-web-server</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>converter-web-server</name>
     <description>Demo project for Spring Boot</description>

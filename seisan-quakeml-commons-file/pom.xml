@@ -4,11 +4,11 @@
     <parent>
         <groupId>no.nnsn</groupId>
         <artifactId>seisan-quakeml</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
     <groupId>no.nnsn.seisan-quakeml</groupId>
     <artifactId>seisan-quakeml-commons-file</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
     <name>seisan-quakeml-commons-file</name>
     <description>Demo project for Spring Boot</description>

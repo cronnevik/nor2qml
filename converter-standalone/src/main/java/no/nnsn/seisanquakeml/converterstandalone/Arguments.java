@@ -68,4 +68,7 @@ public class Arguments {
         return env.getProperty("quakeml.agency");
     }
 
+    public String getEventType() { return env.getProperty("converter.eventtype"); }
+
+    public String getEventCertainty() { return env.getProperty("converter.eventcertainty"); }
 }

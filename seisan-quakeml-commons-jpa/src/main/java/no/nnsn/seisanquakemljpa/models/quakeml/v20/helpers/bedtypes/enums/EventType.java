@@ -115,7 +115,7 @@ public enum EventType {
                 return c;
             }
         }
-        throw new IllegalArgumentException(v);
+        return null;
     }
 
 }
