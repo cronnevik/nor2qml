@@ -38,6 +38,9 @@ import java.util.*;
 @Endpoint(id = "event-query")
 public class QueryController {
 
+    final static String defaultEventType = "earthquake";
+    final static String defaultEventCertainty = "suspected";
+
     final QmlToSfile qmlToSfile;
     final NordicToQml nordicToQml;
     final SfileEventService sfileEventService;
@@ -132,7 +135,7 @@ public class QueryController {
                 catalogName,
                 limit, orderby);
 
-        if (sfileIDs != null && sfileIDs.size() > 0) {
+        if (sfileIDs != null && !sfileIDs.isEmpty()) {
             // Return specified format
             if (format.equals(FormatType.XML)) {
                 List<Event> events = getEventsFromMultipleSfiles(sfileIDs);
@@ -207,7 +210,7 @@ public class QueryController {
                 types.add(EventType.valueOf(eventTypes));
             }
         }
-        if (types.size() == 0){
+        if (types.isEmpty()){
             types = sfileEventService.getUsedEventTypes();
         }
         return types;
@@ -218,7 +221,15 @@ public class QueryController {
         InputStream input = new ByteArrayInputStream(sfile);
 
         List<Sfile> sfiles = nordicToQml.readSfile(input, sfileInformation.getSfileID(), CallerType.WEBSERVICE);
-        ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, eventid);
+        ConverterOptions options =
+                new ConverterOptions(
+                        "error",
+                        CallerType.WEBSERVICE,
+                        null,
+                        eventid,
+                        defaultEventType,
+                        defaultEventCertainty
+                );
         return nordicToQml.convertToQuakeml(sfiles, options);
     }
 
@@ -229,7 +240,15 @@ public class QueryController {
             byte[] sfile = sf.getFile();
             InputStream input = new ByteArrayInputStream(sfile);
             List<Sfile> sfiles = nordicToQml.readSfile(input, sf.getSfileID(), CallerType.WEBSERVICE);
-            ConverterOptions options = new ConverterOptions("error", CallerType.WEBSERVICE, null, sf.getSfileID());
+            ConverterOptions options =
+                    new ConverterOptions(
+                            "error",
+                            CallerType.WEBSERVICE,
+                            null,
+                            sf.getSfileID(),
+                            defaultEventType,
+                            defaultEventCertainty
+                    );
             EventOverview eventOverview = nordicToQml.convertToQuakeml(sfiles, options);
             events.addAll(eventOverview.getEvents());
         }
