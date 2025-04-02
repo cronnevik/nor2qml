@@ -61,6 +61,8 @@ public class FileReaderTests {
             sf = parsedSfile.getData();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         Sfile sfile = sfiles.get(0);
@@ -87,13 +89,15 @@ public class FileReaderTests {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            if (sfiles.size() > 0) {
+            if (!sfiles.isEmpty()) {
                 assert true;
             } else {
                 assert false;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         assert true;
     }
@@ -115,6 +119,8 @@ public class FileReaderTests {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         assert true;
     }

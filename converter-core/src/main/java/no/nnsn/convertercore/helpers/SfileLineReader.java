@@ -1,6 +1,7 @@
 package no.nnsn.convertercore.helpers;
 
 import lombok.Getter;
+import no.nnsn.convertercore.exeption.FileReaderException;
 import no.nnsn.convertercore.mappers.utils.CharacterChecker;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
 import no.nnsn.seisanquakemljpa.models.sfile.SfileData;
@@ -61,7 +62,7 @@ public class SfileLineReader {
         unmapped = new HashMap<>();
     }
 
-    public List<Sfile> readAndParse(InputStream is, String filename, CallerType caller) {
+    public List<Sfile> readAndParse(InputStream is, String filename, CallerType caller) throws FileReaderException {
         initSequenceValues();
         String line;
 
@@ -71,11 +72,11 @@ public class SfileLineReader {
                 rowNumberSfile++;
                 rowNumberTotal++;
 
-                if (line.length() < 80 && line.length() != 0) {
+                if (line.length() < 80 && !line.isEmpty()) {
                     continue; // skip empty lines
-                } else if (StringUtils.isBlank(line) || line.trim().equals("\n") || line.length() == 0) {
+                } else if (StringUtils.isBlank(line) || line.trim().equals("\n") || line.isEmpty()) {
                     // Multiple events within the same file
-                    if (this.l1s.size() > 0) {
+                    if (!this.l1s.isEmpty()) {
                         checkMissingDataInstance();
                         parse(filename);
                     } else {
@@ -110,7 +111,9 @@ public class SfileLineReader {
                     else if (CharacterChecker.onlyAlphabetic(yearField.toString().trim())) {
                         this.phases = true;
 
-                        System.out.println("Missing Line 7: " + filename);
+                        if (caller.equals(CallerType.STANDALONE)) {
+                            System.out.println("Missing Line 7: " + filename);
+                        }
 
                         // Check for new or old phase format
                         // New format has an empty string between instrument and component
@@ -131,7 +134,9 @@ public class SfileLineReader {
                             l4s.put(rowNumberSfile, line);
                         }
                     } else {
-                        System.out.println("No Line 7 nor Line 4");
+                        if (caller.equals(CallerType.INGESTOR)) {
+                            System.out.println("No Line 7 nor Line 4");
+                        }
                         versionLine7 = SfileVersionLine7.VERSION1;
                         this.data = new SfileDataImpl();
                     }
@@ -151,7 +156,9 @@ public class SfileLineReader {
                         versionLine7 = SfileVersionLine7.VERSION2;
                         this.data = new SfileDataDtoImpl();
                     } else {
-                        System.out.println("cannot determine sfile version on file: " + filename);
+                        if (caller.equals(CallerType.STANDALONE)) {
+                            System.out.println("cannot determine sfile version on file: " + filename);
+                        }
                     }
                 } else if (line.charAt(79) == 'E') {
                     lEs.put(rowNumberSfile, line);
@@ -174,11 +181,16 @@ public class SfileLineReader {
             checkMissingDataInstance();
 
         } catch (Exception e) {
-            e.printStackTrace();;
+            if (caller.equals(CallerType.STANDALONE)) {
+                System.out.println("Cannot parse sfile: " + filename);
+            } else {
+                throw new FileReaderException("Cannot parse sfile");
+            }
+
         }
 
         // Parse if last line was not an empty line
-        if (this.l1s.size() > 0) {
+        if (!this.l1s.isEmpty()) {
             parse(filename);
         }
 

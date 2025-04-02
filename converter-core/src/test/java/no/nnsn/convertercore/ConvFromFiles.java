@@ -61,6 +61,8 @@ public class ConvFromFiles {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         assert true;
@@ -103,6 +105,8 @@ public class ConvFromFiles {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         assert true;
@@ -131,6 +135,8 @@ public class ConvFromFiles {
             System.out.println("Number of errors: " + events.getErrors().size());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         assert true;
     }
@@ -161,6 +167,8 @@ public class ConvFromFiles {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         assert true;
     }
