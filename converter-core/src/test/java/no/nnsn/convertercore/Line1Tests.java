@@ -66,7 +66,7 @@ public class Line1Tests {
     }
 
     @Test
-    public void checkPreferredOriginAsFirstLine1() {
+    public void checkPreferredOriginAsFirstLine1() throws Exception {
         String line1Text = " 2002  217 1304 60.0 D  35.545  48.362 33.0F BER 12 0.5 4.7sBER 5.7bBER 5.6BPDE1";
         String line2Text = " 2002  217 1304 60.0 D  35.545  48.362 33.0F BER                                ";
 

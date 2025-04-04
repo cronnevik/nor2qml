@@ -85,7 +85,7 @@ public class QueryController {
             @DefaultValue("xml") @QueryParam("format") FormatType format,
             @DefaultValue("204") @QueryParam("nodata") Integer nodataCode,
             @Context UriInfo uriInfo
-            ) {
+            ) throws Exception {
 
 
         Catalog catalog = getCatalog(catalogParam);
@@ -216,7 +216,7 @@ public class QueryController {
         return types;
     }
 
-    private EventOverview getEventsFromSfile(SfileInformation sfileInformation, String eventid) {
+    private EventOverview getEventsFromSfile(SfileInformation sfileInformation, String eventid) throws Exception {
         byte[] sfile = sfileInformation.getFile();
         InputStream input = new ByteArrayInputStream(sfile);
 
@@ -233,7 +233,7 @@ public class QueryController {
         return nordicToQml.convertToQuakeml(sfiles, options);
     }
 
-    private List<Event> getEventsFromMultipleSfiles(List<String> sfileIDs) {
+    private List<Event> getEventsFromMultipleSfiles(List<String> sfileIDs) throws Exception {
         List<SfileInformation> sfileInformations = sfileService.getSfiles(sfileIDs);
         List<Event> events = new ArrayList<>();
         for (SfileInformation sf: sfileInformations) {

@@ -2,6 +2,7 @@ package no.nnsn.convertercore;
 
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
+import no.nnsn.convertercore.exeption.FileReaderException;
 import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.helpers.collections.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
@@ -41,18 +42,20 @@ public class NordicToQmlImpl implements NordicToQml {
     }
 
     @Override
-    public List<Sfile> readSfile(InputStream is, String filename, CallerType caller) {
+    public List<Sfile> readSfile(InputStream is, String filename, CallerType caller) throws FileReaderException {
         SfileLineReader reader = new SfileLineReader();
         return reader.readAndParse(is, filename, caller);
     }
 
     @Override
-    public EventOverview convertToQuakeml(List<Sfile> sFiles, ConverterOptions options) {
+    public EventOverview convertToQuakeml(List<Sfile> sFiles, ConverterOptions options) throws Exception {
 
         int eventCount = 0;
         List<Event> events = new ArrayList<>();
         List<IgnoredLineError> errors = new ArrayList<>();
         List<Sfile> ignoredSfiles = new ArrayList<>();
+
+        boolean isStandaloneApplication = options.getCaller().equals(CallerType.STANDALONE);
 
         sFileLoop:
         for (Sfile sfile: sFiles) {
@@ -62,7 +65,7 @@ public class NordicToQmlImpl implements NordicToQml {
             Event ev = new Event();
             SfileData data = sfile.getData();
 
-            if (options.getCaller().equals(CallerType.STANDALONE)) {
+            if (isStandaloneApplication) {
                 printFirstLine1ForStandaloneConverter(data.getLine1s().get(0));
             }
 
@@ -93,7 +96,11 @@ public class NordicToQmlImpl implements NordicToQml {
                 lm2s = data.getLineM2s();
                 lSs = data.getLineSs();
             } catch (Exception e) {
-                System.out.println("error in getting data lines from sfile");
+                if (isStandaloneApplication) {
+                    System.out.println("error in getting data lines from sfile");
+                } else {
+                    throw new Exception("error in getting data lines from sfile");
+                }
             }
 
             Line1QuakemlEntities line1Entities = null;
@@ -141,7 +148,7 @@ public class NordicToQmlImpl implements NordicToQml {
                 if (line3Entities != null) descriptions = line3Entities.getDescriptionList();
             } catch (Exception e) {
                 System.out.println("Error in attaching line entities");
-                e.printStackTrace();
+                // e.printStackTrace();
             }
 
             // Concatenate MomentTensor origins and magnitudes
@@ -154,7 +161,7 @@ public class NordicToQmlImpl implements NordicToQml {
                 }
             } catch (Exception e) {
                 System.out.println("Problem in concatenating MomentTensor orgins and magnitudes");
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
             // Concatenate Comments from multiple lines

@@ -12,8 +12,8 @@ import java.io.InputStream;
 import java.util.List;
 
 public interface NordicToQml {
-    public List<Sfile> readSfile(InputStream is, String filename, CallerType caller);
+    public List<Sfile> readSfile(InputStream is, String filename, CallerType caller) throws Exception;
     public EventOverview convertToQuakeml(
             List<Sfile> sFiles, ConverterOptions options
-    );
+    ) throws Exception;
 }

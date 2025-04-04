@@ -72,7 +72,6 @@ public class Converter {
                     System.out.println("file created at path: " + path);
                 } catch (IOException e) {
                     System.out.println("Something went wrong in creating the file:");
-                    e.getMessage();
                 }
             } else {
                 System.out.println("## Invalid output path. Please try another output. ##");
@@ -134,7 +133,11 @@ public class Converter {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            sFileEvents.addAll(nordicToQml.readSfile(stream, p.toString(), CallerType.STANDALONE));
+            try {
+                sFileEvents.addAll(nordicToQml.readSfile(stream, p.toString(), CallerType.STANDALONE));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
 
         EventOverview eventOverview = null;
