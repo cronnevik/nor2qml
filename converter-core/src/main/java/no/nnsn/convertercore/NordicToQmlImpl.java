@@ -1,5 +1,8 @@
 package no.nnsn.convertercore;
 
+import no.nnsn.convertercore.converters.Line1Converter;
+import no.nnsn.convertercore.converters.Line3Converter;
+import no.nnsn.convertercore.converters.LineFConverter;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.exeption.FileReaderException;
@@ -12,7 +15,6 @@ import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.*;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
@@ -58,7 +60,7 @@ public class NordicToQmlImpl implements NordicToQml {
         boolean isStandaloneApplication = options.getCaller().equals(CallerType.STANDALONE);
 
         sFileLoop:
-        for (Sfile sfile: sFiles) {
+        for (Sfile sfile : sFiles) {
             eventCount++;
             SfileInfo sfileInfo = new SfileInfo(eventCount, sfile.getFilename(), options.getErrorHandling());
 
@@ -105,13 +107,13 @@ public class NordicToQmlImpl implements NordicToQml {
 
             Line1QuakemlEntities line1Entities = null;
             try {
-                line1Entities = convertLine1(l1s, les, sfileInfo);
+                line1Entities = new Line1Converter(l1s, les, sfileInfo).convert(mapper);
                 if (line1Entities.hasErrorInFirstLine1()) {
                     line1Entities.getErrors().forEach(er -> {
                         System.out.println(
-                            "File skipped due to error in first Line 1: "
-                            + er.getFilename()
-                            + ", Error message: " + er.getMessage()
+                                "File skipped due to error in first Line 1: "
+                                        + er.getFilename()
+                                        + ", Error message: " + er.getMessage()
                         );
                     });
                     continue sFileLoop; // skip event
@@ -121,8 +123,8 @@ public class NordicToQmlImpl implements NordicToQml {
             }
 
 
-            LineFQuakemlEntities lineFEntities = convertLineF(l1s, lfs, lm2s, sfileInfo);
-            Line3QuakemlEntities line3Entities = convertLine3(l3s, sfileInfo);
+            LineFQuakemlEntities lineFEntities = new LineFConverter(l1s, lfs, lm2s, sfileInfo).convert(mapper);
+            Line3QuakemlEntities line3Entities = new Line3Converter(l3s, sfileInfo).convert(mapper);
             Line4QuakemlEntities line4Entities = convertLine4(l1s, l4s, sfileInfo);
             Line5QuakemlEntities line5Entities = convertLine5(l5s, sfileInfo);
             Line6QuakemlEntities line6Entities = convertLine6(l6s, sfileInfo);
@@ -204,10 +206,10 @@ public class NordicToQmlImpl implements NordicToQml {
             }
 
             // Set preferred IDs
-            if (line1Entities != null && line1Entities.getPreferredMagnitudeID() != null) {
+            if (line1Entities.getPreferredMagnitudeID() != null) {
                 ev.setPreferredMagnitudeID(line1Entities.getPreferredMagnitudeID());
             }
-            if (lineFEntities != null && lineFEntities.getPreferredFocalMechanismID() != null) {
+            if (lineFEntities.getPreferredFocalMechanismID() != null) {
                 ev.setPreferredFocalMechanismID(lineFEntities.getPreferredFocalMechanismID());
             }
 
@@ -230,218 +232,6 @@ public class NordicToQmlImpl implements NordicToQml {
         System.out.println("*** Event:" + firstLine1.getLineText());
     }
 
-    private Line1QuakemlEntities convertLine1(List<Line1> l1s, List<LineE> les, SfileInfo sfileInfo) {
-        String preferredOriginID = null;
-        String preferredMagnitudeID = null;
-        List<Origin> origins = new ArrayList<>();
-        List<Magnitude> magnitudes = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (l1s != null) {
-            line1Loop:
-            for (int i = 0; i < l1s.size() ; i++) {
-                Line1 line1 = l1s.get(i);
-
-                // Map Origin entity
-                Origin org = null;
-                try {
-                    Object orgObj = mapper.mapOrigin(line1, les, sfileInfo.getErrorHandling());
-                    if (orgObj instanceof Origin) {
-                        org = (Origin) orgObj;
-                        origins.add(org);
-                        line1.setOrgID(org.getPublicID());
-                        // Set preferred origin to the first line (type 1)
-                        if (i == 0) {
-                            preferredOriginID = org.getPublicID();
-                        }
-                    } else if (orgObj instanceof IgnoredLineError) {
-                        IgnoredLineError error = (IgnoredLineError) orgObj;
-                        error.setEventNumber(sfileInfo.getEventCount());
-                        error.setFilename(sfileInfo.getFilename());
-                        if (i == 0) { // Only remove Event if it is the first Line1
-                            error.setEventRemoved(true); // Removing Event
-                            errors.add(error);
-                            return new Line1QuakemlEntities(true, errors);
-                        } else {
-                            errors.add(error);
-                            continue line1Loop;
-                        }
-                    }
-                } catch (Exception ex) {
-                    throw new CustomException(
-                            "Error in mapping to Origin entity. "
-                                    + "Time: " + line1.getYear() + "-" + line1.getMonth() + "-" + line1.getDay()
-                                    + "_" + line1.getHour() + ":" + line1.getMinutes() + ":" + line1.getSeconds() + "-"
-                                    + ex.getMessage()
-                    );
-                }
-
-                // Map Magnitude entity
-                List<Object> magObjs = mapper.mapLine1Magnitudes(line1, org);
-                magObjs.forEach(o -> {
-                    if (o instanceof Magnitude) {
-                        Magnitude m = (Magnitude) o;
-                        magnitudes.add(m);
-                    } else if (o instanceof IgnoredLineError) {
-                        IgnoredLineError e = (IgnoredLineError) o;
-                        e.setFilename(sfileInfo.getFilename());
-                        errors.add(e);
-                    }
-                });
-            }
-
-            // Determine Preferred Magnitude ID
-            if (magnitudes != null && magnitudes.size() > 0) {
-                // First should be preferred
-                Magnitude firstMagnitude = magnitudes.get(0);
-                preferredMagnitudeID = firstMagnitude.getPublicID();
-            }
-
-            return new Line1QuakemlEntities(preferredOriginID, preferredMagnitudeID, origins, magnitudes, errors, false);
-        }
-        return new Line1QuakemlEntities();
-    }
-
-    private LineFQuakemlEntities convertLineF(List<Line1> l1s, List<LineF> lfs, List<LineM2> lm2s, SfileInfo sfileInfo) {
-        String preferredFocalMechanismID = null;
-        List<FocalMechanism> focalMechanisms = new ArrayList<>();
-        List<Origin> lm1Origins = new ArrayList<>();
-        List<Magnitude> lm1Magnitudes = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (l1s != null && lfs != null) {
-            line1Loop:
-            for (int i = 0; i < l1s.size() ; i++) {
-                Line1 line1 = l1s.get(i);
-
-                // Map FocalMechanism
-                if (lfs != null) {
-                    LineFLoop:
-                    for (LineF lineF: lfs) {
-                        Line1 l1Comparable = lineF.getRelatedLine1();
-                        if (l1Comparable != null) {
-                            // Check if FocalMechanism is related to current line1
-                            if (line1.equals(l1Comparable)) {
-                                FocalMechanism focalMechanism;
-                                Object fObj = mapper.mapLine1FocalMechanisms(lineF);
-                                if (fObj instanceof FocalMechanism) {
-                                    focalMechanism = (FocalMechanism) fObj;
-                                    // Check if the focalmechanism has a related moment tensor
-                                    if (lm2s != null && lm2s.size() > 0) {
-                                        LineM2 lineM2 = null;
-
-                                        LineM2Loop:
-                                        for (LineM2 m2: lm2s) {
-                                            LineF lFComparable = m2.getRelatedLineF();
-                                            if (lFComparable != null && lineF.equals(lFComparable)) {
-                                                // MomentTensor
-                                                MomentTensor momentTensor;
-                                                Object mtObj = mapper.mapMomentTensor(m2, line1);
-                                                if (mtObj instanceof MomentTensor) {
-                                                    momentTensor = (MomentTensor) mtObj;
-                                                    LineM1 relatedM1 = m2.getRelatedLineM1();
-                                                    if (relatedM1 != null) {
-                                                        // MomentTensor Origin
-                                                        Origin originM1;
-                                                        Object oM1Obj = mapper.mapMomentTensorOrigin(relatedM1);
-                                                        if (oM1Obj instanceof Origin) {
-                                                            originM1 = (Origin) oM1Obj;
-                                                            momentTensor.setDerivedOriginID(originM1.getPublicID());
-                                                            lm1Origins.add(originM1);
-
-                                                            // MomentTensor Magnitude
-                                                            Magnitude magM1;
-                                                            Object mM1Obj = mapper.mapMomentTensorMagnitude(relatedM1);
-                                                            if (mM1Obj instanceof Magnitude) {
-                                                                magM1 = (Magnitude) mM1Obj;
-                                                                magM1.setOriginID(originM1.getPublicID());
-                                                                lm1Magnitudes.add(magM1);
-                                                            } else if (mM1Obj instanceof IgnoredLineError) {
-                                                                IgnoredLineError e = (IgnoredLineError) oM1Obj;
-                                                                e.setFilename(sfileInfo.getFilename());
-                                                                errors.add(e);
-                                                            }
-                                                        } else if (oM1Obj instanceof IgnoredLineError) {
-                                                            IgnoredLineError e = (IgnoredLineError) oM1Obj;
-                                                            e.setFilename(sfileInfo.getFilename());
-                                                            errors.add(e);
-                                                        }
-                                                    }
-                                                    focalMechanism.setMomentTensor(momentTensor);
-                                                } else if (mtObj instanceof IgnoredLineError) {
-                                                    IgnoredLineError e = (IgnoredLineError) mtObj;
-                                                    e.setFilename(sfileInfo.getFilename());
-                                                    errors.add(e);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    focalMechanisms.add(focalMechanism);
-                                } else if (fObj instanceof IgnoredLineError) {
-                                    IgnoredLineError e = (IgnoredLineError) fObj;
-                                    e.setFilename(sfileInfo.getFilename());
-                                    errors.add(e);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // Determine Preferred FocalMechanism ID
-            if (focalMechanisms != null && focalMechanisms.size() > 0) {
-                // First one listed should be the preferred
-                FocalMechanism firstFocalMechListed = focalMechanisms.get(0);
-                preferredFocalMechanismID = firstFocalMechListed.getPublicID();
-            }
-
-            return new LineFQuakemlEntities(preferredFocalMechanismID, lm1Origins,focalMechanisms, lm1Magnitudes, errors);
-        }
-        return new LineFQuakemlEntities();
-    }
-
-    private Line3QuakemlEntities convertLine3(List<Line3> l3s, SfileInfo sfileInfo) {
-        if (l3s != null) {
-            List<EventDescription> descriptions = new ArrayList<>();
-            List<Comment> comments = new ArrayList<>();
-            List<IgnoredLineError> errors = new ArrayList<>();
-
-            // loop through each line 3s for multiple mappings
-            line3Loop:
-            for (Line3 line3: l3s) {
-                // Check if locality exists in line 3
-                String localityID = "LOCALITY:";
-                if (line3.getCommentText() != null) {
-                    Boolean containsLocality = line3.getCommentText().contains(localityID);
-                    if (containsLocality) {
-                        String commentLine = line3.getCommentText();
-                        int startOfText = commentLine.indexOf(":");
-                        String locName = commentLine.substring(startOfText +1).trim();
-
-                        if (!locName.isEmpty()) {
-                            descriptions.add(new EventDescription(
-                                    locName,
-                                    EventDescriptionType.REGION_NAME
-                            ));
-
-                            continue line3Loop;
-                        }
-                    }
-                }
-
-                // Each line3 as comment object in QuakeML
-                try {
-                    comments.add(mapper.mapL3Comment(line3));
-                } catch (Exception ex) {
-                    errors.add(generateError(line3, ex, sfileInfo));
-                    continue line3Loop;
-                }
-            }
-
-            return new Line3QuakemlEntities(descriptions, comments, errors);
-        }
-        return new Line3QuakemlEntities();
-    }
-
     private Line4QuakemlEntities convertLine4(List<Line1> l1s, List<Line> l4s, SfileInfo sfileInfo) {
         List<Arrival> arrivals = new ArrayList<>();
         List<Amplitude> amplitudes = new ArrayList<>();
@@ -450,7 +240,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
         if (l4s != null) {
             line4Loop:
-            for (Line line: l4s) {
+            for (Line line : l4s) {
                 // Map Pick Entity and link its ID to Arrival and Amplitude entities
                 Pick pick = null;
                 Object pObj = null;
@@ -485,7 +275,7 @@ public class NordicToQmlImpl implements NordicToQml {
                 if (arrObj instanceof Arrival) {
                     arrival = (Arrival) arrObj;
                     arrivals.add(arrival);
-                }  else if (arrObj instanceof IgnoredLineError) {
+                } else if (arrObj instanceof IgnoredLineError) {
                     IgnoredLineError e = (IgnoredLineError) arrObj;
                     errors.add(modifyError(e, sfileInfo));
                 }
@@ -512,7 +302,7 @@ public class NordicToQmlImpl implements NordicToQml {
                     if (ampObj instanceof Amplitude) {
                         amplitude = (Amplitude) ampObj;
                         amplitudes.add(amplitude);
-                    }  else if (ampObj instanceof IgnoredLineError) {
+                    } else if (ampObj instanceof IgnoredLineError) {
                         IgnoredLineError e = (IgnoredLineError) ampObj;
                         errors.add(modifyError(e, sfileInfo));
                     }
@@ -531,7 +321,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
         if (l5s != null) {
             line5Loop:
-            for (Line5 line5: l5s) {
+            for (Line5 line5 : l5s) {
                 try {
                     comments.add(mapper.mapL5Comment(line5));
                 } catch (Exception ex) {
@@ -550,7 +340,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
         if (l6s != null) {
             line6Loop:
-            for (Line6 line6: l6s) {
+            for (Line6 line6 : l6s) {
                 try {
                     comments.add(mapper.mapL6Comment(line6));
                 } catch (Exception ex) {
@@ -569,7 +359,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
         if (lis != null) {
             lineILoop:
-            for (LineI lineI: lis) {
+            for (LineI lineI : lis) {
                 try {
                     comments.add(mapper.mapLIComment(lineI));
                 } catch (Exception ex) {
@@ -588,7 +378,7 @@ public class NordicToQmlImpl implements NordicToQml {
 
         if (lSs != null) {
             lineSLoop:
-            for (LineS lineS: lSs) {
+            for (LineS lineS : lSs) {
                 try {
                     comments.add(mapper.mapLSComment(lineS));
                 } catch (Exception ex) {
@@ -699,7 +489,7 @@ public class NordicToQmlImpl implements NordicToQml {
     }
 
     private String produceEventID(Origin origin, ConverterOptions options) {
-        DecimalFormat df =  (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         df.applyPattern("00");
 
         String sYear = "";
@@ -743,7 +533,7 @@ public class NordicToQmlImpl implements NordicToQml {
             String prefix = split[1];
             eventID = prefix.substring(1) + "_" + suffix;
         } else {
-            eventID= IdGenerator.getInstance().genRandomEventID(
+            eventID = IdGenerator.getInstance().genRandomEventID(
                     sYear, sMonth, sDay, sHour, sMinutes
             );
         }

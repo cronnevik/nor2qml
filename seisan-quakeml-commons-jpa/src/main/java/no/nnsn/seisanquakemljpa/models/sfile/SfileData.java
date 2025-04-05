@@ -2,6 +2,7 @@ package no.nnsn.seisanquakemljpa.models.sfile;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.Getter;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.SfileDataImpl;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
 import no.nnsn.seisanquakemljpa.models.sfile.v2.SfileDataDtoImpl;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Getter
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -36,9 +38,6 @@ public abstract class SfileData {
     public abstract void addLine4(Object o);
     public abstract void clearLine4Lists();
 
-    public List getLine1s() {
-        return this.line1s;
-    }
     public void addLine1(Object o) {
         if (o instanceof Line1) {
             Line1 l1 = (Line1) o;
@@ -49,9 +48,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLine2s() {
-        return this.line2s;
-    }
     public void addLine2(Object o) {
         if (o instanceof Line2) {
             Line2 l2 = (Line2) o;
@@ -63,9 +59,6 @@ public abstract class SfileData {
     }
 
 
-    public List getLine3s() {
-        return this.line3s;
-    }
     public void addLine3(Object o) {
         if (o instanceof Line3) {
             Line3 l3 = (Line3) o;
@@ -76,9 +69,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLine5s() {
-        return this.line5s;
-    }
     public void addLine5(Object o) {
         if (o instanceof Line5) {
             Line5 l5 = (Line5) o;
@@ -89,9 +79,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLine6s() {
-        return this.line6s;
-    }
     public void addLine6(Object o) {
         if (o instanceof Line6) {
             Line6 l6 = (Line6) o;
@@ -102,9 +89,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineEs() {
-        return this.lineEs;
-    }
     public void addLineE(Object o) {
         if (o instanceof LineE) {
             LineE lE = (LineE) o;
@@ -115,9 +99,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineFs() {
-        return this.lineFs;
-    }
     public void addLineF(Object o) {
         if (o instanceof LineF) {
             LineF lF = (LineF) o;
@@ -128,9 +109,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineHs() {
-        return this.lineHs;
-    }
     public void addLineH(Object o) {
         if (o instanceof LineH) {
             LineH lH = (LineH) o;
@@ -141,9 +119,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineIs() {
-        return this.lineIs;
-    }
     public void addLineI(Object o) {
         if (o instanceof LineI) {
             LineI lI = (LineI) o;
@@ -154,9 +129,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineM1s() {
-        return this.lineM1s;
-    }
     public void addLineM1(Object o) {
         if (o instanceof LineM1) {
             LineM1 lM1 = (LineM1) o;
@@ -167,9 +139,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineM2s() {
-        return this.lineM2s;
-    }
     public void addLineM2(Object o) {
         if (o instanceof LineM2) {
             LineM2 lM2 = (LineM2) o;
@@ -180,9 +149,6 @@ public abstract class SfileData {
         }
     }
 
-    public List getLineSs() {
-        return this.lineSs;
-    }
     public void addLineS(Object o) {
         if (o instanceof LineS) {
             LineS lS = (LineS) o;
@@ -193,9 +159,6 @@ public abstract class SfileData {
         }
     }
 
-    public List<String> getUnmapped() {
-        return this.unmapped;
-    }
     public void addUnmapped(String line) {
         if (this.unmapped == null) {
             this.unmapped = new ArrayList<>();
