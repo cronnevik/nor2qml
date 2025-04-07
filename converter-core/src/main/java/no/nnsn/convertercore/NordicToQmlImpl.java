@@ -1,16 +1,11 @@
 package no.nnsn.convertercore;
 
-import no.nnsn.convertercore.converters.Line1Converter;
-import no.nnsn.convertercore.converters.Line3Converter;
-import no.nnsn.convertercore.converters.LineFConverter;
-import no.nnsn.convertercore.errors.CustomException;
+import no.nnsn.convertercore.converters.*;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.exeption.FileReaderException;
 import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.helpers.collections.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
-import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.ParameterOneType;
-import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.PhaseParameters;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.*;
@@ -20,7 +15,6 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Crea
 import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
 import no.nnsn.seisanquakemljpa.models.sfile.SfileData;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
-import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,11 +119,11 @@ public class NordicToQmlImpl implements NordicToQml {
 
             LineFQuakemlEntities lineFEntities = new LineFConverter(l1s, lfs, lm2s, sfileInfo).convert(mapper);
             Line3QuakemlEntities line3Entities = new Line3Converter(l3s, sfileInfo).convert(mapper);
-            Line4QuakemlEntities line4Entities = convertLine4(l1s, l4s, sfileInfo);
-            Line5QuakemlEntities line5Entities = convertLine5(l5s, sfileInfo);
-            Line6QuakemlEntities line6Entities = convertLine6(l6s, sfileInfo);
-            LineIQuakemlEntities lineIEntities = convertLineI(lis, sfileInfo);
-            LineSQuakemlEntities lineSEntities = convertLineS(lSs, sfileInfo);
+            Line4QuakemlEntities line4Entities = new Line4Converter(l1s, l4s, sfileInfo).convert(mapper);
+            Line5QuakemlEntities line5Entities = new Line5Converter(l5s, sfileInfo).convert(mapper);
+            Line6QuakemlEntities line6Entities = new Line6Converter(l6s, sfileInfo).convert(mapper);
+            LineIQuakemlEntities lineIEntities = new LineIConverter(lis, sfileInfo).convert(mapper);
+            LineSQuakemlEntities lineSEntities = new LineSConverter(lSs, sfileInfo).convert(mapper);
 
             // Event object's properties to be added
             List<Arrival> arrivals = null;
@@ -232,184 +226,6 @@ public class NordicToQmlImpl implements NordicToQml {
         System.out.println("*** Event:" + firstLine1.getLineText());
     }
 
-    private Line4QuakemlEntities convertLine4(List<Line1> l1s, List<Line> l4s, SfileInfo sfileInfo) {
-        List<Arrival> arrivals = new ArrayList<>();
-        List<Amplitude> amplitudes = new ArrayList<>();
-        List<Pick> picks = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (l4s != null) {
-            line4Loop:
-            for (Line line : l4s) {
-                // Map Pick Entity and link its ID to Arrival and Amplitude entities
-                Pick pick = null;
-                Object pObj = null;
-                if (line instanceof Line4) {
-                    Line4 l4 = (Line4) line;
-                    pObj = mapper.mapPick(l4, null, l1s);
-                } else if (line instanceof Line4Dto) {
-                    Line4Dto l4 = (Line4Dto) line;
-                    pObj = mapper.mapPick(null, l4, l1s);
-                }
-
-                if (pObj instanceof Pick) {
-                    pick = (Pick) pObj;
-                    picks.add(pick);
-                } else if (pObj instanceof IgnoredLineError) {
-                    IgnoredLineError e = (IgnoredLineError) pObj;
-                    errors.add(modifyError(e, sfileInfo));
-                    continue line4Loop; // Pick is required fo the Arrival and Amplitude obj
-                }
-
-                // Map Arrival Entity
-                Arrival arrival;
-                Object arrObj = null;
-                if (line instanceof Line4) {
-                    Line4 l4 = (Line4) line;
-                    arrObj = mapper.mapArrival(l4, null, pick, l1s);
-                } else if (line instanceof Line4Dto) {
-                    Line4Dto l4 = (Line4Dto) line;
-                    arrObj = mapper.mapArrival(null, l4, pick, l1s);
-                }
-
-                if (arrObj instanceof Arrival) {
-                    arrival = (Arrival) arrObj;
-                    arrivals.add(arrival);
-                } else if (arrObj instanceof IgnoredLineError) {
-                    IgnoredLineError e = (IgnoredLineError) arrObj;
-                    errors.add(modifyError(e, sfileInfo));
-                }
-
-                Amplitude amplitude;
-                Object ampObj = null;
-                // Map Amplitude Entity - Only map if amplitude value exists
-                if (line instanceof Line4) {
-                    Line4 l4 = (Line4) line;
-                    if (l4.getAmplitude() != null) {
-                        ampObj = mapper.mapAmplitude(l4, null, pick, l1s);
-                    }
-                } else if (line instanceof Line4Dto) {
-                    Line4Dto l4 = (Line4Dto) line;
-                    String parameterOne = l4.getParameterOne();
-                    String phaseID = l4.getPhaseID();
-                    ParameterOneType parameterOneType = PhaseParameters.identifyParameterOneType(parameterOne, phaseID);
-                    if (parameterOneType == ParameterOneType.AMPLITUDE) {
-                        ampObj = mapper.mapAmplitude(null, l4, pick, l1s);
-                    }
-                }
-
-                if (ampObj != null) {
-                    if (ampObj instanceof Amplitude) {
-                        amplitude = (Amplitude) ampObj;
-                        amplitudes.add(amplitude);
-                    } else if (ampObj instanceof IgnoredLineError) {
-                        IgnoredLineError e = (IgnoredLineError) ampObj;
-                        errors.add(modifyError(e, sfileInfo));
-                    }
-                }
-            }
-
-            return new Line4QuakemlEntities(picks, amplitudes, arrivals, errors);
-        }
-
-        return new Line4QuakemlEntities();
-    }
-
-    private Line5QuakemlEntities convertLine5(List<Line5> l5s, SfileInfo sfileInfo) {
-        List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (l5s != null) {
-            line5Loop:
-            for (Line5 line5 : l5s) {
-                try {
-                    comments.add(mapper.mapL5Comment(line5));
-                } catch (Exception ex) {
-                    errors.add(generateError(line5, ex, sfileInfo));
-                    continue line5Loop;
-                }
-            }
-            return new Line5QuakemlEntities(comments, errors);
-        }
-        return new Line5QuakemlEntities();
-    }
-
-    private Line6QuakemlEntities convertLine6(List<Line6> l6s, SfileInfo sfileInfo) {
-        List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (l6s != null) {
-            line6Loop:
-            for (Line6 line6 : l6s) {
-                try {
-                    comments.add(mapper.mapL6Comment(line6));
-                } catch (Exception ex) {
-                    errors.add(generateError(line6, ex, sfileInfo));
-                    continue line6Loop;
-                }
-            }
-            return new Line6QuakemlEntities(comments, errors);
-        }
-        return new Line6QuakemlEntities();
-    }
-
-    private LineIQuakemlEntities convertLineI(List<LineI> lis, SfileInfo sfileInfo) {
-        List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (lis != null) {
-            lineILoop:
-            for (LineI lineI : lis) {
-                try {
-                    comments.add(mapper.mapLIComment(lineI));
-                } catch (Exception ex) {
-                    errors.add(generateError(lineI, ex, sfileInfo));
-                    continue lineILoop;
-                }
-            }
-            return new LineIQuakemlEntities(comments, errors);
-        }
-        return new LineIQuakemlEntities();
-    }
-
-    private LineSQuakemlEntities convertLineS(List<LineS> lSs, SfileInfo sfileInfo) {
-        List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
-
-        if (lSs != null) {
-            lineSLoop:
-            for (LineS lineS : lSs) {
-                try {
-                    comments.add(mapper.mapLSComment(lineS));
-                } catch (Exception ex) {
-                    errors.add(generateError(lineS, ex, sfileInfo));
-                    continue lineSLoop;
-                }
-            }
-            return new LineSQuakemlEntities(comments, errors);
-        }
-        return new LineSQuakemlEntities();
-    }
-
-    private IgnoredLineError generateError(Line line, Exception ex, SfileInfo sfileInfo) {
-        if (sfileInfo.getErrorHandling().equals("ignore")) {
-            IgnoredLineError e = new IgnoredLineError(sfileInfo.getEventCount(), ex.getMessage());
-            e.setLine(line);
-            e.setFilename(sfileInfo.getFilename());
-            return e;
-        } else {
-            throw new CustomException(
-                    "Error found in s-file number: " + sfileInfo.getEventCount() + ". "
-                            + ex.getMessage()
-            );
-        }
-    }
-
-    private IgnoredLineError modifyError(IgnoredLineError e, SfileInfo sfileInfo) {
-        e.setFilename(sfileInfo.getFilename());
-        e.setEventNumber(sfileInfo.getEventCount());
-        return e;
-    }
 
     private void concatenateCommentsFromLineEntities(List<Comment> entitiesComments, List<Comment> comments) {
         try {
