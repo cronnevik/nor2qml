@@ -53,7 +53,6 @@ public class NordicToQmlImpl implements NordicToQml {
 
         boolean isStandaloneApplication = options.getCaller().equals(CallerType.STANDALONE);
 
-        sFileLoop:
         for (Sfile sfile : sFiles) {
             eventCount++;
             SfileInfo sfileInfo = new SfileInfo(eventCount, sfile.getFilename(), options.getErrorHandling());
@@ -110,7 +109,7 @@ public class NordicToQmlImpl implements NordicToQml {
                                         + ", Error message: " + er.getMessage()
                         );
                     });
-                    continue sFileLoop; // skip event
+                    continue; // skip event
                 }
             } catch (Exception e) {
                 System.out.println("Error in converting line 1");
@@ -150,10 +149,14 @@ public class NordicToQmlImpl implements NordicToQml {
             // Concatenate MomentTensor origins and magnitudes
             try {
                 if (lineFEntities != null && !CollectionUtils.isEmpty(lineFEntities.getLm1Origins())) {
-                    origins.addAll(lineFEntities.getLm1Origins());
+                    if (origins != null) {
+                        origins.addAll(lineFEntities.getLm1Origins());
+                    }
                 }
                 if (lineFEntities != null && !CollectionUtils.isEmpty(lineFEntities.getLm1Magnitudes())) {
-                    magnitudes.addAll(lineFEntities.getLm1Magnitudes());
+                    if (magnitudes != null) {
+                        magnitudes.addAll(lineFEntities.getLm1Magnitudes());
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("Problem in concatenating MomentTensor orgins and magnitudes");
@@ -196,7 +199,7 @@ public class NordicToQmlImpl implements NordicToQml {
             if (!hasSetEventPropertiesFromOrigin) {
                 // missing creation of event id --> invalid event and thus skipped
                 ignoredSfiles.add(sfile);
-                continue sFileLoop;
+                continue;
             }
 
             // Set preferred IDs
