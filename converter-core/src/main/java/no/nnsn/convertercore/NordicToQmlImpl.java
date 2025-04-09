@@ -1,8 +1,11 @@
 package no.nnsn.convertercore;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nnsn.convertercore.converters.*;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.exeption.FileReaderException;
+import no.nnsn.convertercore.exeption.LineConverterException;
+import no.nnsn.convertercore.exeption.LineFetcherException;
 import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.helpers.collections.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @Service
 public class NordicToQmlImpl implements NordicToQml {
 
@@ -52,6 +56,7 @@ public class NordicToQmlImpl implements NordicToQml {
         List<Sfile> ignoredSfiles = new ArrayList<>();
 
         boolean isStandaloneApplication = options.getCaller().equals(CallerType.STANDALONE);
+        boolean isIngestorApplication = options.getCaller().equals(CallerType.INGESTOR);
 
         for (Sfile sfile : sFiles) {
             eventCount++;
@@ -93,8 +98,10 @@ public class NordicToQmlImpl implements NordicToQml {
             } catch (Exception e) {
                 if (isStandaloneApplication) {
                     System.out.println("error in getting data lines from sfile");
+                } else if (isIngestorApplication){
+                    log.error("error in getting data lines from sfile");
                 } else {
-                    throw new Exception("error in getting data lines from sfile");
+                    throw new LineFetcherException("error in getting data lines from sfile");
                 }
             }
 
@@ -102,17 +109,28 @@ public class NordicToQmlImpl implements NordicToQml {
             try {
                 line1Entities = new Line1Converter(l1s, les, sfileInfo).convert(mapper);
                 if (line1Entities.hasErrorInFirstLine1()) {
+                    log.warn("Sfile {} skipped due to error in first Line 1", sfile.getFilename());
                     line1Entities.getErrors().forEach(er -> {
-                        System.out.println(
-                                "File skipped due to error in first Line 1: "
-                                        + er.getFilename()
-                                        + ", Error message: " + er.getMessage()
-                        );
+                        if (isStandaloneApplication) {
+                            System.out.println(
+                                    "File skipped due to error in first Line 1: "
+                                            + er.getFilename()
+                                            + ", Error message: " + er.getMessage()
+                            );
+                        } else {
+                            log.error("Line 1 error: {}", er.getMessage());
+                        }
                     });
                     continue; // skip event
                 }
             } catch (Exception e) {
-                System.out.println("Error in converting line 1");
+                if (isStandaloneApplication) {
+                    System.out.println("Error in converting line 1");
+                } else if (isIngestorApplication) {
+                    log.error("Error in converting line 1");
+                } else {
+                    throw new LineConverterException("Error in converting line 1");
+                }
             }
 
 
@@ -237,7 +255,6 @@ public class NordicToQmlImpl implements NordicToQml {
             }
         } catch (Exception e) {
             System.out.println("Problem in concatenating comments");
-            e.printStackTrace();
         }
     }
 
@@ -247,14 +264,13 @@ public class NordicToQmlImpl implements NordicToQml {
                 errors.addAll(entitiesErrors);
             }
         } catch (Exception e) {
-            System.out.println("Error in concatenating errors");
-            e.printStackTrace();
+            System.out.println("Could not concatenating errors");
         }
     }
 
     private Boolean setEventPropertiesFromOrigin(Event event, List<Origin> origins, ConverterOptions options) {
         try {
-            if (origins.size() > 0) {
+            if (!origins.isEmpty()) {
                 CreationInfo eventCreationInfo = new CreationInfo();
                 if (origins.get(0) != null) {
 
@@ -302,7 +318,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Could not set event properties from Origin entity: " + e.getMessage());
             return false;
         }
     }
@@ -371,7 +387,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
         }
 
-        if (lhs != null && lhs.size() > 0) {
+        if (lhs != null && !lhs.isEmpty()) {
             agency = "INT";
         } else {
             agency = author;
