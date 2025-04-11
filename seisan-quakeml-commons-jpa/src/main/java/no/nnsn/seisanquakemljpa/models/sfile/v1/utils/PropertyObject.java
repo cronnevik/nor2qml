@@ -78,5 +78,4 @@ public class PropertyObject {
     public void setValue(String value) {
         this.value = !StringUtils.isBlank(value) ? value : null;
     }
-
 }

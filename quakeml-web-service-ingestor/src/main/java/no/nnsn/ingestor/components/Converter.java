@@ -24,7 +24,7 @@ public class Converter {
         this.nordicToQml = nordicToQml;
     }
 
-    public EventOverview getQmlEventsFromNordic(InputStream stream, String path, ConverterProfile profile) {
+    public EventOverview getQmlEventsFromNordic(InputStream stream, String path, ConverterProfile profile) throws Exception {
         List<Sfile> sFileEvents = nordicToQml.readSfile(stream, path, CallerType.INGESTOR);
         EventOverview eventOverview = null;
 
@@ -39,7 +39,7 @@ public class Converter {
         }
 
         try {
-            ConverterOptions options = new ConverterOptions(null, CallerType.INGESTOR, profile, id);
+            ConverterOptions options = new ConverterOptions(null, CallerType.INGESTOR, profile, id, "earthquake", "suspected");
             eventOverview = nordicToQml.convertToQuakeml(sFileEvents, options);
             eventOverview.setFilename(path);
         } catch (Exception ex) {

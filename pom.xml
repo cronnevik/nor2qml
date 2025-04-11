@@ -27,7 +27,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
+		<org.projectlombok.version>1.18.38</org.projectlombok.version>
+		<org.mapstruct.version>1.6.3</org.mapstruct.version>
 	</properties>
+
+	<modules>
+		<module>seisan-quakeml-commons-jpa</module>
+		<module>converter-core</module>
+		<module>seisan-quakeml-commons-web</module>
+		<module>seisan-quakeml-commons-file</module>
+		<module>converter-standalone</module>
+		<module>quakeml-web-service-ingestor</module>
+		<module>quakeml-web-service</module>
+	</modules>
 
 	<profiles>
 		<profile>
@@ -150,6 +162,11 @@
 				<artifactId>seisan-quakeml-commons-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.mapstruct</groupId>
+				<artifactId>mapstruct</artifactId>
+				<version>${org.mapstruct.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	
@@ -157,8 +174,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.36</version>
-			<scope>provided</scope>
+			<version>${org.projectlombok.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -171,8 +187,24 @@
 		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${org.projectlombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
