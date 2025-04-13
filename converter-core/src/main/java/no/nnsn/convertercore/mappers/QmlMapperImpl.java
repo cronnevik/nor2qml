@@ -121,7 +121,6 @@ public class QmlMapperImpl implements QmlMapper {
             List<Line1> l1s,
             Origin org
     ) {
-        List<FocalMechanism> focalMechanisms = new ArrayList<>();
 
         // Intaros Spesific
         List<LineF> usedLineFs = new ArrayList<>();
@@ -139,7 +138,7 @@ public class QmlMapperImpl implements QmlMapper {
             nextL1BiggerOrNull = true;
         }
         if (nextFocRowNum > currLine1RowNum && nextL1BiggerOrNull) {
-            int limit = lfs.size() >= 2 ? 2 : lfs.size();
+            int limit = Math.min(lfs.size(), 2);
 
             for (int j = 0; j < limit; j++) {
                 LineF lineF = lfs.get(j);
@@ -182,7 +181,7 @@ public class QmlMapperImpl implements QmlMapper {
                 }
 
                 // TODO - Implement Generic LineF mapping
-                FocalMechanism focalMechanism = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i));
+                // FocalMechanism focalMechanism = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i));
 
             }
 

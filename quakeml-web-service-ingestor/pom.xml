@@ -14,7 +14,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <flexy-pool.version>2.1.2</flexy-pool.version>
     </properties>
 
     <dependencies>
@@ -48,7 +47,6 @@
         <dependency>
             <groupId>me.paulschwarz</groupId>
             <artifactId>spring-dotenv</artifactId>
-            <version>2.3.0</version>
         </dependency>
 
         <!-- Database dependencies -->
@@ -59,12 +57,10 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-hikaricp</artifactId>
-            <version>5.2.10.Final</version>
         </dependency>
         <dependency>
             <groupId>com.vladmihalcea.flexy-pool</groupId>
             <artifactId>flexy-hikaricp</artifactId>
-            <version>${flexy-pool.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -79,27 +75,22 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.9.6</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>28.1-jre</version>
         </dependency>
         <dependency>
             <groupId>javax.interceptor</groupId>
             <artifactId>javax.interceptor-api</artifactId>
-            <version>1.2.2</version>
         </dependency>
     </dependencies>
 
