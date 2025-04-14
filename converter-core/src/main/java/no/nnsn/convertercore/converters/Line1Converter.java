@@ -1,5 +1,6 @@
 package no.nnsn.convertercore.converters;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
@@ -30,10 +31,8 @@ public class Line1Converter {
         String preferredMagnitudeID = null;
         List<Origin> origins = new ArrayList<>();
         List<Magnitude> magnitudes = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
 
         if (line1s != null) {
-            line1Loop:
             for (int i = 0; i < line1s.size() ; i++) {
                 Line1 line1 = line1s.get(i);
 
@@ -55,11 +54,11 @@ public class Line1Converter {
                         error.setFilename(sfileInfo.getFilename());
                         if (i == 0) { // Only remove Event if it is the first Line1
                             error.setEventRemoved(true); // Removing Event
-                            errors.add(error);
-                            return new Line1QuakemlEntities(true, errors);
+                            ConverterErrorLogging.addError(error);
+                            return new Line1QuakemlEntities(true);
                         } else {
-                            errors.add(error);
-                            continue line1Loop;
+                            ConverterErrorLogging.addError(error);
+                            continue;
                         }
                     }
                 } catch (Exception ex) {
@@ -78,9 +77,9 @@ public class Line1Converter {
                         Magnitude m = (Magnitude) o;
                         magnitudes.add(m);
                     } else if (o instanceof IgnoredLineError) {
-                        IgnoredLineError e = (IgnoredLineError) o;
-                        e.setFilename(sfileInfo.getFilename());
-                        errors.add(e);
+                        IgnoredLineError error = (IgnoredLineError) o;
+                        error.setFilename(sfileInfo.getFilename());
+                        ConverterErrorLogging.addError(error);
                     }
                 });
             }
@@ -92,7 +91,7 @@ public class Line1Converter {
                 preferredMagnitudeID = firstMagnitude.getPublicID();
             }
 
-            return new Line1QuakemlEntities(preferredOriginID, preferredMagnitudeID, origins, magnitudes, errors, false);
+            return new Line1QuakemlEntities(preferredOriginID, preferredMagnitudeID, origins, magnitudes, false);
         }
         return new Line1QuakemlEntities();
     }

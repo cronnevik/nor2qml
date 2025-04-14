@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.IgnoredLineError;
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.helpers.LineErrorGenerator;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line3QuakemlEntities;
@@ -26,10 +26,8 @@ public class Line3Converter {
         if (l3s != null) {
             List<EventDescription> descriptions = new ArrayList<>();
             List<Comment> comments = new ArrayList<>();
-            List<IgnoredLineError> errors = new ArrayList<>();
 
             // loop through each line 3s for multiple mappings
-            line3Loop:
             for (Line3 line3: l3s) {
                 // Check if locality exists in line 3
                 String localityID = "LOCALITY:";
@@ -46,7 +44,7 @@ public class Line3Converter {
                                     EventDescriptionType.REGION_NAME
                             ));
 
-                            continue line3Loop;
+                            continue;
                         }
                     }
                 }
@@ -55,12 +53,11 @@ public class Line3Converter {
                 try {
                     comments.add(mapper.mapL3Comment(line3));
                 } catch (Exception ex) {
-                    errors.add(LineErrorGenerator.generateError(line3, ex, sfileInfo));
-                    continue line3Loop;
+                    ConverterErrorLogging.addError(LineErrorGenerator.generateError(line3, ex, sfileInfo));
                 }
             }
 
-            return new Line3QuakemlEntities(descriptions, comments, errors);
+            return new Line3QuakemlEntities(descriptions, comments);
         }
         return new Line3QuakemlEntities();
     }

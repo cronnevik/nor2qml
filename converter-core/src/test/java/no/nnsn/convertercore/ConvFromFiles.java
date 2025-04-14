@@ -1,6 +1,5 @@
 package no.nnsn.convertercore;
 
-import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
@@ -93,11 +92,13 @@ public class ConvFromFiles {
             System.out.println("Number of Amplitudes: " + events.getEvents().get(0).getAmplitude().size());
             System.out.println("Number of Arrivals: " + events.getEvents().get(0).getOrigin().get(0).getArrival().size());
 
+            /*
             System.out.println("Number of Errors: " + events.getErrors().size());
             for (IgnoredLineError error: events.getErrors()) {
                 System.out.println(error.getLine().getLineText());
                 System.out.println(error.getMessage());
             }
+             */
 
             SfileOverview sfileOverview = qmlToSfile.convertToNordic(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION2);
             // System.out.println("---------------------------------");
@@ -132,7 +133,9 @@ public class ConvFromFiles {
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
+            /*
             System.out.println("Number of errors: " + events.getErrors().size());
+             */
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -161,7 +164,10 @@ public class ConvFromFiles {
             EventOverview events = nordicToQml.convertToQuakeml(sfiles, options);
 
             System.out.println("Event size: " + events.getEventSize());
+            /*
             System.out.println("Number of errors: " + events.getErrors().size());
+
+             */
 
             SfileOverview sfileOverview = qmlToSfile.convertToNordic(events.getEvents(), CallerType.CONVERTER, NordicFormatVersion.VERSION2);
 

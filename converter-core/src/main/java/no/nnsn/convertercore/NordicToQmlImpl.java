@@ -2,7 +2,6 @@ package no.nnsn.convertercore;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nnsn.convertercore.converters.*;
-import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.exeption.FileReaderException;
 import no.nnsn.convertercore.exeption.LineConverterException;
 import no.nnsn.convertercore.exeption.LineFetcherException;
@@ -52,7 +51,6 @@ public class NordicToQmlImpl implements NordicToQml {
 
         int eventCount = 0;
         List<Event> events = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
         List<Sfile> ignoredSfiles = new ArrayList<>();
 
         boolean isStandaloneApplication = options.getCaller().equals(CallerType.STANDALONE);
@@ -110,17 +108,6 @@ public class NordicToQmlImpl implements NordicToQml {
                 line1Entities = new Line1Converter(l1s, les, sfileInfo).convert(mapper);
                 if (line1Entities.hasErrorInFirstLine1()) {
                     log.warn("Sfile {} skipped due to error in first Line 1", sfile.getFilename());
-                    line1Entities.getErrors().forEach(er -> {
-                        if (isStandaloneApplication) {
-                            System.out.println(
-                                    "File skipped due to error in first Line 1: "
-                                            + er.getFilename()
-                                            + ", Error message: " + er.getMessage()
-                            );
-                        } else {
-                            log.error("Line 1 error: {}", er.getMessage());
-                        }
-                    });
                     continue; // skip event
                 }
             } catch (Exception e) {
@@ -160,8 +147,11 @@ public class NordicToQmlImpl implements NordicToQml {
                 if (lineFEntities != null) focalMechanisms = lineFEntities.getFocalMechanisms();
                 if (line3Entities != null) descriptions = line3Entities.getDescriptionList();
             } catch (Exception e) {
-                System.out.println("Error in attaching line entities");
-                // e.printStackTrace();
+                if (isStandaloneApplication) {
+                    System.out.println("Error in attaching line entities");
+                } else {
+                    log.error("Error in attaching line entities");
+                }
             }
 
             // Concatenate MomentTensor origins and magnitudes
@@ -177,27 +167,20 @@ public class NordicToQmlImpl implements NordicToQml {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Problem in concatenating MomentTensor orgins and magnitudes");
-                //e.printStackTrace();
+                if (isStandaloneApplication) {
+                    System.out.println("Problem in concatenating MomentTensor orgins and magnitudes");
+                } else {
+                    log.error("Problem in concatenating MomentTensor orgins and magnitudes");
+                }
             }
 
             // Concatenate Comments from multiple lines
             comments = new ArrayList<>();
-            concatenateCommentsFromLineEntities(line3Entities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(line5Entities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(line6Entities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(lineIEntities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(lineSEntities.getCommentList(), comments);
-
-            // Concatenate Errors from various conversions
-            concatenateErrorsFromLineEntities(line1Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(lineFEntities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line3Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line4Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line5Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line6Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(lineIEntities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(lineSEntities.getErrors(), errors);
+            concatenateCommentsFromLineEntities(line3Entities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(line5Entities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(line6Entities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(lineIEntities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(lineSEntities.getCommentList(), comments, isStandaloneApplication);
 
             // Attach Arrival objects to the first Origin Entity
             Origin org = origins.get(0);
@@ -239,7 +222,7 @@ public class NordicToQmlImpl implements NordicToQml {
             events.add(ev);
         }
 
-        return new EventOverview(events, errors, ignoredSfiles);
+        return new EventOverview(events, ignoredSfiles);
     }
 
     private void printFirstLine1ForStandaloneConverter(Object line1) {
@@ -248,23 +231,17 @@ public class NordicToQmlImpl implements NordicToQml {
     }
 
 
-    private void concatenateCommentsFromLineEntities(List<Comment> entitiesComments, List<Comment> comments) {
+    private void concatenateCommentsFromLineEntities(List<Comment> entitiesComments, List<Comment> comments, boolean isStandaloneApplication) {
         try {
             if (entitiesComments != null && !CollectionUtils.isEmpty(entitiesComments)) {
                 comments.addAll(entitiesComments);
             }
         } catch (Exception e) {
-            System.out.println("Problem in concatenating comments");
-        }
-    }
-
-    private void concatenateErrorsFromLineEntities(List<IgnoredLineError> entitiesErrors, List<IgnoredLineError> errors) {
-        try {
-            if (entitiesErrors != null && !CollectionUtils.isEmpty(entitiesErrors)) {
-                errors.addAll(entitiesErrors);
+            if (isStandaloneApplication) {
+                System.out.println("Problem in concatenating comments");
+            } else {
+                log.error("Problem in concatenating comments");
             }
-        } catch (Exception e) {
-            System.out.println("Could not concatenating errors");
         }
     }
 

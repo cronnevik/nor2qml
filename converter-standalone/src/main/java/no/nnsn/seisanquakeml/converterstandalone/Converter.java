@@ -1,5 +1,6 @@
 package no.nnsn.seisanquakeml.converterstandalone;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.errors.IgnoredQmlError;
@@ -124,7 +125,6 @@ public class Converter {
         }
 
         List<Sfile> sFileEvents = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
         Set<Path> filePaths = fileInfo.getFilePaths();
         filePaths.forEach(p -> {
             InputStream stream = null;
@@ -162,9 +162,8 @@ public class Converter {
                 agencyID,
                 version
         ));
-        if (eventOverview.getErrors() != null && !eventOverview.getErrors().isEmpty()) {
-            errors.addAll(eventOverview.getErrors());
-        }
+
+        List<IgnoredLineError> errors = ConverterErrorLogging.getIgnoredErrors();
 
         if (!errors.isEmpty()) {
             System.out.println("-------------------------------------");

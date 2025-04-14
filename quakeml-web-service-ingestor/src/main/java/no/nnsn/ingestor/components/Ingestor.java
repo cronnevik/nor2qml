@@ -68,7 +68,7 @@ public class Ingestor {
     public void execute(FileInfo fileInfo, IngestorOptions options) throws Exception {
 
         System.out.println("Scanning catalog: " + fileInfo.getCatalogName());
-        log.info("catalog: " + fileInfo.getCatalogName());
+        log.info("catalog: {}", fileInfo.getCatalogName());
         printFilecount(fileInfo);
 
         ingest(fileInfo, options);
@@ -87,11 +87,11 @@ public class Ingestor {
         final IngestLog ingestLog = new IngestLog();
 
         Set<Path> catalogFilePaths = fileInfo.getFilePaths();
-        log.info("S-files identified within catalog: " + catalogFilePaths.size());
-        log.info("Other type of files within catalog: " + fileInfo.getSkippedFiles().size());
+        log.info("S-files identified within catalog: {}", catalogFilePaths.size());
+        log.info("Other type of files within catalog: {}", fileInfo.getSkippedFiles().size());
 
         List<SfileCheckInfo> sfilesInDatabase = sfileEventService.getSfileListByCatalogName(options.getCatalogName());
-        log.info("S-files within database: " + sfilesInDatabase.size());
+        log.info("S-files within database: {}", sfilesInDatabase.size());
 
         System.out.println("Checking s-files in catalog against database for new, change of existing or deleted");
         CatalogChange catalogChange = FileChecker.check(sfilesInDatabase, fileInfo, options);
@@ -100,15 +100,15 @@ public class Ingestor {
         Map<String, String> modifiedFiles = catalogChange.getModifiedFiles();
         Set<String> deletedFiles = catalogChange.getDeletedFiles();
 
-        log.info("New files: " + newFiles.size());
-        log.info("Modified files: " + modifiedFiles.size());
-        log.info("Deleted files: " + deletedFiles.size());
+        log.info("New files: {}", newFiles.size());
+        log.info("Modified files: {}", modifiedFiles.size());
+        log.info("Deleted files: {}", deletedFiles.size());
 
         Instant fileCheckFinish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, fileCheckFinish, "File check time used: "));
 
         // Delete removed s-files
-        if (deletedFiles != null && deletedFiles.size() > 0) {
+        if (!deletedFiles.isEmpty()) {
             System.out.println("Deleting files");
             deleteFiles(catalogChange.getDeletedFiles());
         }
@@ -117,16 +117,16 @@ public class Ingestor {
         List<IgnoredLineError> convErrors = new ArrayList<>();
         Catalog catalog = catalogInfoHandler(options);
 
-        if (newFiles != null && newFiles.size() > 0) {
+        if (!newFiles.isEmpty()) {
             System.out.println("Ingesting new files");
-            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, newFiles, options.getProfile()));
+            ingestNewOrUpdateFiles(catalog, ingestLog, newFiles, options.getProfile());
         }
 
-        if (modifiedFiles != null && modifiedFiles.size() > 0) {
+        if (!modifiedFiles.isEmpty()) {
             System.out.println("Updating modified files");
-            convErrors.addAll(ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile()));
+            ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile());
         }
-
+/*
         if (convErrors != null && convErrors.size() > 0) {
             log.info("-------------------------------------");
             log.info("Errors found in file and the lines are ignored during conversion to QuakeML format:");
@@ -140,7 +140,7 @@ public class Ingestor {
             });
             log.info("-------------------------------------");
         }
-
+*/
 
         Instant finish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, finish, "All operations finished. Total time used: "));
@@ -150,8 +150,7 @@ public class Ingestor {
     }
 
     public FileInfo getNumOfFiles(String path, String sourceType, List<String> ignoreFolders) throws Exception {
-        FileInfo fileInfo = new FileInfo(path, sourceType, ignoreFolders);
-        return fileInfo;
+        return new FileInfo(path, sourceType, ignoreFolders);
     }
 
     public Catalog catalogInfoHandler(IngestorOptions options) {
@@ -168,7 +167,7 @@ public class Ingestor {
         try {
             catalog = catalogService.getCatalogByID(catalogID);
         } catch (Exception e) {
-
+            log.info("Could not get catalog by ID: {}", catalogID);
         }
 
         // Check if generated EventParameters ID exits in database and if not use the new and link to events
@@ -183,9 +182,7 @@ public class Ingestor {
         return catalog;
     }
 
-    public List<IgnoredLineError> ingestNewOrUpdateFiles(Catalog catalog, IngestLog ingestLog, Map<String, String> filePaths, ConverterProfile profile) {
-        List<IgnoredLineError> conversionErrors = new ArrayList<>(0);
-
+    public void ingestNewOrUpdateFiles(Catalog catalog, IngestLog ingestLog, Map<String, String> filePaths, ConverterProfile profile) {
         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(Locale.US);
         df.applyPattern("0.0");
 
@@ -213,7 +210,6 @@ public class Ingestor {
                 EventOverview eventOverview = genQuakemlFromSfiles(entry.getValue(), profile);
                 if (eventOverview != null) {
                     List<Event> events = eventOverview.getEvents();
-                    List<IgnoredLineError> errors = eventOverview.getErrors();
 
                     if (events != null) {
                         for (Event e: events) {
@@ -231,32 +227,13 @@ public class Ingestor {
                             Double magnitude = null;
                             String magAuthor = null;
 
-                            String eventLocation = null;
-                            List<EventDescription> descriptions = e.getDescription();
-                            if (descriptions != null) {
-                                if (descriptions.size() > 0) {
-                                    for (EventDescription ed: descriptions) {
-                                        EventDescriptionType evType = ed.getType();
-                                        if (evType != null) {
-                                            switch (evType) {
-                                                case NEAREST_CITIES:
-                                                case FLINN_ENGDAHL_REGION:
-                                                case REGION_NAME:
-                                                    eventLocation = ed.getText();
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            String eventLocation = getEventLocation(e);
 
                             EventType type = (e.getType() != null) ? e.getType() : null;
 
                             // Fill attributes from Origin entity
                             List<Origin> origins = e.getOrigin();
-                            if (origins != null && origins.size() > 0) {
+                            if (origins != null && !origins.isEmpty()) {
                                 Origin origin = origins.get(0);
                                 if (origin.getTime() != null) {
                                     time = origin.getTime().getValue();
@@ -276,7 +253,7 @@ public class Ingestor {
 
                             // Fill attributes from Magnitude entity
                             List<Magnitude> magnitudes = e.getMagnitude();
-                            if (magnitudes != null && magnitudes.size() > 0) {
+                            if (magnitudes != null && !magnitudes.isEmpty()) {
                                 Magnitude mag = magnitudes.get(0);
                                 if (mag.getType() != null) {
                                     magType = mag.getType();
@@ -328,24 +305,40 @@ public class Ingestor {
                         }
                         ingestLog.increaseFiles(1);
                     }
-
-                    if (errors != null && errors.size() > 0) {
-                        conversionErrors.addAll(errors);
-                    }
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Filename error: " + entry);
+                log.error("Filename error: {}", entry);
             } finally {
                 sfileBytes = null;
                 sfileInformation = null;
             }
 
         };
+    }
 
-        return conversionErrors;
-
+    private static String getEventLocation(Event e) {
+        String eventLocation = null;
+        List<EventDescription> descriptions = e.getDescription();
+        if (descriptions != null) {
+            if (!descriptions.isEmpty()) {
+                for (EventDescription ed: descriptions) {
+                    EventDescriptionType evType = ed.getType();
+                    if (evType != null) {
+                        switch (evType) {
+                            case NEAREST_CITIES:
+                            case FLINN_ENGDAHL_REGION:
+                            case REGION_NAME:
+                                eventLocation = ed.getText();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        return eventLocation;
     }
 
     public void deleteFiles(Set<String> sfileIDs) {
