@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ConverterErrorLogging {
     @Getter
-    private static final List<IgnoredLineError> ignoredErrors = new ArrayList<IgnoredLineError>();
+    private static final List<IgnoredLineError> ignoredErrors = new ArrayList<>();
 
     public static void addError(IgnoredLineError e) {
         ignoredErrors.add(e);
@@ -15,6 +15,10 @@ public class ConverterErrorLogging {
 
     public static int size() {
         return ignoredErrors.size();
+    }
+
+    public static void clear() {
+        ignoredErrors.clear();
     }
 
 }

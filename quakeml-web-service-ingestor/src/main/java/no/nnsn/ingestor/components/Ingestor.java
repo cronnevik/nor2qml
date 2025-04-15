@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import lombok.extern.slf4j.Slf4j;
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.convertercore.helpers.EventOverview;
@@ -75,7 +76,7 @@ public class Ingestor {
     }
 
     public void printFilecount(FileInfo fileInfo) {
-        log.info("Number of S-files found: " + fileInfo.getsFileCount());
+        log.info("Number of S-files found: {}", fileInfo.getsFileCount());
     }
 
 
@@ -114,7 +115,6 @@ public class Ingestor {
         }
 
         // Start reading files and ingest
-        List<IgnoredLineError> convErrors = new ArrayList<>();
         Catalog catalog = catalogInfoHandler(options);
 
         if (!newFiles.isEmpty()) {
@@ -126,8 +126,9 @@ public class Ingestor {
             System.out.println("Updating modified files");
             ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile());
         }
-/*
-        if (convErrors != null && convErrors.size() > 0) {
+
+        List<IgnoredLineError> convErrors = ConverterErrorLogging.getIgnoredErrors();
+        if (convErrors != null && !convErrors.isEmpty()) {
             log.info("-------------------------------------");
             log.info("Errors found in file and the lines are ignored during conversion to QuakeML format:");
             convErrors.forEach(er -> {
@@ -140,7 +141,7 @@ public class Ingestor {
             });
             log.info("-------------------------------------");
         }
-*/
+        ConverterErrorLogging.clear();
 
         Instant finish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, finish, "All operations finished. Total time used: "));
@@ -314,7 +315,7 @@ public class Ingestor {
                 sfileInformation = null;
             }
 
-        };
+        }
     }
 
     private static String getEventLocation(Event e) {
@@ -342,9 +343,7 @@ public class Ingestor {
     }
 
     public void deleteFiles(Set<String> sfileIDs) {
-        sfileIDs.forEach(id -> {
-            sfileCheckerService.deleteSfile(id);
-        });
+        sfileIDs.forEach(sfileCheckerService::deleteSfile);
     }
 
     private EventOverview genQuakemlFromSfiles(String path, ConverterProfile profile) throws Exception {

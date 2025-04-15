@@ -6,7 +6,6 @@ import com.vladmihalcea.flexypool.config.Configuration;
 import com.vladmihalcea.flexypool.strategy.IncrementPoolOnTimeoutConnectionAcquiringStrategy;
 import com.vladmihalcea.flexypool.strategy.RetryConnectionAcquiringStrategy;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 import java.util.UUID;
@@ -14,10 +13,13 @@ import java.util.UUID;
 
 @org.springframework.context.annotation.Configuration
 public class FlexyPoolConfiguration {
-    @Autowired
-    private HikariDataSource poolingDataSource;
+    private final HikariDataSource poolingDataSource;
 
-    private String uniqueId = UUID.randomUUID().toString();
+    private final String uniqueId = UUID.randomUUID().toString();
+
+    public FlexyPoolConfiguration(HikariDataSource poolingDataSource) {
+        this.poolingDataSource = poolingDataSource;
+    }
 
     @Bean
     public Configuration<HikariDataSource> configuration() {
@@ -29,7 +31,7 @@ public class FlexyPoolConfiguration {
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public FlexyPoolDataSource dataSource() {
+    public FlexyPoolDataSource<HikariDataSource> dataSource() {
         Configuration<HikariDataSource> configuration = configuration();
         return new FlexyPoolDataSource<HikariDataSource>(configuration,
                 new IncrementPoolOnTimeoutConnectionAcquiringStrategy.Factory(5),
