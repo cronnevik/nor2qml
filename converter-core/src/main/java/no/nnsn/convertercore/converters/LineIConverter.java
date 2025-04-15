@@ -1,5 +1,6 @@
 package no.nnsn.convertercore.converters;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.LineIQuakemlEntities;
@@ -21,7 +22,6 @@ public class LineIConverter {
 
     public LineIQuakemlEntities convert(QmlMapper mapper) {
         List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
 
         if (lineIs != null) {
             for (LineI lineI : lineIs) {
@@ -29,10 +29,10 @@ public class LineIConverter {
                     comments.add(mapper.mapLIComment(lineI));
                 } catch (Exception ex) {
                     IgnoredLineError error = new IgnoredLineError().generate(lineI, ex, sfileInfo);
-                    errors.add(error);
+                    ConverterErrorLogging.addError(error);
                 }
             }
-            return new LineIQuakemlEntities(comments, errors);
+            return new LineIQuakemlEntities(comments);
         }
         return new LineIQuakemlEntities();
     }

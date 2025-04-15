@@ -1,8 +1,10 @@
 package no.nnsn.convertercore;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nnsn.convertercore.converters.*;
-import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.exeption.FileReaderException;
+import no.nnsn.convertercore.exeption.LineConverterException;
+import no.nnsn.convertercore.exeption.LineFetcherException;
 import no.nnsn.convertercore.helpers.*;
 import no.nnsn.convertercore.helpers.collections.*;
 import no.nnsn.convertercore.interfaces.NordicToQml;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @Service
 public class NordicToQmlImpl implements NordicToQml {
 
@@ -48,10 +51,10 @@ public class NordicToQmlImpl implements NordicToQml {
 
         int eventCount = 0;
         List<Event> events = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
         List<Sfile> ignoredSfiles = new ArrayList<>();
 
         boolean isStandaloneApplication = options.getCaller().equals(CallerType.STANDALONE);
+        boolean isIngestorApplication = options.getCaller().equals(CallerType.INGESTOR);
 
         for (Sfile sfile : sFiles) {
             eventCount++;
@@ -93,8 +96,10 @@ public class NordicToQmlImpl implements NordicToQml {
             } catch (Exception e) {
                 if (isStandaloneApplication) {
                     System.out.println("error in getting data lines from sfile");
+                } else if (isIngestorApplication){
+                    log.error("error in getting data lines from sfile");
                 } else {
-                    throw new Exception("error in getting data lines from sfile");
+                    throw new LineFetcherException("error in getting data lines from sfile");
                 }
             }
 
@@ -102,17 +107,17 @@ public class NordicToQmlImpl implements NordicToQml {
             try {
                 line1Entities = new Line1Converter(l1s, les, sfileInfo).convert(mapper);
                 if (line1Entities.hasErrorInFirstLine1()) {
-                    line1Entities.getErrors().forEach(er -> {
-                        System.out.println(
-                                "File skipped due to error in first Line 1: "
-                                        + er.getFilename()
-                                        + ", Error message: " + er.getMessage()
-                        );
-                    });
+                    log.warn("Sfile {} skipped due to error in first Line 1", sfile.getFilename());
                     continue; // skip event
                 }
             } catch (Exception e) {
-                System.out.println("Error in converting line 1");
+                if (isStandaloneApplication) {
+                    System.out.println("Error in converting line 1");
+                } else if (isIngestorApplication) {
+                    log.error("Error in converting line 1");
+                } else {
+                    throw new LineConverterException("Error in converting line 1");
+                }
             }
 
 
@@ -142,8 +147,11 @@ public class NordicToQmlImpl implements NordicToQml {
                 if (lineFEntities != null) focalMechanisms = lineFEntities.getFocalMechanisms();
                 if (line3Entities != null) descriptions = line3Entities.getDescriptionList();
             } catch (Exception e) {
-                System.out.println("Error in attaching line entities");
-                // e.printStackTrace();
+                if (isStandaloneApplication) {
+                    System.out.println("Error in attaching line entities");
+                } else {
+                    log.error("Error in attaching line entities");
+                }
             }
 
             // Concatenate MomentTensor origins and magnitudes
@@ -159,27 +167,20 @@ public class NordicToQmlImpl implements NordicToQml {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Problem in concatenating MomentTensor orgins and magnitudes");
-                //e.printStackTrace();
+                if (isStandaloneApplication) {
+                    System.out.println("Problem in concatenating MomentTensor orgins and magnitudes");
+                } else {
+                    log.error("Problem in concatenating MomentTensor orgins and magnitudes");
+                }
             }
 
             // Concatenate Comments from multiple lines
             comments = new ArrayList<>();
-            concatenateCommentsFromLineEntities(line3Entities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(line5Entities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(line6Entities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(lineIEntities.getCommentList(), comments);
-            concatenateCommentsFromLineEntities(lineSEntities.getCommentList(), comments);
-
-            // Concatenate Errors from various conversions
-            concatenateErrorsFromLineEntities(line1Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(lineFEntities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line3Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line4Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line5Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(line6Entities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(lineIEntities.getErrors(), errors);
-            concatenateErrorsFromLineEntities(lineSEntities.getErrors(), errors);
+            concatenateCommentsFromLineEntities(line3Entities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(line5Entities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(line6Entities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(lineIEntities.getCommentList(), comments, isStandaloneApplication);
+            concatenateCommentsFromLineEntities(lineSEntities.getCommentList(), comments, isStandaloneApplication);
 
             // Attach Arrival objects to the first Origin Entity
             Origin org = origins.get(0);
@@ -221,7 +222,7 @@ public class NordicToQmlImpl implements NordicToQml {
             events.add(ev);
         }
 
-        return new EventOverview(events, errors, ignoredSfiles);
+        return new EventOverview(events, ignoredSfiles);
     }
 
     private void printFirstLine1ForStandaloneConverter(Object line1) {
@@ -230,31 +231,23 @@ public class NordicToQmlImpl implements NordicToQml {
     }
 
 
-    private void concatenateCommentsFromLineEntities(List<Comment> entitiesComments, List<Comment> comments) {
+    private void concatenateCommentsFromLineEntities(List<Comment> entitiesComments, List<Comment> comments, boolean isStandaloneApplication) {
         try {
             if (entitiesComments != null && !CollectionUtils.isEmpty(entitiesComments)) {
                 comments.addAll(entitiesComments);
             }
         } catch (Exception e) {
-            System.out.println("Problem in concatenating comments");
-            e.printStackTrace();
-        }
-    }
-
-    private void concatenateErrorsFromLineEntities(List<IgnoredLineError> entitiesErrors, List<IgnoredLineError> errors) {
-        try {
-            if (entitiesErrors != null && !CollectionUtils.isEmpty(entitiesErrors)) {
-                errors.addAll(entitiesErrors);
+            if (isStandaloneApplication) {
+                System.out.println("Problem in concatenating comments");
+            } else {
+                log.error("Problem in concatenating comments");
             }
-        } catch (Exception e) {
-            System.out.println("Error in concatenating errors");
-            e.printStackTrace();
         }
     }
 
     private Boolean setEventPropertiesFromOrigin(Event event, List<Origin> origins, ConverterOptions options) {
         try {
-            if (origins.size() > 0) {
+            if (!origins.isEmpty()) {
                 CreationInfo eventCreationInfo = new CreationInfo();
                 if (origins.get(0) != null) {
 
@@ -302,7 +295,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Could not set event properties from Origin entity: " + e.getMessage());
             return false;
         }
     }
@@ -371,7 +364,7 @@ public class NordicToQmlImpl implements NordicToQml {
             }
         }
 
-        if (lhs != null && lhs.size() > 0) {
+        if (lhs != null && !lhs.isEmpty()) {
             agency = "INT";
         } else {
             agency = author;

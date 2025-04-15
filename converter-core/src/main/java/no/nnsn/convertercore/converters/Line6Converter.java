@@ -1,5 +1,6 @@
 package no.nnsn.convertercore.converters;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line6QuakemlEntities;
@@ -22,7 +23,6 @@ public class Line6Converter {
 
     public Line6QuakemlEntities convert(QmlMapper mapper) {
         List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
 
         if (line6s != null) {
             for (Line6 line6 : line6s) {
@@ -30,10 +30,10 @@ public class Line6Converter {
                     comments.add(mapper.mapL6Comment(line6));
                 } catch (Exception ex) {
                     IgnoredLineError error = new IgnoredLineError().generate(line6, ex, sfileInfo);
-                    errors.add(error);
+                    ConverterErrorLogging.addError(error);
                 }
             }
-            return new Line6QuakemlEntities(comments, errors);
+            return new Line6QuakemlEntities(comments);
         }
         return new Line6QuakemlEntities();
     }

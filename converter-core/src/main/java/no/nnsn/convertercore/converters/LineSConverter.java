@@ -1,5 +1,6 @@
 package no.nnsn.convertercore.converters;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.LineSQuakemlEntities;
@@ -21,7 +22,6 @@ public class LineSConverter {
 
     public LineSQuakemlEntities convert(QmlMapper mapper) {
         List<Comment> comments = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
 
         if (lineSs != null) {
             for (LineS lineS : lineSs) {
@@ -29,10 +29,10 @@ public class LineSConverter {
                     comments.add(mapper.mapLSComment(lineS));
                 } catch (Exception ex) {
                     IgnoredLineError error = new IgnoredLineError().generate(lineS, ex, sfileInfo);
-                    errors.add(error);
+                    ConverterErrorLogging.addError(error);
                 }
             }
-            return new LineSQuakemlEntities(comments, errors);
+            return new LineSQuakemlEntities(comments);
         }
         return new LineSQuakemlEntities();
     }

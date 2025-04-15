@@ -1,5 +1,6 @@
 package no.nnsn.convertercore.converters;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.LineFQuakemlEntities;
@@ -35,7 +36,6 @@ public class LineFConverter {
         List<FocalMechanism> focalMechanisms = new ArrayList<>();
         List<Origin> lm1Origins = new ArrayList<>();
         List<Magnitude> lm1Magnitudes = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
 
         if (line1s != null && lineFs != null) {
             line1Loop:
@@ -53,7 +53,6 @@ public class LineFConverter {
                                 focalMechanism = (FocalMechanism) fObj;
                                 // Check if the focalmechanism has a related moment tensor
                                 if (lineM2s != null && !lineM2s.isEmpty()) {
-                                    LineM2 lineM2 = null;
 
                                     LineM2Loop:
                                     for (LineM2 m2 : lineM2s) {
@@ -82,21 +81,21 @@ public class LineFConverter {
                                                             magM1.setOriginID(originM1.getPublicID());
                                                             lm1Magnitudes.add(magM1);
                                                         } else if (mM1Obj instanceof IgnoredLineError) {
-                                                            IgnoredLineError e = (IgnoredLineError) oM1Obj;
+                                                            IgnoredLineError e = (IgnoredLineError) mM1Obj;
                                                             e.setFilename(sfileInfo.getFilename());
-                                                            errors.add(e);
+                                                            ConverterErrorLogging.addError(e);
                                                         }
                                                     } else if (oM1Obj instanceof IgnoredLineError) {
                                                         IgnoredLineError e = (IgnoredLineError) oM1Obj;
                                                         e.setFilename(sfileInfo.getFilename());
-                                                        errors.add(e);
+                                                        ConverterErrorLogging.addError(e);
                                                     }
                                                 }
                                                 focalMechanism.setMomentTensor(momentTensor);
                                             } else if (mtObj instanceof IgnoredLineError) {
                                                 IgnoredLineError e = (IgnoredLineError) mtObj;
                                                 e.setFilename(sfileInfo.getFilename());
-                                                errors.add(e);
+                                                ConverterErrorLogging.addError(e);
                                             }
                                         }
                                     }
@@ -105,7 +104,7 @@ public class LineFConverter {
                             } else if (fObj instanceof IgnoredLineError) {
                                 IgnoredLineError e = (IgnoredLineError) fObj;
                                 e.setFilename(sfileInfo.getFilename());
-                                errors.add(e);
+                                ConverterErrorLogging.addError(e);
                             }
                         }
                     }
@@ -118,7 +117,7 @@ public class LineFConverter {
                 preferredFocalMechanismID = firstFocalMechListed.getPublicID();
             }
 
-            return new LineFQuakemlEntities(preferredFocalMechanismID, lm1Origins,focalMechanisms, lm1Magnitudes, errors);
+            return new LineFQuakemlEntities(preferredFocalMechanismID, lm1Origins,focalMechanisms, lm1Magnitudes);
         }
         return new LineFQuakemlEntities();
     }

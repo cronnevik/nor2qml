@@ -15,7 +15,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <flexy-pool.version>2.1.2</flexy-pool.version>
     </properties>
 
     <dependencies>
@@ -46,12 +45,10 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-hikaricp</artifactId>
-            <version>5.2.10.Final</version>
         </dependency>
         <dependency>
             <groupId>com.vladmihalcea.flexy-pool</groupId>
             <artifactId>flexy-hikaricp</artifactId>
-            <version>${flexy-pool.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -96,22 +93,18 @@
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-mvc-freemarker</artifactId>
-            <version>2.29.1</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-servlet</artifactId>
-            <version>2.29.1</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-jaxb</artifactId>
-            <version>2.29.1</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -132,13 +125,11 @@
         <dependency>
             <artifactId>testng</artifactId>
             <groupId>org.testng</groupId>
-            <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>me.paulschwarz</groupId>
             <artifactId>spring-dotenv</artifactId>
-            <version>2.3.0</version>
         </dependency>
     </dependencies>
 

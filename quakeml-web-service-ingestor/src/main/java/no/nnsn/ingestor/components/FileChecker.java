@@ -22,9 +22,7 @@ public class FileChecker {
 
     private static Map<String, String> getFiles(FileInfo fileInfo) {
         Map<String, String> filesMap = new HashMap<>();
-        fileInfo.getFilePaths().forEach(p -> {
-            filesMap.put(p.getFileName().toString(), p.toString());
-        });
+        fileInfo.getFilePaths().forEach(p -> filesMap.put(p.getFileName().toString(), p.toString()));
         return filesMap;
     }
 
@@ -38,9 +36,8 @@ public class FileChecker {
                     LocalDateTime.ofInstant(attr.lastModifiedTime().toInstant(), ZoneId.of("Europe/Paris"))
             );
 
-            return (sfileInfoDB.getLastModifiedTime() != null &&
-                    sfileInfoDB.getLastModifiedTime().equals(sfileInfoCatalog.getLastModifiedTime()))
-                    ? false : true;
+            return sfileInfoDB.getLastModifiedTime() == null ||
+                    !sfileInfoDB.getLastModifiedTime().equals(sfileInfoCatalog.getLastModifiedTime());
 
         } catch (IOException exception) {
 
@@ -54,7 +51,7 @@ public class FileChecker {
         Map<String, String> sfilesInCatalog = getFiles(fileInfo);
         Map<String, String> sfilesInCatalogCopy = new HashMap<>(sfilesInCatalog);
         CatalogChange catalogChange = new CatalogChange();
-        if (sfilesInDatabase.size() > 0) {
+        if (!sfilesInDatabase.isEmpty()) {
             sfilesInDatabase.forEach(sfileInfoDB -> {
                 final String dbSfileID = sfileInfoDB.getSfileID();
                 if (sfilesInCatalog.containsKey(dbSfileID)) {

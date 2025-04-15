@@ -7,7 +7,6 @@ import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.NordicDtoToAmplit
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.NordicDtoToArrivalMapper;
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.NordicDtoToPickMapper;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.*;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
@@ -34,7 +33,7 @@ public class QmlMapperImpl implements QmlMapper {
         }
 
         if (lEs != null) {
-            if (lEs.size() > 0) {
+            if (!lEs.isEmpty()) {
                 try {
                     return NordicToOriginMapper.INSTANCE.mapFullOrigin(line1, lEs.get(0));
                 } catch (Exception ex) {
@@ -122,7 +121,6 @@ public class QmlMapperImpl implements QmlMapper {
             List<Line1> l1s,
             Origin org
     ) {
-        List<FocalMechanism> focalMechanisms = new ArrayList<>();
 
         // Intaros Spesific
         List<LineF> usedLineFs = new ArrayList<>();
@@ -133,14 +131,14 @@ public class QmlMapperImpl implements QmlMapper {
         Integer nextLine1RowNum = (i < (l1s.size() - 1)) ? l1s.get(i + 1).getRowNumber() : null;
 
         // Check if F lines is following current Line 1
-        Boolean nextL1BiggerOrNull = false;
+        boolean nextL1BiggerOrNull = false;
         if (nextLine1RowNum == null) {
             nextL1BiggerOrNull = true;
         } else if(nextFocRowNum < nextLine1RowNum) {
             nextL1BiggerOrNull = true;
         }
         if (nextFocRowNum > currLine1RowNum && nextL1BiggerOrNull) {
-            int limit = lfs.size() >= 2 ? 2 : lfs.size();
+            int limit = Math.min(lfs.size(), 2);
 
             for (int j = 0; j < limit; j++) {
                 LineF lineF = lfs.get(j);
@@ -171,7 +169,7 @@ public class QmlMapperImpl implements QmlMapper {
                         NodalPlaneSetter.setNodalPlane(lastFocalMech, lineF);
 
                         if (lineM2s != null) {
-                            if (lineM2s.size() > 0) {
+                            if (!lineM2s.isEmpty()) {
                                 LineM2 lineM2 = lineM2s.get(0);
                                 MomentTensor momentTensor = NordicToMomentTensorMapper.INSTANCE.mapLineM2(lineM2, l1s.get(i));
                                 lastFocalMech.setMomentTensor(momentTensor);
@@ -183,26 +181,24 @@ public class QmlMapperImpl implements QmlMapper {
                 }
 
                 // TODO - Implement Generic LineF mapping
-                FocalMechanism focalMechanism = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i));
+                // FocalMechanism focalMechanism = NordicToFocalMechMapper.INSTANCE.mapFocalMech(lineF, l1s.get(i));
 
             }
 
-            if (usedLineFs != null || usedLineFs.size() > 0) {
-                if (lineM2s != null) {
-                    if (lineM2s.size() > 1) {
-                        lineM2s.removeAll(usedLineM2s);
-                    } else {
-                        lineM2s.clear();
-                    }
-                }
-
-                // remove the two used F lines from list
-                if (lfs.size() > 2) {
-                    lfs.removeAll(usedLineFs);
-
+            if (lineM2s != null) {
+                if (lineM2s.size() > 1) {
+                    lineM2s.removeAll(usedLineM2s);
                 } else {
-                    lfs.clear();
+                    lineM2s.clear();
                 }
+            }
+
+            // remove the two used F lines from list
+            if (lfs.size() > 2) {
+                lfs.removeAll(usedLineFs);
+
+            } else {
+                lfs.clear();
             }
 
         }

@@ -1,5 +1,6 @@
 package no.nnsn.seisanquakeml.converterstandalone;
 
+import no.nnsn.convertercore.errors.ConverterErrorLogging;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.errors.IgnoredQmlError;
@@ -113,25 +114,24 @@ public class Converter {
         idGenerator.setPrefix(prefix);
         idGenerator.setAuthorityID(agencyID);
 
-        String path = null;
+        String path;
         final AtomicReference<String> qmlString = new AtomicReference<>();
         path = arguments.hasInput() ? arguments.getInput() : arguments.getCurrentPath();
         FileInfo fileInfo = null;
         try {
             fileInfo = new FileInfo(path, "sfile", null);
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
 
         List<Sfile> sFileEvents = new ArrayList<>();
-        List<IgnoredLineError> errors = new ArrayList<>();
         Set<Path> filePaths = fileInfo.getFilePaths();
         filePaths.forEach(p -> {
             InputStream stream = null;
             try {
                 stream = new FileInputStream(p.toString());
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
             try {
                 sFileEvents.addAll(nordicToQml.readSfile(stream, p.toString(), CallerType.STANDALONE));
@@ -140,7 +140,7 @@ public class Converter {
             }
         });
 
-        EventOverview eventOverview = null;
+        EventOverview eventOverview;
         try {
             ConverterOptions options = new ConverterOptions(
                     null,
@@ -162,11 +162,10 @@ public class Converter {
                 agencyID,
                 version
         ));
-        if (eventOverview.getErrors() != null && eventOverview.getErrors().size() > 0) {
-            errors.addAll(eventOverview.getErrors());
-        }
 
-        if (errors.size() > 0) {
+        List<IgnoredLineError> errors = ConverterErrorLogging.getIgnoredErrors();
+
+        if (!errors.isEmpty()) {
             System.out.println("-------------------------------------");
             System.out.println("Errors found in file and are ignored:");
             errors.forEach(er -> {
@@ -186,9 +185,7 @@ public class Converter {
 
     public String convertToSfile() {
 
-        List<IgnoredQmlError> errors = new ArrayList<>();
-
-        NordicFormatVersion nordicFormatVersion = null;
+        NordicFormatVersion nordicFormatVersion;
         if (arguments.isNordic1()) {
             nordicFormatVersion = NordicFormatVersion.VERSION1;
         } else if (arguments.isNordic2()) {
@@ -199,14 +196,14 @@ public class Converter {
         }
 
         if (arguments.isQuakemlSourceFile()) {
-            String path = null;
+            String path;
             path = arguments.hasInput() ? arguments.getInput() : arguments.getCurrentPath();
 
             FileInfo fileInfo = null;
             try {
                 fileInfo = new FileInfo(path, "qml", null);
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
 
             // create nordic format version as final due to arrow function for filePaths
@@ -218,7 +215,7 @@ public class Converter {
                 try {
                     stream = new FileInputStream(p.toString());
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
 
                 QuakemlContent content = QuakemlUtils.getQuakemlContent(stream);
@@ -228,11 +225,11 @@ public class Converter {
                 sFiles.add(sfileOverview.getSfiletext());
 
             });
-            String response = "";
+            StringBuilder response = new StringBuilder();
             for (String sFile: sFiles) {
-                response += sFile;
+                response.append(sFile);
             }
-            return response;
+            return response.toString();
 
         } else if (arguments.isQuakemlSourceWeb()) {
             String webServiceUrl = arguments.getQmlUrl();
@@ -246,14 +243,14 @@ public class Converter {
                 return sfileOverview.getSfiletext();
 
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
         }
         return null;
     }
 
     private void printQmlErrors(List<IgnoredQmlError> errors) {
-        if (errors.size() > 0) {
+        if (!errors.isEmpty()) {
             System.out.println("Errors found during conversion:");
             errors.forEach(er -> {
                 System.out.println(
