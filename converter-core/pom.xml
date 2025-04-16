@@ -14,8 +14,6 @@
     <description>Core</description>
 
     <properties>
-        <java.version>1.8</java.version>
-        <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
     </properties>
 
