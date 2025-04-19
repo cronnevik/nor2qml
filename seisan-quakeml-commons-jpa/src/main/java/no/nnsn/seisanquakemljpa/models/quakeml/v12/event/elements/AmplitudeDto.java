@@ -7,14 +7,10 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.enums.AmplitudeUnitDto;
 import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.enums.EvaluationModeDto;
 import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.enums.EvaluationStatusDto;
 import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.types.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 
@@ -27,8 +23,6 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@Entity
-@Table(name = "qmlV12_evAmplitude")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AmplitudeDto {
 
@@ -39,7 +33,6 @@ public class AmplitudeDto {
      *                 {@literal [smi|quakeml]:<authority-id>/<resource-id>[#local-id] }
      * @return The public ID of the Amplitude (QuakeML v1.2) entity.
      */
-    @Id
     @XmlAttribute
     private String publicID;
 
@@ -50,7 +43,6 @@ public class AmplitudeDto {
      * @param genericAmplitude Amplitude
      * @return RealQuantityDto - Object
      */
-    @Embedded
     private RealQuantityDto genericAmplitude;
 
     /**
@@ -68,7 +60,6 @@ public class AmplitudeDto {
      * @param category Category
      * @return AmplitudeCategoryDto - Enum
      */
-    @Enumerated(EnumType.STRING)
     private AmplitudeCategoryDto category;
 
     /**
@@ -78,7 +69,6 @@ public class AmplitudeDto {
      * @param unit Unit by Enum type {@link AmplitudeUnitDto}
      * @return AmplitudeUnitDto - Enum
      */
-    @Enumerated(EnumType.STRING)
     private AmplitudeUnitDto unit;
 
     /**
@@ -89,9 +79,7 @@ public class AmplitudeDto {
      */
     private String methodID;
 
-    @Embedded
     private RealQuantityDto period;
-
     private Double snr;
     private TimeWindowDto timeWindow;
     private String pickID;
@@ -99,39 +87,13 @@ public class AmplitudeDto {
     private String filterID;
     private TimeQuantityDto scalingTime;
     private String magnitudeHint;
-
-    @Enumerated(EnumType.STRING)
     private EvaluationModeDto evaluationMode;
-    @Enumerated(EnumType.STRING)
     private EvaluationStatusDto evaluationStatus;
-
-    @Embedded
     private CreationInfoDto creationInfo;
 
     /*
      *   Relations
      */
 
-    @OneToMany(mappedBy = "amplitude", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
     private List<CommentDto> comment;
-
-    @ManyToOne
-    @XmlTransient
-    private EventDto event;
-
-    /*
-     *   Custom setter methods for relations
-     */
-
-    public void setComment(List<CommentDto> comments) {
-        this.comment = comments;
-        // Hibernate relationship specific
-        if (comments != null) {
-            for (CommentDto cmt: comments) {
-                cmt.setAmplitude(this);
-            }
-        }
-    }
-
 }
