@@ -1,10 +1,8 @@
 package no.nnsn.seisanquakemljpa.models.sfile.v2;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nnsn.seisanquakemljpa.models.sfile.SfileData;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
 import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
 
 import javax.xml.bind.annotation.XmlAccessType;

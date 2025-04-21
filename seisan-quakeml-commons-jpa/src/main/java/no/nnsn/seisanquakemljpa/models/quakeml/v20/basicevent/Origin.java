@@ -1,6 +1,5 @@
 package no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
@@ -13,40 +12,25 @@ import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.enums.Evaluati
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.enums.EvaluationStatus;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode
-@Entity
-@Table(name = "qmlV20_evOrigin")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Origin implements Serializable {
+public class Origin {
 
-    private static final long serialVersionUID = 1L;
-
-    @Id
     @XmlAttribute
     private String publicID; // ResourceReference
 
-    @Embedded
     private TimeQuantity time;
-    @Embedded
     private RealQuantity latitude;
-    @Embedded
     private RealQuantity longitude;
-
-    @Embedded
     private RealQuantity depth;
 
     @Enumerated(EnumType.STRING)
@@ -61,9 +45,7 @@ public class Origin implements Serializable {
     private String earthModelID; // ResourceReference
     private String referenceSystemID; // ResourceReference
 
-    @Embedded
     private OriginQuality quality;
-
     private String region;
 
     @Enumerated(EnumType.STRING)
@@ -71,75 +53,13 @@ public class Origin implements Serializable {
     @Enumerated(EnumType.STRING)
     private EvaluationStatus evaluationStatus;
 
-    @Embedded
     private CreationInfo creationInfo;
 
-    /*
-     *   Relations
-     */
-
-    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comment;
-
-    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     private List<CompositeTime> compositeTime;
-
-    @XmlTransient
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Event event;
-
-    @OneToOne(mappedBy = "origin",cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.JOIN)
     private OriginUncertainty originUncertainty;
-
-    @OneToMany(mappedBy = "origin", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     private List<Arrival> arrival;
 
-
-    /*
-     *   Custom setter methods for relations
-     */
-
-    public void setComment(List<Comment> comments) {
-        this.comment = comments;
-        // Hibernate relationship specific
-        if (comments != null) {
-            for (Comment cmt: comments) {
-                cmt.setOrigin(this);
-            }
-        }
-    }
-
-    public void setCompositeTime(List<CompositeTime> compositeTimes) {
-        this.compositeTime = compositeTimes;
-        // Hibernate relationship specific
-        if (compositeTimes != null) {
-            for (CompositeTime ctime: compositeTimes) {
-                ctime.setOrigin(this);
-            }
-        }
-    }
-
-    public void setOriginUncertainty(OriginUncertainty originUncertainty) {
-        this.originUncertainty = originUncertainty;
-        // Hibernate relationship specific
-        if (originUncertainty != null) {
-            originUncertainty.setOrigin(this);
-        }
-    }
-
-    public void setArrival(List<Arrival> arrivals) {
-        this.arrival = arrivals;
-        // Hibernate relationship specific
-        if (arrivals != null) {
-            for (Arrival arr: arrivals) {
-                arr.setOrigin(this);
-            }
-        }
-    }
 
     /*
      *   Custom setter

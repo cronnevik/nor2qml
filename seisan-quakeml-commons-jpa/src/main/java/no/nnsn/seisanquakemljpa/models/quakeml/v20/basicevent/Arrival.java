@@ -5,24 +5,18 @@ import lombok.EqualsAndHashCode;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
 import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.*;
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode
-@Entity
-@Table(name = "qmlV20_evArrival")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Arrival implements Serializable {
+public class Arrival {
 
-    private static final long serialVersionUID = 1L;
-
-    @Id
     @XmlAttribute
     private String publicID; // ResourceReference
     @XmlElement
@@ -37,8 +31,6 @@ public class Arrival implements Serializable {
     private Double azimuth;
     @XmlElement
     private Double distance;
-
-    @Embedded
     @XmlElement
     private RealQuantity takeoffAngle;
 
@@ -57,36 +49,9 @@ public class Arrival implements Serializable {
     @XmlElement
     private String earthModelID; // ResourceReference
 
-    @Embedded
     @XmlElement
     private CreationInfo creationInfo;
-
-    /*
-     *   Relations
-     */
-
     @XmlElement
-    @OneToMany(mappedBy = "arrival", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comment;
-
-    @XmlTransient
-    @ManyToOne(fetch = FetchType.LAZY)
-    Origin origin;
-
-
-    /*
-     *   Custom setter methods for relations
-     */
-
-    public void setComment(List<Comment> comments) {
-        this.comment = comments;
-        // Hibernate relationship specific
-        if (comments != null) {
-            for (Comment cmt: comments) {
-                cmt.setArrival(this);
-            }
-        }
-    }
 
 }

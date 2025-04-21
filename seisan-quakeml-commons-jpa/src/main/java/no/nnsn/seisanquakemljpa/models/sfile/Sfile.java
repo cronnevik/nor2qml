@@ -1,6 +1,5 @@
 package no.nnsn.seisanquakemljpa.models.sfile;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nnsn.seisanquakemljpa.models.sfile.v1.SfileDataImpl;
