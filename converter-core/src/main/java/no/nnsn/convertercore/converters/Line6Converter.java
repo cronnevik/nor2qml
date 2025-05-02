@@ -5,8 +5,8 @@ import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line6QuakemlEntities;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line6;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line6;
 
 import java.util.ArrayList;
 import java.util.List;

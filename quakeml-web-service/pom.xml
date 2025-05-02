@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>no.nnsn.seisan-quakeml</groupId>
-            <artifactId>seisan-quakeml-commons-jpa</artifactId>
+            <artifactId>seisan-quakeml-commons-model</artifactId>
         </dependency>
 
         <dependency>

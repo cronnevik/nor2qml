@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.FocalMechanismDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.FocalMechanism;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.FocalMechanismDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.FocalMechanism;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -25,9 +25,6 @@ public abstract class QmlToFocalMechanismMapper {
      * @param focalMechanism FocalMechanism object of QuakeML version 2.0
      * @return FocalMechanismDto object of QuakeML version 1.2.
      */
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract FocalMechanismDto mapV12FocalMechanism(FocalMechanism focalMechanism);
 
     /**
@@ -38,9 +35,6 @@ public abstract class QmlToFocalMechanismMapper {
      * @return FocalMechanism object of QuakeML version 2.0.
      */
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract FocalMechanism mapV20FocalMechanisn(FocalMechanismDto focalMechanismDto);
 
 }

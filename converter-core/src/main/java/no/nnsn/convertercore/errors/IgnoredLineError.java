@@ -2,7 +2,7 @@ package no.nnsn.convertercore.errors;
 
 import lombok.Data;
 import no.nnsn.convertercore.helpers.SfileInfo;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line;
 
 @Data
 public class IgnoredLineError {

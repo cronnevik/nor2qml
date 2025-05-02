@@ -1,9 +1,9 @@
 package no.nnsn.quakemlwebservice.helper;
 
 import no.nnsn.quakemlwebservice.dao.OrderByType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Event;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Magnitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,7 +19,7 @@ public class EventsSort {
                         if (o.getPublicID().equals(prefOrgID)) {
                             prefOrg = o;
                         }
-                    };
+                    }
                     return prefOrg.getTime().getValue();
                 }, Comparator.reverseOrder()));
                 break;
@@ -31,7 +31,7 @@ public class EventsSort {
                         if (o.getPublicID().equals(prefOrgID)) {
                             prefOrg = o;
                         }
-                    };
+                    }
                     return prefOrg.getTime().getValue();
                 }, Comparator.naturalOrder()));
                 break;

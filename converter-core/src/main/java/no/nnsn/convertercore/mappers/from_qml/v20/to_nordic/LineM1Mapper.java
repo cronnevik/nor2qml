@@ -2,10 +2,10 @@ package no.nnsn.convertercore.mappers.from_qml.v20.to_nordic;
 
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.GeneralLineHelper;
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.LineHelper;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineM1;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Magnitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.CompositeTime;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineM1;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -96,8 +96,8 @@ public abstract class LineM1Mapper {
                     lineM1.setHour(String.valueOf(timeZoned.getHour()));
                     lineM1.setMinutes(String.valueOf(timeZoned.getMinute()));
 
-                    Double secAndMillSec = Double.valueOf(timeZoned.getSecond()) + (Double.valueOf(timeZoned.getNano()) / Math.pow(10,9));
-                    lineM1.setSeconds(secAndMillSec.toString());
+                    double secAndMillSec = (double) timeZoned.getSecond() + ((double) timeZoned.getNano() / Math.pow(10,9));
+                    lineM1.setSeconds(Double.toString(secAndMillSec));
                 }
                 // Default DateTime (e.g. 2012-05-29T23:58:58.770000)
                 else {
@@ -108,8 +108,8 @@ public abstract class LineM1Mapper {
                     lineM1.setHour(String.valueOf(time.getHour()));
                     lineM1.setMinutes(String.valueOf(time.getMinute()));
 
-                    Double secAndMillSec = Double.valueOf(time.getSecond()) + (Double.valueOf(time.getNano()) / Math.pow(10,9));
-                    lineM1.setSeconds(secAndMillSec.toString());
+                    double secAndMillSec = (double) time.getSecond() + ((double) time.getNano() / Math.pow(10,9));
+                    lineM1.setSeconds(Double.toString(secAndMillSec));
                 }
             }
         }

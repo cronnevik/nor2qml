@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml.helpers;
 
 import no.nnsn.convertercore.mappers.from_qml.to_qml.annotations.QuakeMLQualifiers;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
 
 public class QuakeMLHelper {
     @QuakeMLQualifiers.RealQuantityToDouble

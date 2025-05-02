@@ -1,10 +1,10 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.helpers;
 
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.annotations.EnumsQualifiers.*;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeCategory;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.OriginDepthType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickOnset;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeCategory;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.OriginDepthType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.PickOnset;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
 
 
 public class EnumsHelper {

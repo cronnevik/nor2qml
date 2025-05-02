@@ -1,13 +1,13 @@
 package no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
 
 public class LineHelper {
     public static String getRealQuantityValue(RealQuantity realQuantity) {
         if (realQuantity != null) {
             Double value = realQuantity.getValue();
             if (value != null) {
-                return value != null && !value.isNaN() ? Double.toString(value) : null;
+                return !value.isNaN() ? Double.toString(value) : null;
             }
         }
         return null;

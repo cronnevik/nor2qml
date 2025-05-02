@@ -1,9 +1,9 @@
 package no.nnsn.convertercore.helpers;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventTypeCertainty;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Event;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventTypeCertainty;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
 
 public class EventTypeSetter {
     public static void setEventTypeAndUncertainty(Event event, Line1 line1, String defaultEvent, String defaultCertainty) {

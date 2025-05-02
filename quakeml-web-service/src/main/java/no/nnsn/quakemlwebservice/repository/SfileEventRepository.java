@@ -1,8 +1,8 @@
 package no.nnsn.quakemlwebservice.repository;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileEvent;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

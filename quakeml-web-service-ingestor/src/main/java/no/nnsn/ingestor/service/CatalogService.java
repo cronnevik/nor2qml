@@ -1,6 +1,6 @@
 package no.nnsn.ingestor.service;
 
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
 
 import java.util.List;
 

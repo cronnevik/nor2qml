@@ -2,7 +2,7 @@ package no.nnsn.convertercore.mappers.utils;
 
 import lombok.Getter;
 import lombok.Setter;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
 
 import java.security.SecureRandom;
 
@@ -38,20 +38,16 @@ public class IdGenerator {
         if (catalogName == null) {
             catalogName = "eventParams";
         }
-        String id =
-                this.prefix + ":" +
-                this.authorityID + "/" +
-                catalogName;
-        return id;
+        return this.prefix + ":" +
+        this.authorityID + "/" +
+        catalogName;
     }
 
     public String genEventParamsPublicID(Catalog catalog) {
         if (catalog != null) {
-            String id =
-                    catalog.getPrefix() + ":" +
-                            catalog.getAuthorityID() + "/" +
-                            catalog.getCatalogName();
-            return id;
+            return catalog.getPrefix() + ":" +
+                    catalog.getAuthorityID() + "/" +
+                    catalog.getCatalogName();
         } else {
             return this.genEventParamsPublicID();
         }
@@ -70,12 +66,12 @@ public class IdGenerator {
         if (prefix == null) { prefix = "smi"; }
         if (authorityID == null) { authorityID = "authorityID"; }
         RandomString genString = new RandomString(12, new SecureRandom());
-        String id =
-            this.prefix + ":" +
-            this.authorityID + "/" +
-            type.getSimpleName() + "/" + year + "-" + stationOrAgency + // Resource ID
-            "-" + genString.nextString(); // Local ID
-        return id;
+        // Resource ID
+        // Local ID
+        return this.prefix + ":" +
+        this.authorityID + "/" +
+        type.getSimpleName() + "/" + year + "-" + stationOrAgency + // Resource ID
+        "-" + genString.nextString();
     }
 
     /**

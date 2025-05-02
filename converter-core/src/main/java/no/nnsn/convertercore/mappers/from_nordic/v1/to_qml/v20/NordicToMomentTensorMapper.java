@@ -4,18 +4,18 @@ import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.annotations.GeneralQu
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.helpers.GeneralHelper;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.ChildChecker;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.MomentTensor;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.Tensor;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.OriginType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.TimeQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineM1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineM2;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Magnitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.MomentTensor;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.CompositeTime;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.Tensor;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.OriginType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.TimeQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineM1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineM2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
@@ -187,7 +187,6 @@ public abstract class NordicToMomentTensorMapper {
      *
      * @param lineM2 LineM2 object (2nd moment tensor line)
      * @param line1 Line1 object
-     * @param origin Origin object
      * @return MomentTensor
      */
     @Mappings({
@@ -344,7 +343,7 @@ public abstract class NordicToMomentTensorMapper {
     /**
      * AfterMapping - When using AfterMapping, null checking will have to be done manually on relating custom objects.
      * This include objects like
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity}.
+     * {@link RealQuantity}.
      * Methods for respective object is specified within {@link ChildChecker}.
      *
      * @param mt The MomentTensor object that were build in the initial mapping.

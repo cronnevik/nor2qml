@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.types.CompositeTimeDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.types.CompositeTimeDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.CompositeTime;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -23,9 +23,6 @@ public abstract class QmlToCompositeTimeMapper {
      * @param compositeTime CompositeTime object of QuakeML version 2.0
      * @return CompositeTimeDto object of QuakeML version 1.2.
      */
-    @Mappings({
-            @Mapping(target = "origin", ignore = true)
-    })
     public abstract CompositeTimeDto mapV12CompositeTime(CompositeTime compositeTime);
 
     /**
@@ -36,8 +33,5 @@ public abstract class QmlToCompositeTimeMapper {
      * @return CompositeTime object of QuakeML version 2.0.
      */
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "origin", ignore = true)
-    })
     public abstract CompositeTime mapV20CompositeTime(CompositeTimeDto compositeTimeDto);
 }

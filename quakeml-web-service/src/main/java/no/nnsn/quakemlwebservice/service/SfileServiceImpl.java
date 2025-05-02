@@ -1,7 +1,7 @@
 package no.nnsn.quakemlwebservice.service;
 
 import no.nnsn.quakemlwebservice.repository.SfileRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -5,7 +5,7 @@ import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.interfaces.QmlToSfile;
 import no.nnsn.convertercore.mappers.interfaces.NordicMapper;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
-import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
+import no.nnsn.seisanquakeml.models.sfile.Sfile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class ConvFromFiles {
         String path = "src/test/resources/sfile/14-0821-44L.S200806";
 
         File sFile = new File(path);
-        List<Sfile> sfiles = null;
+        List<Sfile> sfiles;
 
         try {
             InputStream stream = new FileInputStream(sFile);
@@ -72,7 +72,7 @@ public class ConvFromFiles {
         String path = "src/test/resources/sfile/nyformat.out";
 
         File sFile = new File(path);
-        List<Sfile> sfiles = null;
+        List<Sfile> sfiles;
 
         try {
             InputStream stream = new FileInputStream(sFile);

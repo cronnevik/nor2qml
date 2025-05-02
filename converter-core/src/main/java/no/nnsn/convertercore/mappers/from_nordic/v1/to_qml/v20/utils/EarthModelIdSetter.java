@@ -1,8 +1,8 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Arrival;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Arrival;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
 
 /**
  * Generic class of setting the earthModelID of various QuakeML entities.

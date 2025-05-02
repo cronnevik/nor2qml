@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.OriginDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.OriginDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -31,9 +31,6 @@ public abstract class QmlToOriginMapper {
      * @param origin Origin object of QuakeML version 2.0
      * @return OriginDto object of QuakeML version 1.2.
      */
-    @Mappings({
-            @Mapping(target = "event", ignore = true),
-    })
     public abstract OriginDto mapV12Origin(Origin origin);
 
     /**
@@ -44,9 +41,6 @@ public abstract class QmlToOriginMapper {
      * @return Origin object of QuakeML version 2.0.
      */
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "event", ignore = true),
-    })
     public abstract Origin mapV20Origin(OriginDto originDto);
 
 }

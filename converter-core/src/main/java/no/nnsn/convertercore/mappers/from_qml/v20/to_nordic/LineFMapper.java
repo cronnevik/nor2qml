@@ -3,8 +3,8 @@ package no.nnsn.convertercore.mappers.from_qml.v20.to_nordic;
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.GeneralLineHelper;
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.LineHelper;
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.annotations.GeneralLineQualifiers.*;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.FocalMechanism;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineF;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.FocalMechanism;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineF;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

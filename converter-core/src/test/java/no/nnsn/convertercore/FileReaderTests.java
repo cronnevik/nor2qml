@@ -4,8 +4,8 @@ import no.nnsn.convertercore.helpers.CallerType;
 import no.nnsn.convertercore.interfaces.NordicToQml;
 import no.nnsn.convertercore.mappers.interfaces.NordicMapper;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
-import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
-import no.nnsn.seisanquakemljpa.models.sfile.SfileData;
+import no.nnsn.seisanquakeml.models.sfile.Sfile;
+import no.nnsn.seisanquakeml.models.sfile.SfileData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -67,16 +68,17 @@ public class FileReaderTests {
 
         Sfile sfile = sfiles.get(0);
 
-        assertTrue(sfiles.size() == 1);
-        assertTrue(sFile.getName().equals("07-1645-19D.S200805"));
+        assertEquals(1, sfiles.size());
+        assertEquals("07-1645-19D.S200805", sFile.getName());
 
         // Check if all line types have been read and mapped to their respective objects
-        assertTrue(sf.getLine1s().size() == 3);
-        assertTrue(sf.getLineEs().size() == 1);
-        assertTrue(sf.getLineIs().size() == 1);
-        assertTrue(sf.getLine3s().size() == 1);
-        assertTrue(sf.getLine4s().size() == 25);
-        assertTrue(sf.getLine6s().size() == 9);
+        assert sf != null;
+        assertEquals(3, sf.getLine1s().size());
+        assertEquals(1, sf.getLineEs().size());
+        assertEquals(1, sf.getLineIs().size());
+        assertEquals(1, sf.getLine3s().size());
+        assertEquals(25, sf.getLine4s().size());
+        assertEquals(9, sf.getLine6s().size());
     }
 
     @Test
@@ -112,7 +114,7 @@ public class FileReaderTests {
         try {
             InputStream stream = new FileInputStream(sFile);
             sfiles = nordicToQml.readSfile(stream, sFile.getName(), CallerType.CONVERTER);
-            if (sfiles.size() > 0) {
+            if (!sfiles.isEmpty()) {
                 assert true;
             } else {
                 assert false;

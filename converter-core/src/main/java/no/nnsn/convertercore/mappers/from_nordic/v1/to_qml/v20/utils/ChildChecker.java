@@ -1,14 +1,14 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.Waveform.WaveformStreamID;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.NodalPlanes;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.PrincipalAxes;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.IntegerQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.TimeQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.Waveform.WaveformStreamID;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.CompositeTime;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.NodalPlanes;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.PrincipalAxes;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.IntegerQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.TimeQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 public class ChildChecker {
 
     public static Boolean isCommentNull(List<Comment> cmts) {
-        return cmts.size() == 0;
+        return cmts.isEmpty();
     }
 
     public static Boolean isCompositeTimeNull(List<CompositeTime> cts) {

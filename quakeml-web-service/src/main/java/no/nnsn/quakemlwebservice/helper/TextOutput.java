@@ -1,16 +1,9 @@
 package no.nnsn.quakemlwebservice.helper;
 
-import no.nnsn.quakemlwebservice.dao.FormatType;
 import no.nnsn.quakemlwebservice.dao.TextFormat;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
+import no.nnsn.seisanquakeml.models.catalog.SfileEvent;
 
 import java.util.List;
-import java.util.Set;
 
 public class TextOutput {
     private final static String header = "#EventID|Time|Latitude|Longitude|Depth/km|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName|EventType";

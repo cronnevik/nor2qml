@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.exeption;
 
-import no.nnsn.seisanquakemljpa.models.exception.NorQmlException;
+import no.nnsn.seisanquakeml.models.exception.NorQmlException;
 
 public class FileReaderException extends NorQmlException {
 

@@ -11,7 +11,7 @@ import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.seisanquakeml.seisanquakemlcommonsweb.helpers.QuakemlContent;
 import no.nnsn.seisanquakeml.seisanquakemlcommonsweb.utils.QuakemlUtils;
 import no.nnsn.seisanquakemlcommonsfile.FileInfo;
-import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
+import no.nnsn.seisanquakeml.models.sfile.Sfile;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class Converter {
         this.nordicToQml = nordicToQml;
     }
 
-    public void convert() {
+    public void convert() throws Exception {
         String data = null;
         String output = "";
         String path = null;
@@ -99,7 +99,7 @@ public class Converter {
         }
     }
 
-    public String convertToQml() {
+    public String convertToQml() throws Exception {
         String version;
         if (arguments.isQuakemlV12()) {
             version = "v12";
@@ -117,28 +117,7 @@ public class Converter {
         String path;
         final AtomicReference<String> qmlString = new AtomicReference<>();
         path = arguments.hasInput() ? arguments.getInput() : arguments.getCurrentPath();
-        FileInfo fileInfo = null;
-        try {
-            fileInfo = new FileInfo(path, "sfile", null);
-        } catch (IOException e) {
-            // e.printStackTrace();
-        }
-
-        List<Sfile> sFileEvents = new ArrayList<>();
-        Set<Path> filePaths = fileInfo.getFilePaths();
-        filePaths.forEach(p -> {
-            InputStream stream = null;
-            try {
-                stream = new FileInputStream(p.toString());
-            } catch (FileNotFoundException e) {
-                // e.printStackTrace();
-            }
-            try {
-                sFileEvents.addAll(nordicToQml.readSfile(stream, p.toString(), CallerType.STANDALONE));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        List<Sfile> sFileEvents = getSfiles(path);
 
         EventOverview eventOverview;
         try {
@@ -181,6 +160,32 @@ public class Converter {
             System.out.println("No errors found");
         }
         return qmlString.get();
+    }
+
+    private List<Sfile> getSfiles(String path) {
+        FileInfo fileInfo = null;
+        try {
+            fileInfo = new FileInfo(path, "sfile", null);
+        } catch (IOException e) {
+            // e.printStackTrace();
+        }
+
+        List<Sfile> sFileEvents = new ArrayList<>();
+        Set<Path> filePaths = fileInfo.getFilePaths();
+        filePaths.forEach(p -> {
+            InputStream stream = null;
+            try {
+                stream = new FileInputStream(p.toString());
+            } catch (FileNotFoundException e) {
+                // e.printStackTrace();
+            }
+            try {
+                sFileEvents.addAll(nordicToQml.readSfile(stream, p.toString(), CallerType.STANDALONE));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return sFileEvents;
     }
 
     public String convertToSfile() {

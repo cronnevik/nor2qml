@@ -1,8 +1,8 @@
 package no.nnsn.convertercore.helpers;
 
 import lombok.Data;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Event;
+import no.nnsn.seisanquakeml.models.sfile.Sfile;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.interfaces;
 
 import no.nnsn.convertercore.helpers.NordicFormatVersion;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.*;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.*;
 
 import java.util.List;
 

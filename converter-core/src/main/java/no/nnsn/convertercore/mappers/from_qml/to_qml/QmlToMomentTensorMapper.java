@@ -2,8 +2,8 @@ package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
 import no.nnsn.convertercore.mappers.from_qml.to_qml.annotations.QuakeMLQualifiers;
 import no.nnsn.convertercore.mappers.from_qml.to_qml.helpers.QuakeMLHelper;
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.MomentTensorDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.MomentTensor;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.MomentTensorDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.MomentTensor;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -34,7 +34,6 @@ public abstract class QmlToMomentTensorMapper {
             @Mapping(target = "doubleCouple", source = "doubleCouple", qualifiedBy = QuakeMLQualifiers.RealQuantityToDouble.class),
             @Mapping(target = "clvd", source = "clvd", qualifiedBy = QuakeMLQualifiers.RealQuantityToDouble.class),
             @Mapping(target = "iso", source = "iso", qualifiedBy = QuakeMLQualifiers.RealQuantityToDouble.class),
-            @Mapping(target = "focalMechanism", ignore = true)
     })
     public abstract MomentTensorDto mapV12MomentTensor(MomentTensor momentTensor);
 
@@ -51,7 +50,6 @@ public abstract class QmlToMomentTensorMapper {
             @Mapping(target = "doubleCouple", source = "doubleCouple", qualifiedBy = QuakeMLQualifiers.DoubleToRealQuantity.class),
             @Mapping(target = "clvd", source = "clvd", qualifiedBy = QuakeMLQualifiers.DoubleToRealQuantity.class),
             @Mapping(target = "iso", source = "iso", qualifiedBy = QuakeMLQualifiers.DoubleToRealQuantity.class),
-            @Mapping(target = "focalMechanism", ignore = true)
     })
     public abstract MomentTensor mapV20MomentTensor(MomentTensorDto momentTensorDto);
 

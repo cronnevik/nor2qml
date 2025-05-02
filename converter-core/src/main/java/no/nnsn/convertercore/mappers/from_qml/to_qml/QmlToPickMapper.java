@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.PickDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Pick;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.PickDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Pick;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -29,9 +29,6 @@ public abstract class QmlToPickMapper {
      * @param pick Pick object of QuakeML version 2.0
      * @return PickDto object of QuakeML version 1.2.
      */
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract PickDto mapV12Pick(Pick pick);
 
     /**
@@ -42,8 +39,5 @@ public abstract class QmlToPickMapper {
      * @return Pick object of QuakeML version 2.0.
      */
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract Pick mapV20Pick(PickDto pickDto);
 }

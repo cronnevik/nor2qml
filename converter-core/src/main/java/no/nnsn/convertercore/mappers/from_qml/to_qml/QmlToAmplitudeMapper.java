@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.AmplitudeDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Amplitude;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.AmplitudeDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Amplitude;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -28,9 +28,6 @@ public abstract class QmlToAmplitudeMapper {
      * @param amplitude Amplitude object of QuakeML version 2.0
      * @return AmplitudeDto object used by EventDto object of QuakeML version 1.2.
      */
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract AmplitudeDto mapV12Amplitude(Amplitude amplitude);
 
 
@@ -42,9 +39,6 @@ public abstract class QmlToAmplitudeMapper {
      * @return Amplitude object used by Event object of QuakeML version 2.0.
      */
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract Amplitude mapV20Amplitude(AmplitudeDto amplitudeDto);
 
 }

@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers;
 
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.annotations.EnumLineQualifiers;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.OriginDepthType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.OriginDepthType;
 
 public class EnumLineHelper {
     @EnumLineQualifiers.DepthTypeToDepthIndicator

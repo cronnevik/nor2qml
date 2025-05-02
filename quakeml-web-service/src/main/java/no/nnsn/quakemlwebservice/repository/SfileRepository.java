@@ -1,6 +1,6 @@
 package no.nnsn.quakemlwebservice.repository;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

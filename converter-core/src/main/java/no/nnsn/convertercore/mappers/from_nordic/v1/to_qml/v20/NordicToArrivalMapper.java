@@ -7,11 +7,12 @@ import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.EarthModelI
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.PhaseIDSetter;
 import no.nnsn.convertercore.mappers.utils.CharacterChecker;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Arrival;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.enums.PropertyIdType;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Arrival;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.enums.PropertyIdType;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line4;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -228,7 +229,7 @@ public abstract class NordicToArrivalMapper {
 
     /**
      * AfterMapping - When using AfterMapping, null checking will have to be done manually on relating custom objects.
-     * This include objects like {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity}.
+     * This include objects like {@link RealQuantity}.
      * Methods for respective object is specified within {@link ChildChecker}.
      *
      * @param arrival The amplitude object that were build in the initial mapping.

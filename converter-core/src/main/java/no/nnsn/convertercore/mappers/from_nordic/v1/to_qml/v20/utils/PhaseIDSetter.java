@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils;
 
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line4;
 import org.apache.commons.lang3.StringUtils;
 
 public class PhaseIDSetter {
@@ -12,13 +12,10 @@ public class PhaseIDSetter {
         String firstMotion = !StringUtils.isBlank(line4.getFirstMotion()) ? line4.getFirstMotion() : "";
         String extLastPhaseID = !StringUtils.isBlank(line4.getExtLastPhaseIdChar()) ?line4.getExtLastPhaseIdChar() : "";
 
-        String newPhaseId =
-            phaseID +
-            weighting +
-            flagA +
-            firstMotion +
-            extLastPhaseID;
-
-        return newPhaseId;
+        return phaseID +
+        weighting +
+        flagA +
+        firstMotion +
+        extLastPhaseID;
     }
 }

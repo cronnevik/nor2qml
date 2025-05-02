@@ -3,9 +3,9 @@ package no.nnsn.convertercore.helpers.collections;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.FocalMechanism;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.FocalMechanism;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Magnitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
 
 import java.util.List;
 

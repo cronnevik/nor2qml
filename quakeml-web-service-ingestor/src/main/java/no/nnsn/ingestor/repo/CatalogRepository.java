@@ -1,6 +1,6 @@
 package no.nnsn.ingestor.repo;
 
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

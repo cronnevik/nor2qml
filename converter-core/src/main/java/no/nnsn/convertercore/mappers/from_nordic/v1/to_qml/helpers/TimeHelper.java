@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.helpers;
 
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.annotations.TimeQualifiers;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
