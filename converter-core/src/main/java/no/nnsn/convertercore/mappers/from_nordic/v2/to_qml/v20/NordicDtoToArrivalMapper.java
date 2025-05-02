@@ -6,12 +6,11 @@ import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.EarthModelI
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.ParameterOneType;
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.PhaseParameters;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Arrival;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.enums.PropertyIdType;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
-import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Arrival;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.enums.PropertyIdType;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v2.lines.Line4Dto;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;

@@ -1,7 +1,7 @@
 package no.nnsn.ingestor.service;
 
 import no.nnsn.ingestor.repo.SfileCheckerRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

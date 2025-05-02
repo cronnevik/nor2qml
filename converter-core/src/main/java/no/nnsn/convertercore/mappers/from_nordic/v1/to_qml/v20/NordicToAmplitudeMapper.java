@@ -7,14 +7,15 @@ import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.PhaseIDSett
 import no.nnsn.convertercore.mappers.utils.AmplitudeUnitConverter;
 import no.nnsn.convertercore.mappers.utils.CharacterChecker;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Amplitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Pick;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeCategory;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeUnit;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.TimeQuantity;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.Waveform.WaveformStreamID;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Amplitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Pick;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeCategory;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeUnit;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.TimeQuantity;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line4;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -245,8 +246,8 @@ public abstract class NordicToAmplitudeMapper {
     /**
      * AfterMapping - When using AfterMapping, null checking will have to be done manually on relating custom objects.
      * This include objects like
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity},
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.Waveform.WaveformStreamID}, etc.
+     * {@link RealQuantity},
+     * {@link WaveformStreamID}, etc.
      * Methods for respective object is specified within {@link ChildChecker}.
      *
      * @param amp The amplitude object that were build in the initial mapping.

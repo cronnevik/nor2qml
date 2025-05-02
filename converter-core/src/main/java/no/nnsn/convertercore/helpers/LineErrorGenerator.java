@@ -2,7 +2,7 @@ package no.nnsn.convertercore.helpers;
 
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line;
 
 public class LineErrorGenerator {
 

@@ -9,13 +9,13 @@ import no.nnsn.convertercore.mappers.from_qml.to_qml.QmlToEventMapper;
 import no.nnsn.convertercore.mappers.from_qml.to_qml.QmlToEventParamsMapper;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
 import no.nnsn.seisanquakeml.seisanquakemlcommonsweb.helpers.QuakemlContent;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.QuakeMLDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.EventDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.EventParametersDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.QuakeML;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.EventParameters;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
+import no.nnsn.seisanquakeml.models.quakeml.v12.QuakeMLDto;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.EventDto;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.EventParametersDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.QuakeML;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Event;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.EventParameters;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.Jaxb2CollectionHttpMessageConverter;
@@ -90,11 +90,7 @@ public class QuakemlUtils {
             xmlns = root.getAttribute("xmlns");
             xml = nodeToString(root.getElementsByTagName("eventParameters"));
 
-        } catch (ParserConfigurationException | IOException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println(e.getMessage());
         }
         return new QuakemlContent(xmlns,xml);
@@ -111,14 +107,12 @@ public class QuakemlUtils {
 
         QuakeML quakeML = new QuakeML();
         if (content.getXmlns().equals("http://quakeml.org/xmlns/bed/1.2") || content.getXmlns().equals("http://quakeml.org/xmlns/quakeml/1.2")) {
-            QuakeMLDto quakeMLDto = null;
             try {
                 EventParametersDto eventParametersDto = mapper.readValue(content.getEvParamString(), EventParametersDto.class);
                 EventParameters evParamsQml20 = QmlToEventParamsMapper.INSTANCE.mapV20EventParams(eventParametersDto);
                 quakeML.setEventParameters(evParamsQml20);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
         } else {
             try {
@@ -127,14 +121,13 @@ public class QuakemlUtils {
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                e.printStackTrace();
             }
         }
 
         return quakeML.getEventParameters().getEvent();
     }
 
-    public static String generateQuakemlStringFromSfiles(List<Event> events, String prefix, String agencyID, String qmlVersion) {
+    public static String generateQuakemlStringFromSfiles(List<Event> events, String prefix, String agencyID, String qmlVersion) throws Exception {
         IdGenerator idGenerator = IdGenerator.getInstance();
         idGenerator.setPrefix(prefix);
         idGenerator.setAuthorityID(agencyID);
@@ -155,7 +148,7 @@ public class QuakemlUtils {
         }
     }
 
-    public static String generateQuakeml12Doc(QuakeMLDto quakeMLDto) {
+    public static String generateQuakeml12Doc(QuakeMLDto quakeMLDto) throws Exception {
         StringWriter sw = new StringWriter();
         try {
             JAXBContext jc = JAXBContext.newInstance(QuakeMLDto.class);
@@ -169,7 +162,7 @@ public class QuakemlUtils {
             marshaller.marshal(quakeMLDto, sw);
 
         } catch (JAXBException e) {
-            e.printStackTrace();
+            throw new Exception(e.getMessage());
         }
         return sw.toString();
     }
@@ -195,7 +188,7 @@ public class QuakemlUtils {
         return sw.toString();
     }
 
-    public static String getQuakeml12DocFromEvents(List<Event> events, Catalog catalog) {
+    public static String getQuakeml12DocFromEvents(List<Event> events, Catalog catalog) throws Exception {
         QuakeMLDto quakeMLDto = new QuakeMLDto();
         EventParametersDto eventParametersDto = new EventParametersDto();
 
@@ -204,9 +197,7 @@ public class QuakemlUtils {
         eventParametersDto.setPublicID(eventParamsPublicID);
 
         List<EventDto> eventList = new ArrayList<>();
-        events.forEach(ev -> {
-            eventList.add(QmlToEventMapper.INSTANCE.mapV12Event(ev));
-        });
+        events.forEach(ev -> eventList.add(QmlToEventMapper.INSTANCE.mapV12Event(ev)));
         eventParametersDto.setEvent(eventList);
 
         quakeMLDto.setEventParameters(eventParametersDto);
@@ -234,16 +225,5 @@ public class QuakemlUtils {
         t.transform(new DOMSource(nodeList.item(0)), new StreamResult(sw));
 
         return sw.toString();
-    }
-
-    private static String inputStreamToString(InputStream is) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        String line;
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-        }
-        br.close();
-        return sb.toString();
     }
 }

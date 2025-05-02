@@ -1,0 +1,15 @@
+package no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes;
+
+
+import lombok.Data;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+@Data
+@XmlAccessorType(XmlAccessType.FIELD)
+public class PrincipalAxes {
+    private Axis tAxis;
+    private Axis pAxis;
+    private Axis nAxis;
+}

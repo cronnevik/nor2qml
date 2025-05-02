@@ -20,16 +20,16 @@ import no.nnsn.ingestor.service.SfileCheckerService;
 import no.nnsn.ingestor.utils.IngestLog;
 import no.nnsn.ingestor.utils.TimeLogger;
 import no.nnsn.seisanquakemlcommonsfile.FileInfo;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.QuakeML;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Magnitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
+import no.nnsn.seisanquakeml.models.catalog.SfileEvent;
+import no.nnsn.seisanquakeml.models.quakeml.v20.QuakeML;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Event;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Magnitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.EventDescription;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -132,12 +132,7 @@ public class Ingestor {
             log.info("-------------------------------------");
             log.info("Errors found in file and the lines are ignored during conversion to QuakeML format:");
             convErrors.forEach(er -> {
-                log.info(
-                        "File: " + er.getFilename() +
-                                " | Row: " + er.getRowNumber() +
-                                " | Error: " + er.getMessage() +
-                                " | LineText:" + er.getLine().getLineText()
-                );
+                log.info("File: {} | Row: {} | Error: {} | LineText:{}", er.getFilename(), er.getRowNumber(), er.getMessage(), er.getLine().getLineText());
             });
             log.info("-------------------------------------");
         }

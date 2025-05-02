@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.v20.to_nordic;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line6;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line6;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

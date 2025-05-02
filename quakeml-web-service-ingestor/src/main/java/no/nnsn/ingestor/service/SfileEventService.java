@@ -1,7 +1,7 @@
 package no.nnsn.ingestor.service;
 
 import no.nnsn.ingestor.dao.SfileCheckInfo;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
+import no.nnsn.seisanquakeml.models.catalog.SfileEvent;
 
 import java.util.List;
 

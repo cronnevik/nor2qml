@@ -6,19 +6,18 @@ import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.PhaseParame
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.GeneralLineHelper;
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.LineHelper;
 import no.nnsn.convertercore.mappers.utils.AmplitudeUnitConverter;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Amplitude;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Arrival;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Pick;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.Waveform.WaveformStreamID;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeUnit;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickOnset;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.enums.PropertyIdType;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line4;
-import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Amplitude;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Arrival;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Pick;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.Waveform.WaveformStreamID;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.AmplitudeUnit;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.PickOnset;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
+import no.nnsn.seisanquakeml.models.sfile.v1.enums.PropertyIdType;
+import no.nnsn.seisanquakeml.models.sfile.v2.lines.Line4Dto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -71,10 +70,10 @@ public abstract class Line4DtoMapper {
 
     @AfterMapping
     protected void setStationComponentNetworkLocation(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
-        String stationCode = null;
-        String channelCode = null;
-        String networkCode = null;
-        String locationCode = null;
+        String stationCode;
+        String channelCode;
+        String networkCode;
+        String locationCode;
 
         WaveformStreamID waveformID = null;
 
@@ -160,7 +159,7 @@ public abstract class Line4DtoMapper {
             if (pick.getTime() != null) {
                 String timeString = line4Entities.getPick().getTime().getValue();
                 // Zoned DateTime (e.g. 2015-11-30T00:00:15.50Z)
-                if(timeString.substring(timeString.length() -1 ).equals("Z")) {
+                if(timeString.endsWith("Z")) {
                     ZonedDateTime timeZoned = ZonedDateTime.parse(timeString);
                     if (pick.getTimeOverMidnight()) {
                         int hour = timeZoned.getHour();
@@ -171,8 +170,8 @@ public abstract class Line4DtoMapper {
 
                     line4Dto.setMinutes(Integer.toString(timeZoned.getMinute()));
 
-                    Double secAndMillSec = Double.valueOf(timeZoned.getSecond()) + (Double.valueOf(timeZoned.getNano()) / Math.pow(10,9));
-                    line4Dto.setSeconds(secAndMillSec.toString());
+                    double secAndMillSec = (double) timeZoned.getSecond() + ((double) timeZoned.getNano() / Math.pow(10,9));
+                    line4Dto.setSeconds(Double.toString(secAndMillSec));
                 }
                 // Default DateTime (e.g. 2012-05-29T23:58:58.770000)
                 else {
@@ -185,8 +184,8 @@ public abstract class Line4DtoMapper {
                     }
                     line4Dto.setMinutes(Integer.toString(time.getMinute()));
 
-                    Double secAndMillSec = Double.valueOf(time.getSecond()) + (Double.valueOf(time.getNano()) / Math.pow(10,9));
-                    line4Dto.setSeconds(secAndMillSec.toString());
+                    double secAndMillSec = (double) time.getSecond() + ((double) time.getNano() / Math.pow(10,9));
+                    line4Dto.setSeconds(Double.toString(secAndMillSec));
                 }
             }
         }
@@ -213,14 +212,12 @@ public abstract class Line4DtoMapper {
 
             if (pick.getPolarity() != null) {
                 PickPolarity polarity = pick.getPolarity();
-                if (polarity != null) {
-                    if (pOneIsSet && (polarity != PickPolarity.UNDECIDABLE)) {
-                        System.out.println("Found polarity, but parameter one is already set by backAzimuth");
-                    } else if (polarity == PickPolarity.POSITIVE) {
-                        line4Dto.setParameterOne("C");
-                    } else if (polarity == PickPolarity.NEGATIVE) {
-                        line4Dto.setParameterOne("D");
-                    }
+                if (pOneIsSet && (polarity != PickPolarity.UNDECIDABLE)) {
+                    System.out.println("Found polarity, but parameter one is already set by backAzimuth");
+                } else if (polarity == PickPolarity.POSITIVE) {
+                    line4Dto.setParameterOne("C");
+                } else if (polarity == PickPolarity.NEGATIVE) {
+                    line4Dto.setParameterOne("D");
                 }
             }
         }
@@ -275,8 +272,8 @@ public abstract class Line4DtoMapper {
     @AfterMapping
     protected void setParameterTwo(@MappingTarget Line4Dto line4Dto, Line4Entities l4Entities) {
 
-        Boolean hasParameterAmplitude = false;
-        Boolean hasParameterBackAzimuth = false;
+        boolean hasParameterAmplitude = false;
+        boolean hasParameterBackAzimuth = false;
 
         // Check for amplitude
         if (hasAmplitude(l4Entities)) {
@@ -339,8 +336,8 @@ public abstract class Line4DtoMapper {
                     RealQuantity horizontalSlowness = pick.getHorizontalSlowness();
                     if (horizontalSlowness.getValue() != null) {
                         Double phaseVelNum = horizontalSlowness.getValue();
-                        Double newPhaseVelNum = 1 / (phaseVelNum / 111.2); // s/deg to km/s (1/x --> s/km to km/s)
-                        line4Dto.setParameterTwo(newPhaseVelNum.toString());
+                        double newPhaseVelNum = 1 / (phaseVelNum / 111.2); // s/deg to km/s (1/x --> s/km to km/s)
+                        line4Dto.setParameterTwo(Double.toString(newPhaseVelNum));
                     }
                 }
             }
@@ -411,8 +408,8 @@ public abstract class Line4DtoMapper {
             if (arrival.getTimeWeight() != null) {
                 Double timeWeight = arrival.getTimeWeight();
                 // QuakeML (0.5) => Nordic (05)
-                Double nordicTimeWeight = timeWeight * 10;
-                line4Dto.setWeightingIndicator(nordicTimeWeight.toString());
+                double nordicTimeWeight = timeWeight * 10;
+                line4Dto.setWeightingIndicator(Double.toString(nordicTimeWeight));
             }
         }
     }
@@ -482,7 +479,7 @@ public abstract class Line4DtoMapper {
                     if (PropertyIdType.PROPERTY_WEIGHT.equalValue(comment.getId())) {
                         String[] weightSplit = comment.getText().split("\\.");
                         line4Dto.setWeight(weightSplit[0] + weightSplit[1]);
-                    };
+                    }
                 });
             }
         }
@@ -495,8 +492,8 @@ public abstract class Line4DtoMapper {
             if (arrival.getDistance() != null) {
                 Double epDist = arrival.getDistance();
                 // Convert from degrees to km
-                Double newDist = epDist * 111.2;
-                line4Dto.setEpicentralDistance(newDist.toString());
+                double newDist = epDist * 111.2;
+                line4Dto.setEpicentralDistance(Double.toString(newDist));
             }
         }
     }
@@ -506,20 +503,20 @@ public abstract class Line4DtoMapper {
         if (hasArrival(l4Entities)) {
             Arrival arrival = l4Entities.getArrival();
             Double value = arrival.getAzimuth();
-            Integer intValue = (int) Math.round(value);
-            line4Dto.setAzimuthAtSource(intValue != null && !value.isNaN() ? intValue.toString() : null);
+            int intValue = (int) Math.round(value);
+            line4Dto.setAzimuthAtSource(!value.isNaN() ? Integer.toString(intValue) : null);
         }
     }
 
     private Boolean hasPick(Line4Entities l4Entities) {
-        return l4Entities.getPick() != null ? true : false;
+        return l4Entities.getPick() != null;
     }
 
     private Boolean hasAmplitude(Line4Entities l4Entities) {
-        return l4Entities.getAmplitude() != null ? true : false;
+        return l4Entities.getAmplitude() != null;
     }
 
     private Boolean hasArrival(Line4Entities l4Entities) {
-        return l4Entities.getArrival() != null ? true : false;
+        return l4Entities.getArrival() != null;
     }
 }

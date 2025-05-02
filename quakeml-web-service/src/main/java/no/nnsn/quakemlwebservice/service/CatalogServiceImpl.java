@@ -1,9 +1,7 @@
 package no.nnsn.quakemlwebservice.service;
 
 import no.nnsn.quakemlwebservice.repository.CatalogRepository;
-import no.nnsn.quakemlwebservice.repository.SfileEventRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

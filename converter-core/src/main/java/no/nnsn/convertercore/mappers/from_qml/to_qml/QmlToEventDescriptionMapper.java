@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.types.EventDescriptionDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.types.EventDescriptionDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.EventDescription;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -22,9 +22,6 @@ public abstract class QmlToEventDescriptionMapper {
      * @param eventDescription EventDescription object of QuakeML version 2.0
      * @return EventDescriptionDto object of QuakeML version 1.2.
      */
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract EventDescriptionDto mapV12EventDescription(EventDescription eventDescription);
 
     /**
@@ -35,8 +32,5 @@ public abstract class QmlToEventDescriptionMapper {
      * @return EventDescription object of QuakeML version 2.0.
      */
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "event", ignore = true)
-    })
     public abstract EventDescription mapV20EventDescription(EventDescriptionDto eventDescriptionDto);
 }

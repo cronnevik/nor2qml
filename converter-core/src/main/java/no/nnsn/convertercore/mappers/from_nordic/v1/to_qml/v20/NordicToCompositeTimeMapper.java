@@ -4,9 +4,11 @@ import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.annotations.GeneralQu
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.helpers.GeneralHelper;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.helpers.EnumsHelper;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.ChildChecker;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineM1;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.CompositeTime;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.IntegerQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineM1;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -36,10 +38,6 @@ public abstract class NordicToCompositeTimeMapper {
      * @return CompositeTime
      */
     @Mappings({
-            // Integer
-            // Internal ID --> ignore
-            @Mapping(target = "compositeTimeID", ignore = true),
-
             // IntegerQuantity (Object)
             @Mapping(target = "year.value", source = "line1.year", qualifiedBy = GeneralQualifiers.StringToInteger.class),
             // IntegerQuantity (Object)
@@ -60,10 +58,6 @@ public abstract class NordicToCompositeTimeMapper {
     public abstract CompositeTime mapOriginCompositeTime(Line1 line1);
 
     @Mappings({
-            // Integer
-            // Internal ID --> ignore
-            @Mapping(target = "compositeTimeID", ignore = true),
-
             // IntegerQuantity (Object)
             @Mapping(target = "year.value", source = "lineM1.year", qualifiedBy = GeneralQualifiers.StringToInteger.class),
             // IntegerQuantity (Object)
@@ -89,7 +83,7 @@ public abstract class NordicToCompositeTimeMapper {
      */
 
     @AfterMapping
-    protected void fixNordicSecondsBug(@MappingTarget CompositeTime cTime, Line1 line1) {
+    protected void fixNordicSecondsBug(@MappingTarget CompositeTime cTime) {
         if (cTime != null) {
             if (cTime.getSecond() != null) {
                 if (cTime.getSecond().getValue() != null) {
@@ -121,8 +115,8 @@ public abstract class NordicToCompositeTimeMapper {
     /**
      * AfterMapping - When using AfterMapping, null checking will have to be done manually on relating custom objects.
      * This include objects like
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.IntegerQuantity} and
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity}
+     * {@link IntegerQuantity} and
+     * {@link RealQuantity}
      * Methods for respective object is specified within {@link ChildChecker}.
      *
      * @param ctime The CompositeTime object that were build in the initial mapping.

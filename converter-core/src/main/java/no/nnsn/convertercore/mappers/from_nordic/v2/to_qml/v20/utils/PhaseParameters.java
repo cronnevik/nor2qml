@@ -1,17 +1,14 @@
 package no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils;
 
-import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PhaseParameters {
 
-    private static String polarityPattern = "C|D";
-
     public static ParameterOneType identifyParameterOneType(String paramOne, String phaseID) {
         if (paramOne != null && !paramOne.isEmpty()) {
             // Polarity
+            String polarityPattern = "[CD]";
             Pattern r = Pattern.compile(polarityPattern);
             Matcher m = r.matcher(paramOne);
             if (m.find()) {
@@ -33,19 +30,17 @@ public class PhaseParameters {
             }
 
             // Amplitude phase
-            if (phaseID.length() >= 1) {
-                String substringOne = phaseID.substring(0, 1);
-                if (substringOne.equals("A")) {
-                    return ParameterOneType.AMPLITUDE;
-                }
+            String substringOne = phaseID.substring(0, 1);
+            if (substringOne.equals("A")) {
+                return ParameterOneType.AMPLITUDE;
+            }
 
-                if (phaseID.length() >=2) {
-                    String substringTwo = phaseID.substring(0, 2);
-                    if (substringTwo.equals("IA")) {
-                        return ParameterOneType.AMPLITUDE;
-                    } else if (substringTwo.equals("IV")) {
-                        return ParameterOneType.AMPLITUDE;
-                    }
+            if (phaseID.length() >=2) {
+                String substringTwo = phaseID.substring(0, 2);
+                if (substringTwo.equals("IA")) {
+                    return ParameterOneType.AMPLITUDE;
+                } else if (substringTwo.equals("IV")) {
+                    return ParameterOneType.AMPLITUDE;
                 }
             }
         }

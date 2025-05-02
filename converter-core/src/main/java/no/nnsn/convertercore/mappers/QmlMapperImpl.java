@@ -7,10 +7,10 @@ import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.NordicDtoToAmplit
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.NordicDtoToArrivalMapper;
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.NordicDtoToPickMapper;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.*;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
-import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.*;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.*;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v2.lines.Line4Dto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

@@ -20,7 +20,7 @@
         <!-- Module dependencies -->
         <dependency>
             <groupId>no.nnsn.seisan-quakeml</groupId>
-            <artifactId>seisan-quakeml-commons-jpa</artifactId>
+            <artifactId>seisan-quakeml-commons-model</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nnsn.seisan-quakeml</groupId>
@@ -95,6 +95,10 @@
         <dependency>
             <groupId>javax.interceptor</groupId>
             <artifactId>javax.interceptor-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
     </dependencies>
 

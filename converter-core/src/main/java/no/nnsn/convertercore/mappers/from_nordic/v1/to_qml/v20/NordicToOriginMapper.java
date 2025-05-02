@@ -9,13 +9,15 @@ import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.helpers.EnumsHelp
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.ChildChecker;
 import no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20.utils.EarthModelIdSetter;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Origin;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.CompositeTime;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.OriginDepthType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.OriginType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.LineE;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.TimeQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Origin;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.CompositeTime;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.OriginDepthType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.OriginType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.CreationInfo;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineE;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -292,7 +294,7 @@ public abstract class NordicToOriginMapper {
 
     /**
      * AfterMapping - Set the creation information object.
-     * Uses {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.CreationInfo} class.
+     * Uses {@link CreationInfo} class.
      *
      * @param org The Origin object that were build in the initial mapping.
      * @param line1 Line1 object passed to the mapper.
@@ -309,8 +311,8 @@ public abstract class NordicToOriginMapper {
     /**
      * AfterMapping - When using AfterMapping, null checking will have to be done manually on relating custom objects.
      * This include objects like
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.TimeQuantity} and
-     * {@link no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity}.
+     * {@link TimeQuantity} and
+     * {@link RealQuantity}.
      * Methods for respective object is specified within {@link ChildChecker}.
      *
      * @param org The Origin object that were build in the initial mapping.

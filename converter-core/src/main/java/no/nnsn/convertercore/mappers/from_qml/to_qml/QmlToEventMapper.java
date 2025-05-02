@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_qml.to_qml;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v12.event.elements.EventDto;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Event;
+import no.nnsn.seisanquakeml.models.quakeml.v12.event.elements.EventDto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Event;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

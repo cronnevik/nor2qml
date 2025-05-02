@@ -1,6 +1,6 @@
 package no.nnsn.convertercore;
 
-import no.nnsn.seisanquakemljpa.models.ModelsAutoConfigure;
+import no.nnsn.seisanquakeml.models.ModelsAutoConfigure;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

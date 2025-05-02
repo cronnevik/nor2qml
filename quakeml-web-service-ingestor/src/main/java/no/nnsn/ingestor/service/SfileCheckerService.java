@@ -1,6 +1,6 @@
 package no.nnsn.ingestor.service;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

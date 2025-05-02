@@ -5,7 +5,7 @@ import no.nnsn.convertercore.helpers.ConverterOptions;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.convertercore.helpers.EventOverview;
 import no.nnsn.convertercore.interfaces.NordicToQml;
-import no.nnsn.seisanquakemljpa.models.sfile.Sfile;
+import no.nnsn.seisanquakeml.models.sfile.Sfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

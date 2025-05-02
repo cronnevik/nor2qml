@@ -1,6 +1,6 @@
 package no.nnsn.ingestor.repo;
-;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
+
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

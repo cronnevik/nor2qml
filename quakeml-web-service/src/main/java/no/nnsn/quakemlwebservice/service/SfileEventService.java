@@ -1,9 +1,9 @@
 package no.nnsn.quakemlwebservice.service;
 
 import no.nnsn.quakemlwebservice.dao.OrderByType;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
-import no.nnsn.seisanquakemljpa.models.catalog.SfileEvent;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventType;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileEvent;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventType;
 
 import java.util.List;
 

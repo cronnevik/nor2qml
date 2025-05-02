@@ -5,10 +5,10 @@ import no.nnsn.convertercore.helpers.LineErrorGenerator;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line3QuakemlEntities;
 import no.nnsn.convertercore.mappers.interfaces.QmlMapper;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.EventDescription;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line3;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.EventDescription;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.EventDescriptionType;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line3;
 
 import java.util.ArrayList;
 import java.util.List;

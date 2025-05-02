@@ -1,7 +1,7 @@
 package no.nnsn.ingestor.service;
 
 import no.nnsn.ingestor.repo.CatalogRepository;
-import no.nnsn.seisanquakemljpa.models.catalog.Catalog;
+import no.nnsn.seisanquakeml.models.catalog.Catalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

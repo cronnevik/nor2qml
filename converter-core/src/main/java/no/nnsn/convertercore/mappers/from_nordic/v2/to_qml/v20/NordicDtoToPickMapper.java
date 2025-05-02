@@ -7,12 +7,12 @@ import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.ParameterOn
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.ParameterTwoType;
 import no.nnsn.convertercore.mappers.from_nordic.v2.to_qml.v20.utils.PhaseParameters;
 import no.nnsn.convertercore.mappers.utils.IdGenerator;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.basicevent.Pick;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.RealQuantity;
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.common.TimeQuantity;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.Line1;
-import no.nnsn.seisanquakemljpa.models.sfile.v2.lines.Line4Dto;
+import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.Pick;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.enums.PickPolarity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.RealQuantity;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.common.TimeQuantity;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line1;
+import no.nnsn.seisanquakeml.models.sfile.v2.lines.Line4Dto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

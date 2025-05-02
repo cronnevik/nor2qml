@@ -1,6 +1,6 @@
 package no.nnsn.quakemlwebservice.service;
 
-import no.nnsn.seisanquakemljpa.models.catalog.SfileInformation;
+import no.nnsn.seisanquakeml.models.catalog.SfileInformation;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package no.nnsn.convertercore.mappers.from_nordic.v1.to_qml.v20;
 
-import no.nnsn.seisanquakemljpa.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakemljpa.models.sfile.v1.lines.*;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.lines.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -29,9 +29,9 @@ public abstract class NordicToCommentMapper {
     @Mappings({
             // String
             @Mapping(target = "text", source="line3.lineText"),
-            // String - identifier for for line type
+            // String - identifier for line type
             @Mapping(target = "id",
-                    expression = "java(no.nnsn.seisanquakemljpa.models.sfile.v1.enums.LineType.LINETYPE_3.getLineType())"),
+                    expression = "java(no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType.LINETYPE_3.getLineType())"),
             // CreationInfo (Object) - NO MAPPING DETERMINED
             @Mapping(target = "creationInfo", ignore = true),
     })
@@ -46,9 +46,9 @@ public abstract class NordicToCommentMapper {
     @Mappings({
             // String
             @Mapping(target = "text", source="line5.lineText"),
-            // String - identifier for for line type
+            // String - identifier for line type
             @Mapping(target = "id",
-                    expression = "java(no.nnsn.seisanquakemljpa.models.sfile.v1.enums.LineType.LINETYPE_5.getLineType())"),
+                    expression = "java(no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType.LINETYPE_5.getLineType())"),
             // CreationInfo (Object) - NO MAPPING DETERMINED
             @Mapping(target = "creationInfo", ignore = true),
     })
@@ -63,9 +63,9 @@ public abstract class NordicToCommentMapper {
     @Mappings({
             // String
             @Mapping(target = "text", source="line6.lineText"),
-            // String - identifier for for line type
+            // String - identifier for line type
             @Mapping(target = "id",
-                    expression = "java(no.nnsn.seisanquakemljpa.models.sfile.v1.enums.LineType.LINETYPE_6.getLineType())"),
+                    expression = "java(no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType.LINETYPE_6.getLineType())"),
             // CreationInfo (Object) - NO MAPPING DETERMINED
             @Mapping(target = "creationInfo", ignore = true),
     })
@@ -80,9 +80,9 @@ public abstract class NordicToCommentMapper {
     @Mappings({
             // String
             @Mapping(target = "text", source="lineI.lineText"),
-            // String - identifier for for line type
+            // String - identifier for line type
             @Mapping(target = "id",
-                    expression = "java(no.nnsn.seisanquakemljpa.models.sfile.v1.enums.LineType.LINETYPE_I.getLineType())"),
+                    expression = "java(no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType.LINETYPE_I.getLineType())"),
             // CreationInfo (Object) - NO MAPPING DETERMINED
             @Mapping(target = "creationInfo", ignore = true),
     })
@@ -91,9 +91,9 @@ public abstract class NordicToCommentMapper {
     @Mappings({
             // String
             @Mapping(target = "text", source="lineS.lineText"),
-            // String - identifier for for line type
+            // String - identifier for line type
             @Mapping(target = "id",
-                    expression = "java(no.nnsn.seisanquakemljpa.models.sfile.v1.enums.LineType.LINETYPE_S.getLineType())"),
+                    expression = "java(no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType.LINETYPE_S.getLineType())"),
             // CreationInfo (Object) - NO MAPPING DETERMINED
             @Mapping(target = "creationInfo", ignore = true),
     })
