@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Import;
 import java.time.Duration;
 import java.time.Instant;
 
+import static no.nnsn.seisanquakeml.converterstandalone.Documentation.printDocumentation;
+
 @SpringBootApplication
 @Import(ConverterCoreConfiguration.class)
 public class ConverterStandaloneApplication implements CommandLineRunner {
@@ -31,6 +33,11 @@ public class ConverterStandaloneApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Application init finished");
+
+        if (args != null && args.length > 0 && args[0].equals("--docs")) {
+            printDocumentation();
+        }
+
         System.out.println("Conversion started...");
         Instant start = Instant.now();
         converter.convert();
