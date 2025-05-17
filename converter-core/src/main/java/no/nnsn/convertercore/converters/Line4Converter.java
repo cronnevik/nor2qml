@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line4QuakemlEntities;
@@ -54,7 +54,7 @@ public class Line4Converter {
                     IgnoredLineError error = (IgnoredLineError) pObj;
                     error.setFilename(sfileInfo.getFilename());
                     error.setEventNumber(sfileInfo.getEventCount());
-                    ConverterErrorLogging.addError(error);
+                    ConverterSfileErrorLogging.addError(error);
                     continue; // Pick is required fo the Arrival and Amplitude obj
                 }
 
@@ -76,7 +76,7 @@ public class Line4Converter {
                     IgnoredLineError error = (IgnoredLineError) arrObj;
                     error.setFilename(sfileInfo.getFilename());
                     error.setEventNumber(sfileInfo.getEventCount());
-                    ConverterErrorLogging.addError(error);
+                    ConverterSfileErrorLogging.addError(error);
                 }
 
                 Amplitude amplitude;
@@ -105,7 +105,7 @@ public class Line4Converter {
                         IgnoredLineError error = (IgnoredLineError) ampObj;
                         error.setFilename(sfileInfo.getFilename());
                         error.setEventNumber(sfileInfo.getEventCount());
-                        ConverterErrorLogging.addError(error);
+                        ConverterSfileErrorLogging.addError(error);
                     }
                 }
             }

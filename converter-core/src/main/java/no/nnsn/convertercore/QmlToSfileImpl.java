@@ -36,7 +36,7 @@ public class QmlToSfileImpl implements QmlToSfile {
 
     @Override
     public SfileOverview convertToNordic(List<Event> events, CallerType caller, NordicFormatVersion nordicFormatVersion) {
-        String sfileOutputPrint = "";
+        StringBuilder sfileOutputPrint = new StringBuilder();
 
         List<IgnoredQmlError> errors = new ArrayList<>();
         List<Sfile> sfiles = new ArrayList<>();
@@ -45,14 +45,14 @@ public class QmlToSfileImpl implements QmlToSfile {
             sortOriginsToHavePreferredFirst(ev);
             Sfile sfile = convertToSfile(errors, ev, nordicFormatVersion);
             sfiles.add(sfile);
-            sfileOutputPrint += createLinesPrint(sfile.getData(), caller, nordicFormatVersion);
+            sfileOutputPrint.append(createLinesPrint(sfile.getData(), caller, nordicFormatVersion));
         }
 
         if (caller.equals(CallerType.CONVERTER)) {
-            return new SfileOverview(sfileOutputPrint, errors, sfiles);
+            return new SfileOverview(sfileOutputPrint.toString(), errors, sfiles);
         }
 
-        return new SfileOverview(sfileOutputPrint, errors);
+        return new SfileOverview(sfileOutputPrint.toString(), errors);
     }
 
     private void sortOriginsToHavePreferredFirst(Event event) {
@@ -101,7 +101,7 @@ public class QmlToSfileImpl implements QmlToSfile {
 
     private void convertToLine1s(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> l1Objects = mapper.mapLine1s(event);
-        if (l1Objects != null && l1Objects.size() > 0) {
+        if (l1Objects != null && !l1Objects.isEmpty()) {
             l1Objects.forEach(o -> {
                 if (o instanceof Line1) {
                     sfileData.addLine1(o);
@@ -113,7 +113,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLine3s(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> l3Objects = mapper.mapLine3s(event);
-        if (l3Objects != null && l3Objects.size() > 0) {
+        if (l3Objects != null && !l3Objects.isEmpty()) {
             l3Objects.forEach(o -> {
                 if (o instanceof Line3) {
                     sfileData.addLine3(o);
@@ -127,7 +127,7 @@ public class QmlToSfileImpl implements QmlToSfile {
         final List<Object> l4Objects = mapper.mapLine4s(nordicFormatVersion, event.getPick(), event.getAmplitude(), event.getOrigin());
 
         if (nordicFormatVersion == NordicFormatVersion.VERSION1) {
-            if (l4Objects != null && l4Objects.size() > 0) {
+            if (l4Objects != null && !l4Objects.isEmpty()) {
                 l4Objects.forEach(o -> {
                     if (o instanceof Line4) {
                         sfileData.addLine4(o);
@@ -139,18 +139,15 @@ public class QmlToSfileImpl implements QmlToSfile {
                 if (sfileData != null) {
                     if (sfileData.getLine4s() != null) {
                         // Sort Line4s based on distance
-                        Collections.sort(
-                                sfileData.getLine4s(),
-                                Comparator.comparing(
-                                        Line4::getEpiDistInt,
-                                        Comparator.naturalOrder()
-                                )
-                        );
+                        sfileData.getLine4s().sort(Comparator.comparing(
+                                Line4::getEpiDistInt,
+                                Comparator.naturalOrder()
+                        ));
                     }
                 }
             }
         } else if (nordicFormatVersion == NordicFormatVersion.VERSION2) {
-            if (l4Objects != null && l4Objects.size() > 0) {
+            if (l4Objects != null && !l4Objects.isEmpty()) {
                 l4Objects.forEach(o -> {
                     if (o instanceof Line4Dto) {
                         sfileData.addLine4(o);
@@ -162,13 +159,10 @@ public class QmlToSfileImpl implements QmlToSfile {
                 if (sfileData != null) {
                     if (sfileData.getLine4s() != null) {
                         // Sort Line4s based on distance
-                        Collections.sort(
-                                sfileData.getLine4s(),
-                                Comparator.comparing(
-                                        Line4Dto::getEpiDistInt,
-                                        Comparator.naturalOrder()
-                                )
-                        );
+                        sfileData.getLine4s().sort(Comparator.comparing(
+                                Line4Dto::getEpiDistInt,
+                                Comparator.naturalOrder()
+                        ));
                     }
                 }
             }
@@ -176,7 +170,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLine5s(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> l5Objects = mapper.mapLine5s(event);
-        if (l5Objects != null && l5Objects.size() > 0) {
+        if (l5Objects != null && !l5Objects.isEmpty()) {
             l5Objects.forEach(o -> {
                 if (o instanceof Line5) {
                     sfileData.addLine5(o);
@@ -188,7 +182,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLine6s(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> l6Objects = mapper.mapLine6s(event);
-        if (l6Objects != null && l6Objects.size() > 0) {
+        if (l6Objects != null && !l6Objects.isEmpty()) {
             l6Objects.forEach(o -> {
                 if (o instanceof Line6) {
                     sfileData.addLine6(o);
@@ -200,7 +194,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLineEs(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> lEObjects = mapper.mapLineEs(event.getOrigin());
-        if (lEObjects != null && lEObjects.size() > 0) {
+        if (lEObjects != null && !lEObjects.isEmpty()) {
             lEObjects.forEach(o -> {
                 if (o instanceof LineE) {
                     sfileData.addLineE(o);
@@ -212,7 +206,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLineFs(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> lFObjects = mapper.mapLineFs(event.getFocalMechanism());
-        if (lFObjects != null && lFObjects.size() > 0) {
+        if (lFObjects != null && !lFObjects.isEmpty()) {
             lFObjects.forEach(o -> {
                 if (o instanceof LineF) {
                     sfileData.addLineF(o);
@@ -224,7 +218,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLineIs(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> lIObjects = mapper.mapLineIs(event);
-        if (lIObjects != null && lIObjects.size() > 0) {
+        if (lIObjects != null && !lIObjects.isEmpty()) {
             lIObjects.forEach(o -> {
                 if (o instanceof LineI) {
                     sfileData.addLineI(o);
@@ -236,7 +230,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLineM1s(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> lM1Objects = mapper.mapLineM1s(event.getOrigin(), event.getFocalMechanism(), event.getMagnitude());
-        if (lM1Objects != null && lM1Objects.size() > 0) {
+        if (lM1Objects != null && !lM1Objects.isEmpty()) {
             lM1Objects.forEach(o -> {
                 if (o instanceof LineM1) {
                     sfileData.addLineM1(o);
@@ -248,7 +242,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLineM2s(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> lM2Objects = mapper.mapLineM2s(event.getFocalMechanism());
-        if (lM2Objects != null && lM2Objects.size() > 0) {
+        if (lM2Objects != null && !lM2Objects.isEmpty()) {
             lM2Objects.forEach(o -> {
                 if (o instanceof LineM2) {
                     sfileData.addLineM2(o);
@@ -260,7 +254,7 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
     private void convertToLineSs(Event event, SfileData sfileData, List<IgnoredQmlError> errors) {
         final List<Object> lSObjects = mapper.mapLineS(event);
-        if (lSObjects != null && lSObjects.size() > 0) {
+        if (lSObjects != null && !lSObjects.isEmpty()) {
             lSObjects.forEach(o -> {
                 if (o instanceof LineS) {
                     sfileData.addLineS(o);
@@ -278,89 +272,89 @@ public class QmlToSfileImpl implements QmlToSfile {
     }
 
     private String createLinesPrint(SfileData sfileData, CallerType caller, NordicFormatVersion nordicFormatVersion) {
-        String sfileText = "";
+        StringBuilder sfileText = new StringBuilder();
         if (caller.equals(CallerType.STANDALONE)) {
-            Line1 line1 = (Line1) sfileData.getLine1s().get(0);
+            Line1 line1 = sfileData.getLine1s().get(0);
             System.out.println("*** Event:" + line1.createLine());
         }
 
         // loop through each line 1 and join to a string value
-        for (Line1 line1: (List<Line1>) sfileData.getLine1s()) {
-            sfileText += line1.createLine() + System.lineSeparator();
+        for (Line1 line1: sfileData.getLine1s()) {
+            sfileText.append(line1.createLine()).append(System.lineSeparator());
         }
 
         // attach lineE
         if (sfileData.getLineEs() != null) {
             List<LineE> lES = sfileData.getLineEs();
-            if (lES.size() > 0) {
+            if (!lES.isEmpty()) {
                 // only print out the first E line as Seisan only accept one
                 LineE lineE = lES.get(0);
-                sfileText += lineE.createLine() + System.lineSeparator();
+                sfileText.append(lineE.createLine()).append(System.lineSeparator());
             }
         }
 
         if (sfileData.getLineFs() != null) {
-            for (LineF linef: (List<LineF>) sfileData.getLineFs()) {
-                sfileText += linef.createLine() + System.lineSeparator();
+            for (LineF linef: sfileData.getLineFs()) {
+                sfileText.append(linef.createLine()).append(System.lineSeparator());
             }
         }
         if (sfileData.getLineM2s() != null) {
-            for (LineM2 lineM2: (List<LineM2>) sfileData.getLineM2s()) {
+            for (LineM2 lineM2: sfileData.getLineM2s()) {
                 boolean hasOrigin = false;
                 String lineM2OrgID = lineM2.getOrgID();
                 if (sfileData.getLineM1s() != null) {
-                    for (LineM1 lineM1: (List<LineM1>) sfileData.getLineM1s()) {
+                    for (LineM1 lineM1: sfileData.getLineM1s()) {
                         String lineM1OrgID = lineM1.getOrgID();
                         if (lineM1OrgID.equals(lineM2OrgID)) {
-                            sfileText += lineM1.createLine() + System.lineSeparator();
+                            sfileText.append(lineM1.createLine()).append(System.lineSeparator());
                             hasOrigin = true;
                         }
                     }
                 }
                 // Only print out an lineM2 if the momentTensor has a relating origin to make a lineM1
                 if (hasOrigin) {
-                    sfileText += lineM2.createLine() + System.lineSeparator();
+                    sfileText.append(lineM2.createLine()).append(System.lineSeparator());
                 }
             }
         }
 
         // loop through each line 5 and join to a string value
         if (sfileData.getLine5s() != null) {
-            for (Line5 line5: (List<Line5>) sfileData.getLine5s()) {
-                sfileText += line5.createLine() + System.lineSeparator();
+            for (Line5 line5: sfileData.getLine5s()) {
+                sfileText.append(line5.createLine()).append(System.lineSeparator());
             }
         }
 
         // loop through each line 6 and join to a string value
         if (sfileData.getLine6s() != null) {
-            for (Line6 line6: (List<Line6>) sfileData.getLine6s()) {
-                sfileText += line6.createLine() + System.lineSeparator();
+            for (Line6 line6: sfileData.getLine6s()) {
+                sfileText.append(line6.createLine()).append(System.lineSeparator());
             }
         }
         // loop through each line I and join to a string value
         if (sfileData.getLineIs() != null) {
-            for (LineI lineI: (List<LineI>) sfileData.getLineIs()) {
-                sfileText += lineI.createLine() + System.lineSeparator();
+            for (LineI lineI: sfileData.getLineIs()) {
+                sfileText.append(lineI.createLine()).append(System.lineSeparator());
             }
         }
         // loop through each line S and join to a string value
         if (sfileData.getLineSs() != null) {
-            for (LineS lineS: (List<LineS>) sfileData.getLineSs()) {
-                sfileText += lineS.createLine() + System.lineSeparator();
+            for (LineS lineS: sfileData.getLineSs()) {
+                sfileText.append(lineS.createLine()).append(System.lineSeparator());
             }
         }
         // loop through each line 3 and join to a string value
         if (sfileData.getLine3s() != null) {
-            for (Line3 line3: (List<Line3>) sfileData.getLine3s()) {
-                sfileText += line3.createLine() + System.lineSeparator();
+            for (Line3 line3: sfileData.getLine3s()) {
+                sfileText.append(line3.createLine()).append(System.lineSeparator());
             }
         }
 
         // Set Header info from Line7 - Should always be present
         if (nordicFormatVersion == NordicFormatVersion.VERSION2) {
-            sfileText += SfileVersionLine7.VERSION2 + System.lineSeparator();
+            sfileText.append(SfileVersionLine7.VERSION2).append(System.lineSeparator());
         } else {
-            sfileText += SfileVersionLine7.VERSION1 + System.lineSeparator();
+            sfileText.append(SfileVersionLine7.VERSION1).append(System.lineSeparator());
         }
 
 
@@ -368,28 +362,24 @@ public class QmlToSfileImpl implements QmlToSfile {
         if (sfileData.getLine4s() != null) {
             if (nordicFormatVersion == NordicFormatVersion.VERSION2) {
                 for (Line4Dto line4Dto: (List<Line4Dto>) sfileData.getLine4s()) {
-                    sfileText += line4Dto.createLine() + System.lineSeparator();
+                    sfileText.append(line4Dto.createLine()).append(System.lineSeparator());
                 }
             } else {
                 for (Line4 line4: (List<Line4>) sfileData.getLine4s()) {
                     // Check the values of Line4
                     Line4 l4Checked = Line4Checker.checkLine4Values(line4);
-                    sfileText += l4Checked.createLine() + System.lineSeparator();
+                    sfileText.append(l4Checked.createLine()).append(System.lineSeparator());
                 }
             }
         }
 
         // New empty line for each event
-        sfileText += makeEmptySfileLine() + System.lineSeparator();
-        return sfileText;
+        sfileText.append(makeEmptySfileLine()).append(System.lineSeparator());
+        return sfileText.toString();
     }
 
     private String makeEmptySfileLine() {
-        StringBuilder emptyLine = new StringBuilder();
-        for (int i = 0; i < 80; i++) {
-            emptyLine.append(" ");
-        }
-        return emptyLine.toString();
+        return " ".repeat(80);
     }
 
 }

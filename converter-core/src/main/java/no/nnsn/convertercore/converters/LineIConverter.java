@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.LineIQuakemlEntities;
@@ -29,7 +29,7 @@ public class LineIConverter {
                     comments.add(mapper.mapLIComment(lineI));
                 } catch (Exception ex) {
                     IgnoredLineError error = new IgnoredLineError().generate(lineI, ex, sfileInfo);
-                    ConverterErrorLogging.addError(error);
+                    ConverterSfileErrorLogging.addError(error);
                 }
             }
             return new LineIQuakemlEntities(comments);

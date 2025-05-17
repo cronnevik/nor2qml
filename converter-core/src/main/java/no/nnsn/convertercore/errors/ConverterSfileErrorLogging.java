@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConverterErrorLogging {
+public class ConverterSfileErrorLogging {
     @Getter
     private static final List<IgnoredLineError> ignoredErrors = new ArrayList<>();
 

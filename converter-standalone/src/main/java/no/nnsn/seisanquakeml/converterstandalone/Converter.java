@@ -1,6 +1,6 @@
 package no.nnsn.seisanquakeml.converterstandalone;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.errors.IgnoredQmlError;
@@ -142,7 +142,7 @@ public class Converter {
                 version
         ));
 
-        List<IgnoredLineError> errors = ConverterErrorLogging.getIgnoredErrors();
+        List<IgnoredLineError> errors = ConverterSfileErrorLogging.getIgnoredErrors();
 
         if (!errors.isEmpty()) {
             System.out.println("-------------------------------------");

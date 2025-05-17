@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.LineFQuakemlEntities;
@@ -83,19 +83,19 @@ public class LineFConverter {
                                                         } else if (mM1Obj instanceof IgnoredLineError) {
                                                             IgnoredLineError e = (IgnoredLineError) mM1Obj;
                                                             e.setFilename(sfileInfo.getFilename());
-                                                            ConverterErrorLogging.addError(e);
+                                                            ConverterSfileErrorLogging.addError(e);
                                                         }
                                                     } else if (oM1Obj instanceof IgnoredLineError) {
                                                         IgnoredLineError e = (IgnoredLineError) oM1Obj;
                                                         e.setFilename(sfileInfo.getFilename());
-                                                        ConverterErrorLogging.addError(e);
+                                                        ConverterSfileErrorLogging.addError(e);
                                                     }
                                                 }
                                                 focalMechanism.setMomentTensor(momentTensor);
                                             } else if (mtObj instanceof IgnoredLineError) {
                                                 IgnoredLineError e = (IgnoredLineError) mtObj;
                                                 e.setFilename(sfileInfo.getFilename());
-                                                ConverterErrorLogging.addError(e);
+                                                ConverterSfileErrorLogging.addError(e);
                                             }
                                         }
                                     }
@@ -104,7 +104,7 @@ public class LineFConverter {
                             } else if (fObj instanceof IgnoredLineError) {
                                 IgnoredLineError e = (IgnoredLineError) fObj;
                                 e.setFilename(sfileInfo.getFilename());
-                                ConverterErrorLogging.addError(e);
+                                ConverterSfileErrorLogging.addError(e);
                             }
                         }
                     }

@@ -7,13 +7,13 @@ import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.*;
 import no.nnsn.convertercore.mappers.from_qml.v20.to_nordic.helpers.LineHelper;
 import no.nnsn.convertercore.mappers.interfaces.NordicMapper;
 import no.nnsn.seisanquakeml.models.quakeml.v20.basicevent.*;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.EventDescription;
+import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
+import no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType;
 import no.nnsn.seisanquakeml.models.sfile.v1.lines.Line4;
 import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineE;
 import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineM1;
 import no.nnsn.seisanquakeml.models.sfile.v1.lines.LineM2;
-import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.bedtypes.EventDescription;
-import no.nnsn.seisanquakeml.models.quakeml.v20.helpers.resourcemetadata.Comment;
-import no.nnsn.seisanquakeml.models.sfile.v1.enums.LineType;
 import no.nnsn.seisanquakeml.models.sfile.v2.lines.Line4Dto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -44,10 +44,18 @@ public class NordicMapperImpl implements NordicMapper {
                 // filter magnitude based on OriginID
                 filteredMags =
                         magnitudes.stream().filter(
-                                (magnitude -> magnitude.getOriginID().equals(org.getPublicID()))
+                                (magnitude -> {
+                                    try {
+                                        return magnitude.getOriginID().equals(org.getPublicID());
+                                    }
+                                    catch (Exception e) {
+                                        line1s.add(new IgnoredQmlError(e.getMessage(), "Magnitude"));
+                                        return false;
+                                    }
+                                })
                         ).collect(Collectors.toList());
 
-                // Check number of magnitudes as Line1 can only store 3
+                // TODO: Check number of magnitudes as Line1 can only store 3
                 int numMags = filteredMags.size();
 
                 // TODO - Handle more than 3 Magnitudes for each origin
@@ -56,6 +64,12 @@ public class NordicMapperImpl implements NordicMapper {
                 // TODO - Handle mapping without magnitudes
                 // filter stationMagnitudes based on OriginID
                 filteredMags = null;
+
+                stationMagnitudes.forEach(
+                        sm -> {
+                            line1s.add(new IgnoredQmlError("Currently no mapping for StationMagnitude ", "StationMagnitude"));
+                        }
+                );
 
                 int numStatMags = filteredMags.size();
 
@@ -131,7 +145,7 @@ public class NordicMapperImpl implements NordicMapper {
             LocalDateTime phaseTime = null;
             ZonedDateTime phaseTimeZoned = null;
             if (!StringUtils.isBlank(time)) {
-                if(time.substring(time.length() -1 ).equals("Z")) {
+                if(time.endsWith("Z")) {
                     phaseTimeZoned = ZonedDateTime.parse(time);
                 } else {
                     phaseTime = LocalDateTime.parse(time);
@@ -144,7 +158,7 @@ public class NordicMapperImpl implements NordicMapper {
                 if (picks.size() > 1) {
                     String timeCompare = pick.getTime().getValue();
                     if (!StringUtils.isBlank(timeCompare) && !StringUtils.isBlank(time)) {
-                        if(timeCompare.substring(timeCompare.length() -1 ).equals("Z")) {
+                        if(timeCompare.endsWith("Z")) {
                             ZonedDateTime timeZoned = ZonedDateTime.parse(timeCompare);
                             if (timeZoned.getDayOfMonth() != phaseTimeZoned.getDayOfMonth()) {
                                 pick.setTimeOverMidnight(true);

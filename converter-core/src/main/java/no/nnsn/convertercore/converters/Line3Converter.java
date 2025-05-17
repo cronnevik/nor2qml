@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.helpers.LineErrorGenerator;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line3QuakemlEntities;
@@ -53,7 +53,7 @@ public class Line3Converter {
                 try {
                     comments.add(mapper.mapL3Comment(line3));
                 } catch (Exception ex) {
-                    ConverterErrorLogging.addError(LineErrorGenerator.generateError(line3, ex, sfileInfo));
+                    ConverterSfileErrorLogging.addError(LineErrorGenerator.generateError(line3, ex, sfileInfo));
                 }
             }
 

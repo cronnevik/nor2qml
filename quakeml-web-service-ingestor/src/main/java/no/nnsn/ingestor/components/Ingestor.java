@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import lombok.extern.slf4j.Slf4j;
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.ConverterProfile;
 import no.nnsn.convertercore.helpers.EventOverview;
@@ -81,7 +81,7 @@ public class Ingestor {
 
 
     @Transactional
-    public void ingest(FileInfo fileInfo, IngestorOptions options) throws Exception {
+    public void ingest(FileInfo fileInfo, IngestorOptions options) {
 
         Instant start = Instant.now();
 
@@ -127,7 +127,7 @@ public class Ingestor {
             ingestNewOrUpdateFiles(catalog, ingestLog, modifiedFiles, options.getProfile());
         }
 
-        List<IgnoredLineError> convErrors = ConverterErrorLogging.getIgnoredErrors();
+        List<IgnoredLineError> convErrors = ConverterSfileErrorLogging.getIgnoredErrors();
         if (convErrors != null && !convErrors.isEmpty()) {
             log.info("-------------------------------------");
             log.info("Errors found in file and the lines are ignored during conversion to QuakeML format:");
@@ -136,7 +136,7 @@ public class Ingestor {
             });
             log.info("-------------------------------------");
         }
-        ConverterErrorLogging.clear();
+        ConverterSfileErrorLogging.clear();
 
         Instant finish = Instant.now();
         log.info(TimeLogger.getTimeUsed(start, finish, "All operations finished. Total time used: "));

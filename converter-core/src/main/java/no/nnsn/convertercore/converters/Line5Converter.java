@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
 import no.nnsn.convertercore.helpers.collections.Line5QuakemlEntities;
@@ -29,7 +29,7 @@ public class Line5Converter {
                     comments.add(mapper.mapL5Comment(line5));
                 } catch (Exception ex) {
                     IgnoredLineError error = new IgnoredLineError().generate(line5, ex, sfileInfo);
-                    ConverterErrorLogging.addError(error);
+                    ConverterSfileErrorLogging.addError(error);
                 }
             }
             return new Line5QuakemlEntities(comments);

@@ -1,6 +1,6 @@
 package no.nnsn.convertercore.converters;
 
-import no.nnsn.convertercore.errors.ConverterErrorLogging;
+import no.nnsn.convertercore.errors.ConverterSfileErrorLogging;
 import no.nnsn.convertercore.errors.CustomException;
 import no.nnsn.convertercore.errors.IgnoredLineError;
 import no.nnsn.convertercore.helpers.SfileInfo;
@@ -54,10 +54,10 @@ public class Line1Converter {
                         error.setFilename(sfileInfo.getFilename());
                         if (i == 0) { // Only remove Event if it is the first Line1
                             error.setEventRemoved(true); // Removing Event
-                            ConverterErrorLogging.addError(error);
+                            ConverterSfileErrorLogging.addError(error);
                             return new Line1QuakemlEntities(true);
                         } else {
-                            ConverterErrorLogging.addError(error);
+                            ConverterSfileErrorLogging.addError(error);
                             continue;
                         }
                     }
@@ -79,7 +79,7 @@ public class Line1Converter {
                     } else if (o instanceof IgnoredLineError) {
                         IgnoredLineError error = (IgnoredLineError) o;
                         error.setFilename(sfileInfo.getFilename());
-                        ConverterErrorLogging.addError(error);
+                        ConverterSfileErrorLogging.addError(error);
                     }
                 });
             }
